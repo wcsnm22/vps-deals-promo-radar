@@ -32,6 +32,29 @@ MONTHS = [
     "July", "August", "September", "October", "November", "December",
 ]
 
+# Cloudflare Pages 高级模式脚本：放在输出目录里，全量接管请求。
+# ::_redirects 不支持域名级跳转（官方文档 Domain-level redirects ❌），
+# ::所以 *.pages.dev（含预览哈希地址）这类非规范主机名必须在这里 301 到主域名，
+# ::避免同一个站有两个地址并存、把权重分散掉。主域名请求照常走静态资源。
+WORKER_TEMPLATE = """// ILANG
+// TYPE:worker ROLE:canonical-host-redirect
+// ::RULE{非规范主机名一律 301 到主域名⇒不许留两个地址并存}
+// ::RULE{主域名请求必须原样交给静态资源⇒漏了这行整站会 404}
+// ::BOUNDARY{never:在这里改页面内容|scope:file}
+const CANONICAL_HOST = "__CANONICAL_HOST__";
+
+export default {
+  async fetch(request, env) {
+    const url = new URL(request.url);
+    if (url.hostname !== CANONICAL_HOST) {
+      const target = new URL(url.pathname + url.search, `https://${CANONICAL_HOST}`);
+      return Response.redirect(target.toString(), 301);
+    }
+    return env.ASSETS.fetch(request);
+  },
+};
+"""
+
 
 # ------------------------------------------------------------------ 小工具
 
@@ -526,8 +549,11 @@ def main() -> int:
     (SITE_DIR / "robots.txt").write_text(
         f"User-agent: *\nAllow: /\n\nSitemap: {base_url}/sitemap.xml\n", encoding="utf-8"
     )
+    (SITE_DIR / "_worker.js").write_text(
+        WORKER_TEMPLATE.replace("__CANONICAL_HOST__", site_cfg["domain"]), encoding="utf-8"
+    )
 
-    print(f"生成 {len(written)} 个页面 + sitemap.xml({len(urls)} 条) + robots.txt")
+    print(f"生成 {len(written)} 个页面 + sitemap.xml({len(urls)} 条) + robots.txt + _worker.js(301 规范主机名)")
     print(f"数据快照时间 {generated_at}，优惠 {len(offers)} 条，厂商 {len(by_name)} 家")
     return 0
 
