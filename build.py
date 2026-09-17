@@ -1,0 +1,536 @@
+# ILANG
+# TYPE:module ROLE:builder PROJECT:vps-deals
+# ::RULE{配置与文案参数来自 .ilang/site.ilang 和 data/offers.json⇒不许在代码里另写一份}
+# ::RULE{没有 price 的优惠⇒页面照常列 但不写 price 也不写 priceCurrency 进结构化数据}
+# ::RULE{每页必须有 canonical 和 JSON-LD⇒sitemap.xml 和 robots.txt 由本文件生成 不手写}
+# ::RULE{标题和描述由数据生成⇒带厂商名 价格 和当前月份 不许所有页共用一句模板}
+# ::BOUNDARY{never:编价格 编有效期 编评分|scope:file}
+"""读 data/offers.json -> 渲染静态站到 site/（含 JSON-LD、canonical、sitemap）
+
+零依赖：只用 Python 标准库。
+用法：python build.py
+"""
+
+from __future__ import annotations
+
+import json
+import re
+from datetime import datetime, timezone
+from html import escape
+from pathlib import Path
+
+from scraper import load_config
+
+ROOT = Path(__file__).resolve().parent
+DATA_PATH = ROOT / "data" / "offers.json"
+TEMPLATE_DIR = ROOT / "templates"
+SITE_DIR = ROOT / "site"
+
+SYMBOLS = {"USD": "$", "EUR": "€", "GBP": "£"}
+MONTHS = [
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December",
+]
+
+
+# ------------------------------------------------------------------ 小工具
+
+def slugify(text: str) -> str:
+    slug = re.sub(r"[^a-z0-9]+", "-", text.lower()).strip("-")
+    return slug or "item"
+
+
+# Cloudflare Pages 会把 /x.html 308 跳到 /x，所以 canonical 和 sitemap 一律用干净 URL，
+# 文件本身仍然写成 .html —— 让被索引的地址就是最终地址，避免 canonical 指向一个跳转。
+def home_url(site: dict) -> str:
+    return f'{site["base_url"]}/'
+
+
+def compare_url(site: dict) -> str:
+    return f'{site["base_url"]}/compare'
+
+
+def provider_page(site: dict, name: str) -> str:
+    return f'{site["base_url"]}/provider/{slugify(name)}'
+
+
+def deal_page(site: dict, offer: dict) -> str:
+    return f'{site["base_url"]}/deal/{offer_slug(offer)}'
+
+
+def render(template: str, values: dict[str, str]) -> str:
+    def replace(match: re.Match) -> str:
+        key = match.group(1).strip()
+        return values.get(key, "")
+
+    return re.sub(r"\{\{\s*([a-zA-Z0-9_]+)\s*\}\}", replace, template)
+
+
+def template(name: str) -> str:
+    return (TEMPLATE_DIR / name).read_text(encoding="utf-8")
+
+
+def money(price: float | None, currency: str) -> str:
+    if price is None:
+        return ""
+    symbol = SYMBOLS.get(currency, "")
+    amount = f"{price:.2f}".rstrip("0").rstrip(".") if price % 1 else f"{price:.0f}"
+    return f"{symbol}{amount} {currency}" if not symbol else f"{symbol}{amount}"
+
+
+def jsonld(payload: dict | list) -> str:
+    return json.dumps(payload, ensure_ascii=False, separators=(",", ":"))
+
+
+def iso_now() -> str:
+    return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+# ------------------------------------------------------------------ 数据整理
+
+def group_offers(offers: list[dict]) -> dict[str, list[dict]]:
+    grouped: dict[str, list[dict]] = {}
+    for offer in offers:
+        grouped.setdefault(offer["provider"], []).append(offer)
+    for rows in grouped.values():
+        rows.sort(key=lambda row: (row.get("price") is None, row.get("price") or 0))
+    return grouped
+
+
+def collapse_offers(offers: list[dict]) -> tuple[list[dict], dict[tuple, int]]:
+    """同一家厂商同一个套餐名可能公布多个价格（原价/促销价）。
+
+    塌缩成一条（保留更低那个），并记录公布了几个价格，供页面如实说明。
+    不合并的话 slug 会撞车：一个页面被另一个覆盖，sitemap 还会出现重复 URL。
+    """
+    best: dict[tuple, dict] = {}
+    variants: dict[tuple, int] = {}
+    for offer in offers:
+        key = (offer["provider"], offer["title"].lower())
+        variants[key] = variants.get(key, 0) + 1
+        current = best.get(key)
+        if current is None:
+            best[key] = dict(offer)
+            continue
+        if offer.get("price") is not None and (
+            current.get("price") is None or offer["price"] < current["price"]
+        ):
+            current["price"] = offer["price"]
+            current["currency"] = offer.get("currency", current.get("currency"))
+        if offer.get("valid_until") and not current.get("valid_until"):
+            current["valid_until"] = offer["valid_until"]
+    return list(best.values()), variants
+
+
+def offer_slug(offer: dict) -> str:
+    return slugify(f"{offer['provider']}-{offer['title']}")
+
+
+def affiliate_for(offer: dict, providers: dict[str, dict]) -> str:
+    """联盟链接优先；site.ilang 里留空就用抓到的裸链。"""
+    provider = providers.get(offer["provider"], {})
+    return provider.get("affiliate_url") or offer["offer_url"]
+
+
+# ------------------------------------------------------------------ 头部与骨架
+
+def head_block(meta: dict, extra_jsonld: list[dict] | None = None) -> str:
+    links = [
+        f'<link rel="canonical" href="{escape(meta["canonical"])}">',
+        f'<link rel="alternate" hreflang="{escape(meta["locale"])}" href="{escape(meta["canonical"])}">',
+        f'<link rel="alternate" hreflang="x-default" href="{escape(meta["canonical"])}">',
+        '<meta name="viewport" content="width=device-width, initial-scale=1">',
+        '<meta name="robots" content="index,follow,max-image-preview:large">',
+    ]
+    social = [
+        f'<meta property="og:type" content="{escape(meta["og_type"])}">',
+        f'<meta property="og:title" content="{escape(meta["title"])}">',
+        f'<meta property="og:description" content="{escape(meta["description"])}">',
+        f'<meta property="og:url" content="{escape(meta["canonical"])}">',
+        f'<meta property="og:site_name" content="{escape(meta["brand"])}">',
+        f'<meta property="og:image" content="{escape(meta["og_image"])}">',
+        '<meta name="twitter:card" content="summary_large_image">',
+        f'<meta name="twitter:title" content="{escape(meta["title"])}">',
+        f'<meta name="twitter:description" content="{escape(meta["description"])}">',
+        f'<meta name="twitter:image" content="{escape(meta["og_image"])}">',
+        f'<meta name="description" content="{escape(meta["description"])}">',
+    ]
+    blocks = [f'<script type="application/ld+json">{jsonld(item)}</script>' for item in (extra_jsonld or [])]
+    return "\n  ".join(links + social + blocks)
+
+
+def nav_block(site: dict, providers: list[dict]) -> str:
+    links = [f'<a href="{escape(home_url(site))}">Home</a>']
+    links.append(f'<a href="{escape(compare_url(site))}">Compare all</a>')
+    for provider in providers:
+        links.append(
+            f'<a href="{escape(provider_page(site, provider["name"]))}">{escape(provider["name"])}</a>'
+        )
+    return " · ".join(links)
+
+
+def footer_block(site: dict, generated_at: str) -> str:
+    return (
+        f'<p class="muted">Prices are read from each provider\'s own public page on {escape(generated_at)} '
+        "and can change without notice — always confirm on the provider site before buying.</p>"
+        f'<p class="muted">Independent listings. No invented prices: a plan without a published price shows no price. '
+        "Some outbound links may be affiliate links.</p>"
+        f'<p class="muted">{escape(site["brand"])} · <a href="{escape(site["base_url"])}/sitemap.xml">sitemap</a></p>'
+    )
+
+
+# ------------------------------------------------------------------ 渲染各页
+
+def offer_rows(offers: list[dict], site: dict, providers: dict[str, dict], with_provider: bool) -> str:
+    rows = []
+    for offer in offers:
+        price = money(offer.get("price"), offer.get("currency", "USD"))
+        price_cell = price if price else '<span class="muted">not published</span>'
+        provider_cell = (
+            f'<a href="{escape(provider_page(site, offer["provider"]))}">{escape(offer["provider"])}</a>'
+            if with_provider
+            else ""
+        )
+        detail = deal_page(site, offer)
+        target = affiliate_for(offer, providers)
+        rows.append(
+            "<tr>"
+            f"<td>{provider_cell}</td>"
+            f'<td><a href="{escape(detail)}">{escape(offer["title"])}</a></td>'
+            f'<td class="price">{price_cell}</td>'
+            f'<td><a class="btn" rel="nofollow sponsored noopener" target="_blank" href="{escape(target)}">View on provider</a></td>'
+            "</tr>"
+        )
+    return "\n".join(rows)
+
+
+def build_index(site: dict, offers: list[dict], providers: list[dict], generated_at: str) -> str:
+    grouped = group_offers(offers)
+    month = MONTHS[datetime.now(timezone.utc).month - 1]
+    priced = [o for o in offers if o.get("price")]
+    cheapest = min(priced, key=lambda o: o["price"]) if priced else None
+    title = f"{site['title']} — {len(offers)} live VPS deals tracked ({month} {datetime.now(timezone.utc).year})"
+    description = (
+        f"{len(offers)} VPS plans tracked across {len(grouped)} providers, prices read straight from each "
+        f"provider's public page. Updated {generated_at}."
+    )
+    if cheapest:
+        description += f" Cheapest tracked plan: {cheapest['provider']} {cheapest['title']} at {money(cheapest['price'], cheapest.get('currency','USD'))}."
+
+    cards = []
+    for provider in providers:
+        rows = grouped.get(provider["name"], [])
+        if not rows:
+            note = provider.get("note") or "no published price found on the source page"
+            cards.append(
+                f'<div class="card"><h3>{escape(provider["name"])}</h3>'
+                f'<p class="muted">Tracked, but {escape(note)}.</p>'
+                f'<p><a href="{escape(provider["homepage"])}" rel="nofollow noopener" target="_blank">Official site</a></p></div>'
+            )
+            continue
+        lowest = rows[0]
+        cards.append(
+            f'<div class="card"><h3><a href="{escape(provider_page(site, provider["name"]))}">'
+            f'{escape(provider["name"])}</a></h3>'
+            f'<p class="price big">{escape(money(lowest.get("price"), lowest.get("currency","USD")))}</p>'
+            f'<p class="muted">from {escape(lowest["title"])} · {len(rows)} plans tracked</p></div>'
+        )
+
+    item_list = {
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        "name": title,
+        "itemListElement": [
+            {"@type": "ListItem", "position": index + 1,
+             "url": deal_page(site, offer), "name": f'{offer["provider"]} {offer["title"]}'}
+            for index, offer in enumerate(offers[:50])
+        ],
+    }
+    website = {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": site["title"],
+        "url": home_url(site),
+        "description": description,
+    }
+    meta = {
+        "canonical": home_url(site),
+        "locale": site["locale"],
+        "title": title,
+        "description": description,
+        "brand": site["brand"],
+        "og_type": "website",
+        "og_image": site["og_image"],
+    }
+    return render(
+        template("index.html"),
+        {
+            "lang": site["locale"],
+            "head": head_block(meta, [website, item_list]),
+            "nav": nav_block(site, providers),
+            "footer": footer_block(site, generated_at),
+            "title": escape(title),
+            "brand": escape(site["brand"]),
+            "tagline": escape(site["tagline"]),
+            "generated_at": generated_at,
+            "cards": "\n".join(cards),
+            "rows": offer_rows(offers[:60], site, {}, True),
+            "offer_count": str(len(offers)),
+            "provider_count": str(len(grouped)),
+        },
+    )
+
+
+def build_provider(site: dict, provider: dict, offers: list[dict], generated_at: str) -> str:
+    month = MONTHS[datetime.now(timezone.utc).month - 1]
+    name = provider["name"]
+    priced = [o for o in offers if o.get("price")]
+    low = min((o["price"] for o in priced), default=None)
+    high = max((o["price"] for o in priced), default=None)
+    currency = offers[0].get("currency", provider.get("currency", "USD")) if offers else provider.get("currency", "USD")
+
+    title = f"{name} VPS prices ({month} {datetime.now(timezone.utc).year}) — {len(offers)} plans tracked"
+    description = (
+        f"{name} VPS plans with prices read from the provider's public page on {generated_at}. "
+        + (f"{len(priced)} of {len(offers)} plans publish a price; from {money(low, currency)}." if priced
+           else "No price is published in machine-readable form on that page, so this page lists plan names only.")
+    )
+    graphs: list[dict] = [
+        {
+            "@context": "https://schema.org",
+            "@type": "Product",
+            "name": f"{name} VPS plans",
+            "url": provider_page(site, name),
+            "brand": {"@type": "Brand", "name": name},
+        }
+    ]
+    if priced:
+        graphs[0]["offers"] = {
+            "@type": "AggregateOffer",
+            "priceCurrency": currency,
+            "lowPrice": low,
+            "highPrice": high,
+            "offerCount": len(priced),
+            "availability": "https://schema.org/InStock",
+            "url": provider_page(site, name),
+        }
+    graphs.append(
+        {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+                {"@type": "ListItem", "position": 1, "name": site["title"], "item": home_url(site)},
+                {"@type": "ListItem", "position": 2, "name": name, "item": provider_page(site, name)},
+            ],
+        }
+    )
+    meta = {
+        "canonical": provider_page(site, name),
+        "locale": site["locale"],
+        "title": title,
+        "description": description,
+        "brand": site["brand"],
+        "og_type": "website",
+        "og_image": site["og_image"],
+    }
+    return render(
+        template("provider.html"),
+        {
+            "lang": site["locale"],
+            "head": head_block(meta, graphs),
+            "nav": nav_block(site, [provider]),
+            "footer": footer_block(site, generated_at),
+            "title": escape(title),
+            "provider": escape(name),
+            "homepage": escape(provider["homepage"]),
+            "source_url": escape(provider["deals_url"]),
+            "generated_at": generated_at,
+            "rows": offer_rows(offers, site, {}, False) or '<tr><td colspan="4" class="muted">No plan with a published price was found on the source page.</td></tr>',
+            "low": money(low, currency) if low else "",
+            "high": money(high, currency) if high else "",
+            "offer_count": str(len(offers)),
+            "priced_count": str(len(priced)),
+            "note": escape(provider.get("note") or ""),
+        },
+    )
+
+
+def build_deal(site: dict, offer: dict, generated_at: str, variants: int = 1) -> str:
+    month = MONTHS[datetime.now(timezone.utc).month - 1]
+    currency = offer.get("currency", "USD")
+    price_text = money(offer.get("price"), currency)
+    title = f'{offer["provider"]} {offer["title"]}' + (f' — {price_text} ({month})' if price_text else f' ({month})')
+    description = (
+        f'{offer["provider"]} {offer["title"]}'
+        + (f' listed at {price_text}' if price_text else ' (no published price found)')
+        + f'. Read from {offer["source_url"]} on {offer["fetched_at"]}.'
+    )
+    schema: dict = {
+        "@context": "https://schema.org",
+        "@type": "Offer",
+        "name": f'{offer["provider"]} {offer["title"]}',
+        "url": deal_page(site, offer),
+        "availability": "https://schema.org/InStock",
+        "seller": {"@type": "Organization", "name": offer["provider"]},
+        "priceSpecification": {"@type": "UnitPriceSpecification", "referenceQuantity": {"@type": "QuantitativeValue", "unitCode": "MON"}},
+    }
+    if offer.get("price") is not None:
+        schema["price"] = offer["price"]
+        schema["priceCurrency"] = currency
+    if offer.get("valid_until"):
+        schema["priceValidUntil"] = offer["valid_until"]
+    breadcrumb = {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {"@type": "ListItem", "position": 1, "name": site["title"], "item": home_url(site)},
+            {"@type": "ListItem", "position": 2, "name": offer["provider"],
+             "item": provider_page(site, offer["provider"])},
+            {"@type": "ListItem", "position": 3, "name": offer["title"], "item": deal_page(site, offer)},
+        ],
+    }
+    meta = {
+        "canonical": deal_page(site, offer),
+        "locale": site["locale"],
+        "title": title,
+        "description": description,
+        "brand": site["brand"],
+        "og_type": "product",
+        "og_image": site["og_image"],
+    }
+    return render(
+        template("deal.html"),
+        {
+            "lang": site["locale"],
+            "head": head_block(meta, [schema, breadcrumb]),
+            "nav": nav_block(site, []),
+            "footer": footer_block(site, generated_at),
+            "title": escape(title),
+            "deal_title": escape(offer["title"]),
+            "provider": escape(offer["provider"]),
+            "provider_url": provider_page(site, offer["provider"]),
+            "price": escape(price_text) if price_text else '<span class="muted">not published on the source page</span>',
+            "currency": escape(currency),
+            "valid_until": escape(offer.get("valid_until", "")) or '<span class="muted">not stated</span>',
+            "source_url": escape(offer["source_url"]),
+            "fetched_at": escape(offer["fetched_at"]),
+            "offer_url": escape(offer["offer_url"]),
+            "variants_note": (
+                f'The provider page currently lists {variants} different prices for this plan; the lowest is shown here.'
+                if variants > 1
+                else ""
+            ),
+        },
+    )
+
+
+def build_compare(site: dict, offers: list[dict], providers: list[dict], generated_at: str) -> str:
+    month = MONTHS[datetime.now(timezone.utc).month - 1]
+    title = f"Compare {len(offers)} VPS plans by price ({month} {datetime.now(timezone.utc).year})"
+    description = (
+        f"Side-by-side price list of {len(offers)} VPS plans tracked from provider pages, sorted cheapest first. "
+        f"Last read {generated_at}. Prices shown are the numbers published on each provider page."
+    )
+    item_list = {
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        "name": title,
+        "itemListElement": [
+            {"@type": "ListItem", "position": index + 1,
+             "url": deal_page(site, offer),
+             "name": f'{offer["provider"]} {offer["title"]}'}
+            for index, offer in enumerate(offers)
+        ],
+    }
+    meta = {
+        "canonical": compare_url(site),
+        "locale": site["locale"],
+        "title": title,
+        "description": description,
+        "brand": site["brand"],
+        "og_type": "website",
+        "og_image": site["og_image"],
+    }
+    return render(
+        template("compare.html"),
+        {
+            "lang": site["locale"],
+            "head": head_block(meta, [item_list]),
+            "nav": nav_block(site, providers),
+            "footer": footer_block(site, generated_at),
+            "title": escape(title),
+            "generated_at": generated_at,
+            "rows": offer_rows(offers, site, {}, True),
+            "offer_count": str(len(offers)),
+        },
+    )
+
+
+# ------------------------------------------------------------------ 主流程
+
+def main() -> int:
+    config = load_config()
+    site_cfg = config["site"]
+    payload = json.loads(DATA_PATH.read_text(encoding="utf-8"))
+
+    base_url = "https://" + site_cfg["domain"].rstrip("/")
+    site = {
+        "brand": site_cfg.get("brand", "vps-deals"),
+        "title": site_cfg.get("title", "VPS Deals Radar"),
+        "tagline": site_cfg.get("tagline", ""),
+        "locale": site_cfg.get("locale", "en-US"),
+        "domain": site_cfg["domain"],
+        "base_url": base_url,
+        "og_image": site_cfg.get("og_image", f"{base_url}/og.png"),
+    }
+    offers = payload["offers"]
+    variants: dict[tuple, int] = {}
+    offers, variants = collapse_offers(offers)
+    providers = payload["providers"]
+    by_name = {row["name"]: row for row in providers}
+    generated_at = payload["generated_at"]
+
+    SITE_DIR.mkdir(parents=True, exist_ok=True)
+    (SITE_DIR / "provider").mkdir(exist_ok=True)
+    (SITE_DIR / "deal").mkdir(exist_ok=True)
+
+    written = []
+    for name, html in {
+        "index.html": build_index(site, offers, providers, generated_at),
+        "compare.html": build_compare(site, offers, providers, generated_at),
+    }.items():
+        (SITE_DIR / name).write_text(html, encoding="utf-8")
+        written.append(name)
+
+    grouped = group_offers(offers)
+    for provider in providers:
+        html = build_provider(site, provider, grouped.get(provider["name"], []), generated_at)
+        path = SITE_DIR / "provider" / f"{slugify(provider['name'])}.html"
+        path.write_text(html, encoding="utf-8")
+        written.append(f"provider/{path.name}")
+
+    for offer in offers:
+        html = build_deal(site, offer, generated_at, variants.get((offer["provider"], offer["title"].lower()), 1))
+        path = SITE_DIR / "deal" / f"{offer_slug(offer)}.html"
+        path.write_text(html, encoding="utf-8")
+        written.append(f"deal/{path.name}")
+
+    urls = [home_url(site), compare_url(site)]
+    urls += [provider_page(site, row["name"]) for row in providers]
+    urls += [deal_page(site, offer) for offer in offers]
+    sitemap = ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
+    for url in urls:
+        sitemap.append(f"  <url><loc>{escape(url)}</loc><lastmod>{generated_at}</lastmod></url>")
+    sitemap.append("</urlset>")
+    (SITE_DIR / "sitemap.xml").write_text("\n".join(sitemap) + "\n", encoding="utf-8")
+    (SITE_DIR / "robots.txt").write_text(
+        f"User-agent: *\nAllow: /\n\nSitemap: {base_url}/sitemap.xml\n", encoding="utf-8"
+    )
+
+    print(f"生成 {len(written)} 个页面 + sitemap.xml({len(urls)} 条) + robots.txt")
+    print(f"数据快照时间 {generated_at}，优惠 {len(offers)} 条，厂商 {len(by_name)} 家")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

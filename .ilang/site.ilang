@@ -1,0 +1,46 @@
+ILANG
+TYPE:config PROJECT:vps-deals LANG:zh
+
+::STATE{@SITE, brand:vps-deals, niche:vps主机, title:VPS Deals Radar, tagline:独立追踪各家主机商官方 VPS 优惠, locale:en-US, currency:USD, domain:vps-deals-promo-radar-e18.pages.dev, max_price:5000, lookback_lines:12}
+
+::MODULE{PROVIDERS|title:抓哪几家 这里改了站就变}
+  # 每行: 名称 | 官网 | 优惠页(或 sitemap/feed 地址) | 联盟链接(留空则用裸链) | kind=page|feed|sitemap | currency=USD|EUR
+  # 加一家删一家只改这里 不用碰任何代码
+  OVHcloud | https://www.ovhcloud.com | https://www.ovhcloud.com/en/vps/ |  | kind=page | currency=USD
+  netcup | https://www.netcup.com | https://www.netcup.com/en/server/vps |  | kind=page | currency=EUR
+  DigitalOcean | https://www.digitalocean.com | https://www.digitalocean.com/pricing |  | kind=page | currency=USD
+  BuyVM | https://buyvm.net | https://buyvm.net/kvm-dedicated-server-slices/ |  | kind=page | currency=USD
+  IONOS | https://www.ionos.com | https://www.ionos.com/servers/vps |  | kind=page | currency=USD
+  Hetzner | https://www.hetzner.com | https://www.hetzner.com/cloud/ |  | kind=page | currency=EUR
+
+::MODULE{FIELDS|title:每条优惠提取什么 抓不到就不写这个字段}
+  title price currency offer_url valid_until source_url fetched_at
+
+::MODULE{TITLEHINT|title:出现这些词的行才像产品名}
+  vps vserver virtual server cloud server kvm slice plan starter business premium plus pro basic dedicated cpanel windows linux unmetered
+  # 中文站也可以加词 例如 云服务器 主机 套餐
+
+::MODULE{SPECWORD|title:出现这些词说明是规格参数 不是产品名}
+  gb tb mb ram ddr ecc vcore vcpu core cores ssd nvme cpu gbps mbps bandwidth traffic snapshot backup ipv4 ipv6
+
+::MODULE{FILLER|title:这些整行是填充文字 不能当标题}
+  from details per month per month from starting at price see plans configure order now learn more more details buy now get started view
+  the price per gb is traffic included unlimited traffic remote console and much more snapshots copy-on-write incl vat vat new key cloud info benefits
+  cookie preferences privacy policy follow us
+
+::MODULE{SKIPPRICE|title:和价格同一行出现这些词 说明这不是套餐月费 不要这条}
+  per hour hourly /hour setup fee for your cloud startup program ipv4 address ipv6 address additional ip ssl certificate cpanel license
+  # 注意 vat tax 不算 因为正常月费也会标含税
+
+::MODULE{EXCLUDE|title:标题里出现这些整句就丢掉}
+  cookie privacy newsletter javascript login sign in sign up copyright all rights reserved follow us
+  ipv4 address ipv6 address additional ip startup program for your cloud
+  options compatible advantages of ddos protection iso 27001 kvm console see plans email 2.0
+
+::RULE{抓不到 price⇒这条不写 price 字段 也不写进结构化数据 不许拿估的填}
+::RULE{找不到可信产品名⇒这条不收录 宁缺毋滥 不许拿规格行或填充词冒充产品名}
+::RULE{valid_until 已过⇒标记过期或下架 不许留着冒充有效}
+::RULE{抓取前读 robots.txt⇒Disallow 的路径直接跳过 并写进抓取报告}
+::RULE{只抓公开页面⇒不登录 不绕反爬 不伪装登录态 关掉 gzip 只请求一次}
+::RULE{运行时零推理零密钥⇒抓取和渲染都是确定性 Python 不调用任何模型}
+::BOUNDARY{never:编优惠 编价格 编佣金|scope:permanent}

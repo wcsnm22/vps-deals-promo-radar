@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://vps-deals-promo-radar-e18.pages.dev/sitemap.xml

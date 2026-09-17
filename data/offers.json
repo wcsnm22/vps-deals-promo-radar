@@ -1,0 +1,277 @@
+{
+  "generated_at": "2026-09-17T02:59:53Z",
+  "brand": "vps-deals",
+  "niche": "vps主机",
+  "site_title": "VPS Deals Radar",
+  "tagline": "独立追踪各家主机商官方 VPS 优惠",
+  "locale": "en-US",
+  "base_currency": "USD",
+  "fields": "title price currency offer_url valid_until source_url fetched_at",
+  "rules": [
+    "抓不到 price⇒这条不写 price 字段 也不写进结构化数据 不许拿估的填",
+    "找不到可信产品名⇒这条不收录 宁缺毋滥 不许拿规格行或填充词冒充产品名",
+    "valid_until 已过⇒标记过期或下架 不许留着冒充有效",
+    "抓取前读 robots.txt⇒Disallow 的路径直接跳过 并写进抓取报告",
+    "只抓公开页面⇒不登录 不绕反爬 不伪装登录态 关掉 gzip 只请求一次",
+    "运行时零推理零密钥⇒抓取和渲染都是确定性 Python 不调用任何模型"
+  ],
+  "boundaries": [
+    "never:编优惠 编价格 编佣金|scope:permanent"
+  ],
+  "providers": [
+    {
+      "name": "OVHcloud",
+      "homepage": "https://www.ovhcloud.com",
+      "deals_url": "https://www.ovhcloud.com/en/vps/",
+      "affiliate_url": "",
+      "kind": "page",
+      "currency": "USD",
+      "http": 200,
+      "offers": 4,
+      "priced": 4,
+      "note": "另有 2 个价格没找到可信产品名，按规则未收录"
+    },
+    {
+      "name": "netcup",
+      "homepage": "https://www.netcup.com",
+      "deals_url": "https://www.netcup.com/en/server/vps",
+      "affiliate_url": "",
+      "kind": "page",
+      "currency": "EUR",
+      "http": 200,
+      "offers": 5,
+      "priced": 5,
+      "note": "另有 1 个价格没找到可信产品名，按规则未收录"
+    },
+    {
+      "name": "DigitalOcean",
+      "homepage": "https://www.digitalocean.com",
+      "deals_url": "https://www.digitalocean.com/pricing",
+      "affiliate_url": "",
+      "kind": "page",
+      "currency": "USD",
+      "http": 0,
+      "offers": 0,
+      "priced": 0,
+      "note": "robots.txt Disallow，跳过"
+    },
+    {
+      "name": "BuyVM",
+      "homepage": "https://buyvm.net",
+      "deals_url": "https://buyvm.net/kvm-dedicated-server-slices/",
+      "affiliate_url": "",
+      "kind": "page",
+      "currency": "USD",
+      "http": 200,
+      "offers": 1,
+      "priced": 1,
+      "note": "另有 16 个价格没找到可信产品名，按规则未收录"
+    },
+    {
+      "name": "IONOS",
+      "homepage": "https://www.ionos.com",
+      "deals_url": "https://www.ionos.com/servers/vps",
+      "affiliate_url": "",
+      "kind": "page",
+      "currency": "USD",
+      "http": 200,
+      "offers": 10,
+      "priced": 10,
+      "note": "另有 5 个价格没找到可信产品名，按规则未收录"
+    },
+    {
+      "name": "Hetzner",
+      "homepage": "https://www.hetzner.com",
+      "deals_url": "https://www.hetzner.com/cloud/",
+      "affiliate_url": "",
+      "kind": "page",
+      "currency": "EUR",
+      "http": 200,
+      "offers": 0,
+      "priced": 0,
+      "note": "页面里没找到可提取的优惠条目（不写假数据）"
+    }
+  ],
+  "offers": [
+    {
+      "provider": "OVHcloud",
+      "title": "VPS-1",
+      "price": 4.54,
+      "currency": "USD",
+      "offer_url": "https://www.ovhcloud.com/en/bare-metal/",
+      "source_url": "https://www.ovhcloud.com/en/vps/",
+      "fetched_at": "2026-09-17T02:59:53Z"
+    },
+    {
+      "provider": "OVHcloud",
+      "title": "VPS-2",
+      "price": 8.5,
+      "currency": "USD",
+      "offer_url": "https://www.ovhcloud.com/en/bare-metal/",
+      "source_url": "https://www.ovhcloud.com/en/vps/",
+      "fetched_at": "2026-09-17T02:59:53Z"
+    },
+    {
+      "provider": "OVHcloud",
+      "title": "VPS-3",
+      "price": 12.32,
+      "currency": "USD",
+      "offer_url": "https://www.ovhcloud.com/en/bare-metal/",
+      "source_url": "https://www.ovhcloud.com/en/vps/",
+      "fetched_at": "2026-09-17T02:59:53Z"
+    },
+    {
+      "provider": "OVHcloud",
+      "title": "VPS-4",
+      "price": 23.37,
+      "currency": "USD",
+      "offer_url": "https://www.ovhcloud.com/en/bare-metal/",
+      "source_url": "https://www.ovhcloud.com/en/vps/",
+      "fetched_at": "2026-09-17T02:59:53Z"
+    },
+    {
+      "provider": "netcup",
+      "title": "VPS 500 G12",
+      "price": 5.91,
+      "currency": "EUR",
+      "offer_url": "https://www.netcup.com/en/server/vps/vps-500-g12-iv-12m#vps-500-g12-iv-12m-nue",
+      "source_url": "https://www.netcup.com/en/server/vps",
+      "fetched_at": "2026-09-17T02:59:53Z"
+    },
+    {
+      "provider": "netcup",
+      "title": "VPS 1000 G12",
+      "price": 10.37,
+      "currency": "EUR",
+      "offer_url": "https://www.netcup.com/en/server/vps/vps-1000-g12-iv-12m#vps-1000-g12-iv-12m-nue",
+      "source_url": "https://www.netcup.com/en/server/vps",
+      "fetched_at": "2026-09-17T02:59:53Z"
+    },
+    {
+      "provider": "netcup",
+      "title": "VPS 2000 G12",
+      "price": 19.25,
+      "currency": "EUR",
+      "offer_url": "https://www.netcup.com/en/server/vps/vps-2000-g12-iv-12m#vps-2000-g12-iv-12m-nue",
+      "source_url": "https://www.netcup.com/en/server/vps",
+      "fetched_at": "2026-09-17T02:59:53Z"
+    },
+    {
+      "provider": "netcup",
+      "title": "VPS 4000 G12",
+      "price": 32.41,
+      "currency": "EUR",
+      "offer_url": "https://www.netcup.com/en/server/vps/vps-4000-g12-iv-12m#vps-4000-g12-iv-12m-nue",
+      "source_url": "https://www.netcup.com/en/server/vps",
+      "fetched_at": "2026-09-17T02:59:53Z"
+    },
+    {
+      "provider": "netcup",
+      "title": "VPS 8000 G12",
+      "price": 47.95,
+      "currency": "EUR",
+      "offer_url": "https://www.netcup.com/en/server/vps/vps-8000-g12-iv-12m#vps-8000-g12-iv-12m-nue",
+      "source_url": "https://www.netcup.com/en/server/vps",
+      "fetched_at": "2026-09-17T02:59:53Z"
+    },
+    {
+      "provider": "BuyVM",
+      "title": "HIGH VOLUME VPS",
+      "price": 30.0,
+      "currency": "USD",
+      "offer_url": "https://buyvm.net/kvm-dedicated-server-slices/",
+      "source_url": "https://buyvm.net/kvm-dedicated-server-slices/",
+      "fetched_at": "2026-09-17T02:59:53Z"
+    },
+    {
+      "provider": "IONOS",
+      "title": "VPS S+",
+      "price": 5.0,
+      "currency": "USD",
+      "offer_url": "https://www.ionos.com/servers/vps",
+      "source_url": "https://www.ionos.com/servers/vps",
+      "fetched_at": "2026-09-17T02:59:53Z"
+    },
+    {
+      "provider": "IONOS",
+      "title": "VPS S+",
+      "price": 2.0,
+      "currency": "USD",
+      "offer_url": "https://www.ionos.com/servers/vps",
+      "source_url": "https://www.ionos.com/servers/vps",
+      "fetched_at": "2026-09-17T02:59:53Z"
+    },
+    {
+      "provider": "IONOS",
+      "title": "VPS M+",
+      "price": 11.0,
+      "currency": "USD",
+      "offer_url": "https://www.ionos.com/servers/vps",
+      "source_url": "https://www.ionos.com/servers/vps",
+      "fetched_at": "2026-09-17T02:59:53Z"
+    },
+    {
+      "provider": "IONOS",
+      "title": "VPS M+",
+      "price": 4.0,
+      "currency": "USD",
+      "offer_url": "https://www.ionos.com/servers/vps",
+      "source_url": "https://www.ionos.com/servers/vps",
+      "fetched_at": "2026-09-17T02:59:53Z"
+    },
+    {
+      "provider": "IONOS",
+      "title": "VPS L+",
+      "price": 21.0,
+      "currency": "USD",
+      "offer_url": "https://www.ionos.com/servers/vps",
+      "source_url": "https://www.ionos.com/servers/vps",
+      "fetched_at": "2026-09-17T02:59:53Z"
+    },
+    {
+      "provider": "IONOS",
+      "title": "VPS L+",
+      "price": 6.0,
+      "currency": "USD",
+      "offer_url": "https://www.ionos.com/servers/vps",
+      "source_url": "https://www.ionos.com/servers/vps",
+      "fetched_at": "2026-09-17T02:59:53Z"
+    },
+    {
+      "provider": "IONOS",
+      "title": "VPS XL+",
+      "price": 44.0,
+      "currency": "USD",
+      "offer_url": "https://www.ionos.com/servers/vps",
+      "source_url": "https://www.ionos.com/servers/vps",
+      "fetched_at": "2026-09-17T02:59:53Z"
+    },
+    {
+      "provider": "IONOS",
+      "title": "VPS XL+",
+      "price": 11.0,
+      "currency": "USD",
+      "offer_url": "https://www.ionos.com/servers/vps",
+      "source_url": "https://www.ionos.com/servers/vps",
+      "fetched_at": "2026-09-17T02:59:53Z"
+    },
+    {
+      "provider": "IONOS",
+      "title": "VPS XXL+",
+      "price": 68.0,
+      "currency": "USD",
+      "offer_url": "https://www.ionos.com/servers/vps",
+      "source_url": "https://www.ionos.com/servers/vps",
+      "fetched_at": "2026-09-17T02:59:53Z"
+    },
+    {
+      "provider": "IONOS",
+      "title": "VPS XXL+",
+      "price": 18.0,
+      "currency": "USD",
+      "offer_url": "https://www.ionos.com/servers/vps",
+      "source_url": "https://www.ionos.com/servers/vps",
+      "fetched_at": "2026-09-17T02:59:53Z"
+    }
+  ]
+}

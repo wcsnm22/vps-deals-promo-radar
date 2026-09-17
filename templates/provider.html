@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="{{lang}}">
+<head>
+  <meta charset="utf-8">
+  <title>{{title}}</title>
+  {{head}}
+  <style>
+    :root { color-scheme: dark; --bg:#0d1117; --panel:#161b22; --line:#232b36; --text:#e6edf3; --muted:#8b949e; --accent:#f6821f; }
+    * { box-sizing: border-box; }
+    body { margin:0; background:var(--bg); color:var(--text); font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; }
+    a { color:var(--accent); text-decoration:none; } a:hover { text-decoration:underline; }
+    .wrap { max-width:1000px; margin:0 auto; padding:0 20px 64px; }
+    header.site { border-bottom:1px solid var(--line); background:var(--panel); }
+    header.site .wrap { padding:16px 20px; }
+    .brand { font-weight:700; font-size:20px; }
+    nav.crumbs { margin-top:6px; font-size:14px; color:var(--muted); }
+    h1 { font-size:28px; margin:32px 0 8px; }
+    h2 { font-size:20px; margin:32px 0 12px; }
+    .muted { color:var(--muted); font-size:14px; }
+    .facts { display:flex; gap:24px; flex-wrap:wrap; margin:18px 0; }
+    .facts div { background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:12px 16px; min-width:150px; }
+    .facts b { display:block; font-size:20px; }
+    table { width:100%; border-collapse:collapse; margin-top:12px; background:var(--panel); border:1px solid var(--line); border-radius:10px; overflow:hidden; }
+    th, td { text-align:left; padding:10px 12px; border-bottom:1px solid var(--line); font-size:15px; }
+    th { color:var(--muted); font-weight:600; font-size:13px; text-transform:uppercase; letter-spacing:.04em; }
+    tr:last-child td { border-bottom:none; }
+    .price { font-weight:700; white-space:nowrap; }
+    .btn { display:inline-block; background:var(--accent); color:#111; font-weight:600; padding:6px 12px; border-radius:6px; font-size:14px; }
+    .btn:hover { text-decoration:none; opacity:.9; }
+    footer.site { border-top:1px solid var(--line); margin-top:48px; padding-top:20px; }
+    @media (max-width:640px){ table, thead, tbody, th, td, tr { display:block; } thead { display:none; } td { border:none; padding:4px 0; } tr { border-bottom:1px solid var(--line); padding:10px 0; display:block; } }
+  </style>
+</head>
+<body>
+  <header class="site"><div class="wrap">
+    <div class="brand">{{brand}}</div>
+    <nav class="crumbs">{{nav}}</nav>
+  </div></header>
+  <main class="wrap">
+    <h1>{{provider}} VPS prices</h1>
+    <p class="lede muted">Read from <a href="{{source_url}}" rel="nofollow noopener" target="_blank">the provider's own page</a>
+      on {{generated_at}} (UTC). <a href="{{homepage}}" rel="nofollow noopener" target="_blank">Official site</a>.</p>
+    <div class="facts">
+      <div><b>{{priced_count}} / {{offer_count}}</b><span class="muted">plans with a published price</span></div>
+      <div><b>{{low}}</b><span class="muted">lowest published</span></div>
+      <div><b>{{high}}</b><span class="muted">highest published</span></div>
+    </div>
+    <p class="muted">{{note}}</p>
+    <h2>Tracked plans</h2>
+    <table>
+      <thead><tr><th>Provider</th><th>Plan</th><th>Price as published</th><th></th></tr></thead>
+      <tbody>{{rows}}</tbody>
+    </table>
+    <footer class="site">{{footer}}</footer>
+  </main>
+</body>
+</html>

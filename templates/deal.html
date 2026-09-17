@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="{{lang}}">
+<head>
+  <meta charset="utf-8">
+  <title>{{title}}</title>
+  {{head}}
+  <style>
+    :root { color-scheme: dark; --bg:#0d1117; --panel:#161b22; --line:#232b36; --text:#e6edf3; --muted:#8b949e; --accent:#f6821f; }
+    * { box-sizing: border-box; }
+    body { margin:0; background:var(--bg); color:var(--text); font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; }
+    a { color:var(--accent); text-decoration:none; } a:hover { text-decoration:underline; }
+    .wrap { max-width:820px; margin:0 auto; padding:0 20px 64px; }
+    header.site { border-bottom:1px solid var(--line); background:var(--panel); }
+    header.site .wrap { padding:16px 20px; }
+    .brand { font-weight:700; font-size:20px; }
+    nav.crumbs { margin-top:6px; font-size:14px; color:var(--muted); }
+    h1 { font-size:28px; margin:32px 0 4px; }
+    h2 { font-size:18px; margin:32px 0 10px; }
+    .price { font-size:40px; font-weight:800; margin:12px 0 4px; }
+    .muted { color:var(--muted); font-size:14px; }
+    dl { display:grid; grid-template-columns:180px 1fr; gap:10px 16px; background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:18px; margin:24px 0; }
+    dt { color:var(--muted); }
+    dd { margin:0; word-break:break-word; }
+    .cta { display:inline-block; background:var(--accent); color:#111; font-weight:700; padding:12px 20px; border-radius:8px; font-size:16px; margin-top:8px; }
+    .cta:hover { text-decoration:none; opacity:.9; }
+    footer.site { border-top:1px solid var(--line); margin-top:48px; padding-top:20px; }
+    @media (max-width:560px){ dl { grid-template-columns:1fr; } }
+  </style>
+</head>
+<body>
+  <header class="site"><div class="wrap">
+    <div class="brand">{{brand}}</div>
+    <nav class="crumbs">{{nav}}</nav>
+  </div></header>
+  <main class="wrap">
+    <h1>{{provider}} {{deal_title}}</h1>
+    <p class="muted">Listed by <a href="{{provider_url}}">{{provider}}</a>.</p>
+    <p class="price">{{price}}</p>
+    <p class="muted">Price exactly as published on the provider page — this site never estimates or converts it.</p>
+    <p class="muted">{{variants_note}}</p>
+    <a class="cta" rel="nofollow sponsored noopener" target="_blank" href="{{offer_url}}">Check this plan on {{provider}}</a>
+    <h2>Where this number came from</h2>
+    <dl>
+      <dt>Source page</dt><dd><a href="{{source_url}}" rel="nofollow noopener" target="_blank">{{source_url}}</a></dd>
+      <dt>Read at (UTC)</dt><dd>{{fetched_at}}</dd>
+      <dt>Currency</dt><dd>{{currency}}</dd>
+      <dt>Valid until</dt><dd>{{valid_until}}</dd>
+      <dt>Provider page</dt><dd><a href="{{provider_url}}">All {{provider}} plans tracked</a></dd>
+    </dl>
+    <p class="muted">Prices and availability change without notice. Confirm on the provider's own page before buying.</p>
+    <footer class="site">{{footer}}</footer>
+  </main>
+</body>
+</html>
