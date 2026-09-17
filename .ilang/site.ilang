@@ -1,7 +1,7 @@
 ILANG
 TYPE:config PROJECT:vps-deals LANG:zh
 
-::STATE{@SITE, brand:vps-deals, niche:vps主机, title:VPS Deals Radar, tagline:独立追踪各家主机商官方 VPS 优惠, locale:en-US, currency:USD, domain:vps-deals-promo-radar-e18.pages.dev, max_price:5000, lookback_lines:12}
+::STATE{@SITE, brand:vps-deals, niche:vps主机, title:VPS Deals Radar, tagline:独立追踪各家主机商官方 VPS 优惠, locale:en-US, currency:USD, domain:vpsdealsradar.com, max_price:5000, lookback_lines:12}
 
 ::MODULE{PROVIDERS|title:抓哪几家 这里改了站就变}
   # 每行: 名称 | 官网 | 优惠页(或 sitemap/feed 地址) | 联盟链接(留空则用裸链) | kind=page|feed|sitemap | currency=USD|EUR
