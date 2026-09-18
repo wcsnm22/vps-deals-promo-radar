@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-18T11:10:28Z",
+  "generated_at": "2026-09-18T16:21:59Z",
   "brand": "vps-deals",
   "niche": "vps主机",
   "site_title": "VPS Deals Radar",
@@ -100,7 +100,7 @@
       "currency": "USD",
       "offer_url": "https://www.ovhcloud.com/en/bare-metal/",
       "source_url": "https://www.ovhcloud.com/en/vps/",
-      "fetched_at": "2026-09-18T11:10:28Z"
+      "fetched_at": "2026-09-18T16:21:59Z"
     },
     {
       "provider": "OVHcloud",
@@ -109,7 +109,7 @@
       "currency": "USD",
       "offer_url": "https://www.ovhcloud.com/en/bare-metal/",
       "source_url": "https://www.ovhcloud.com/en/vps/",
-      "fetched_at": "2026-09-18T11:10:28Z"
+      "fetched_at": "2026-09-18T16:21:59Z"
     },
     {
       "provider": "OVHcloud",
@@ -118,7 +118,7 @@
       "currency": "USD",
       "offer_url": "https://www.ovhcloud.com/en/bare-metal/",
       "source_url": "https://www.ovhcloud.com/en/vps/",
-      "fetched_at": "2026-09-18T11:10:28Z"
+      "fetched_at": "2026-09-18T16:21:59Z"
     },
     {
       "provider": "OVHcloud",
@@ -127,7 +127,7 @@
       "currency": "USD",
       "offer_url": "https://www.ovhcloud.com/en/bare-metal/",
       "source_url": "https://www.ovhcloud.com/en/vps/",
-      "fetched_at": "2026-09-18T11:10:28Z"
+      "fetched_at": "2026-09-18T16:21:59Z"
     },
     {
       "provider": "netcup",
@@ -136,7 +136,7 @@
       "currency": "EUR",
       "offer_url": "https://www.netcup.com/en/server/vps/vps-500-g12-iv-12m#vps-500-g12-iv-12m-nue",
       "source_url": "https://www.netcup.com/en/server/vps",
-      "fetched_at": "2026-09-18T11:10:28Z"
+      "fetched_at": "2026-09-18T16:21:59Z"
     },
     {
       "provider": "netcup",
@@ -145,7 +145,7 @@
       "currency": "EUR",
       "offer_url": "https://www.netcup.com/en/server/vps/vps-1000-g12-iv-12m#vps-1000-g12-iv-12m-nue",
       "source_url": "https://www.netcup.com/en/server/vps",
-      "fetched_at": "2026-09-18T11:10:28Z"
+      "fetched_at": "2026-09-18T16:21:59Z"
     },
     {
       "provider": "netcup",
@@ -154,7 +154,7 @@
       "currency": "EUR",
       "offer_url": "https://www.netcup.com/en/server/vps/vps-2000-g12-iv-12m#vps-2000-g12-iv-12m-nue",
       "source_url": "https://www.netcup.com/en/server/vps",
-      "fetched_at": "2026-09-18T11:10:28Z"
+      "fetched_at": "2026-09-18T16:21:59Z"
     },
     {
       "provider": "netcup",
@@ -163,7 +163,7 @@
       "currency": "EUR",
       "offer_url": "https://www.netcup.com/en/server/vps/vps-4000-g12-iv-12m#vps-4000-g12-iv-12m-nue",
       "source_url": "https://www.netcup.com/en/server/vps",
-      "fetched_at": "2026-09-18T11:10:28Z"
+      "fetched_at": "2026-09-18T16:21:59Z"
     },
     {
       "provider": "netcup",
@@ -172,7 +172,7 @@
       "currency": "EUR",
       "offer_url": "https://www.netcup.com/en/server/vps/vps-8000-g12-iv-12m#vps-8000-g12-iv-12m-nue",
       "source_url": "https://www.netcup.com/en/server/vps",
-      "fetched_at": "2026-09-18T11:10:28Z"
+      "fetched_at": "2026-09-18T16:21:59Z"
     },
     {
       "provider": "BuyVM",
@@ -181,7 +181,7 @@
       "currency": "USD",
       "offer_url": "https://buyvm.net/kvm-dedicated-server-slices/",
       "source_url": "https://buyvm.net/kvm-dedicated-server-slices/",
-      "fetched_at": "2026-09-18T11:10:28Z"
+      "fetched_at": "2026-09-18T16:21:59Z"
     },
     {
       "provider": "IONOS",
@@ -190,7 +190,7 @@
       "currency": "USD",
       "offer_url": "https://www.ionos.com/servers/vps",
       "source_url": "https://www.ionos.com/servers/vps",
-      "fetched_at": "2026-09-18T11:10:28Z"
+      "fetched_at": "2026-09-18T16:21:59Z"
     },
     {
       "provider": "IONOS",
@@ -199,7 +199,7 @@
       "currency": "USD",
       "offer_url": "https://www.ionos.com/servers/vps",
       "source_url": "https://www.ionos.com/servers/vps",
-      "fetched_at": "2026-09-18T11:10:28Z"
+      "fetched_at": "2026-09-18T16:21:59Z"
     },
     {
       "provider": "IONOS",
@@ -208,7 +208,7 @@
       "currency": "USD",
       "offer_url": "https://www.ionos.com/servers/vps",
       "source_url": "https://www.ionos.com/servers/vps",
-      "fetched_at": "2026-09-18T11:10:28Z"
+      "fetched_at": "2026-09-18T16:21:59Z"
     },
     {
       "provider": "IONOS",
@@ -217,7 +217,7 @@
       "currency": "USD",
       "offer_url": "https://www.ionos.com/servers/vps",
       "source_url": "https://www.ionos.com/servers/vps",
-      "fetched_at": "2026-09-18T11:10:28Z"
+      "fetched_at": "2026-09-18T16:21:59Z"
     },
     {
       "provider": "IONOS",
@@ -226,7 +226,7 @@
       "currency": "USD",
       "offer_url": "https://www.ionos.com/servers/vps",
       "source_url": "https://www.ionos.com/servers/vps",
-      "fetched_at": "2026-09-18T11:10:28Z"
+      "fetched_at": "2026-09-18T16:21:59Z"
     },
     {
       "provider": "IONOS",
@@ -235,7 +235,7 @@
       "currency": "USD",
       "offer_url": "https://www.ionos.com/servers/vps",
       "source_url": "https://www.ionos.com/servers/vps",
-      "fetched_at": "2026-09-18T11:10:28Z"
+      "fetched_at": "2026-09-18T16:21:59Z"
     },
     {
       "provider": "IONOS",
@@ -244,7 +244,7 @@
       "currency": "USD",
       "offer_url": "https://www.ionos.com/servers/vps",
       "source_url": "https://www.ionos.com/servers/vps",
-      "fetched_at": "2026-09-18T11:10:28Z"
+      "fetched_at": "2026-09-18T16:21:59Z"
     },
     {
       "provider": "IONOS",
@@ -253,7 +253,7 @@
       "currency": "USD",
       "offer_url": "https://www.ionos.com/servers/vps",
       "source_url": "https://www.ionos.com/servers/vps",
-      "fetched_at": "2026-09-18T11:10:28Z"
+      "fetched_at": "2026-09-18T16:21:59Z"
     },
     {
       "provider": "IONOS",
@@ -262,7 +262,7 @@
       "currency": "USD",
       "offer_url": "https://www.ionos.com/servers/vps",
       "source_url": "https://www.ionos.com/servers/vps",
-      "fetched_at": "2026-09-18T11:10:28Z"
+      "fetched_at": "2026-09-18T16:21:59Z"
     },
     {
       "provider": "IONOS",
@@ -271,7 +271,7 @@
       "currency": "USD",
       "offer_url": "https://www.ionos.com/servers/vps",
       "source_url": "https://www.ionos.com/servers/vps",
-      "fetched_at": "2026-09-18T11:10:28Z"
+      "fetched_at": "2026-09-18T16:21:59Z"
     }
   ]
 }
