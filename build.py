@@ -15,6 +15,8 @@ from __future__ import annotations
 
 import json
 import re
+import struct
+import zlib
 from datetime import datetime, timezone
 from html import escape
 from pathlib import Path
@@ -141,6 +143,118 @@ def iso_now() -> str:
     return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
+# ---------------------------------------------------------------- 社交分享大图
+# 社交平台不接受 SVG，所以这张 OG 图在构建时用纯标准库自己写成 PNG：
+# 没有 Pillow、没有外部服务，画的还是那套像素字和那只猫。
+PIXEL_FONT = {
+    "V": ["#...#", "#...#", "#...#", "#...#", "#...#", ".#.#.", "..#.."],
+    "P": ["####.", "#...#", "#...#", "####.", "#....", "#....", "#...."],
+    "S": [".####", "#....", "#....", ".###.", "....#", "....#", "####."],
+    "D": ["###..", "#..#.", "#...#", "#...#", "#...#", "#..#.", "###.."],
+    "E": ["#####", "#....", "#....", "####.", "#....", "#....", "#####"],
+    "A": ["..#..", ".#.#.", "#...#", "#####", "#...#", "#...#", "#...#"],
+    "L": ["#....", "#....", "#....", "#....", "#....", "#....", "#####"],
+    "R": ["####.", "#...#", "#...#", "####.", "#.#..", "#..#.", "#...#"],
+    " ": [".....", ".....", ".....", ".....", ".....", ".....", "....."],
+}
+CAT_ART = [
+    "....##......##....",
+    "...####....####...",
+    "...####....####...",
+    "..##############..",
+    "..##############..",
+    "..##..######..##..",
+    "..##..######..##..",
+    "..##############..",
+    "..####..####..##..",
+    "..##############..",
+    "...############...",
+    "....##########....",
+    "...############...",
+    "..##############..",
+    "..##############..",
+    "...############...",
+]
+
+
+def _png_bytes(width: int, height: int, pixels: list) -> bytes:
+    """极简 PNG 编码器（8 位 RGB、无滤波），只依赖 zlib 与 struct。"""
+    raw = bytearray()
+    for row in pixels:
+        raw.append(0)
+        for rgb in row:
+            raw.extend(rgb)
+    def chunk(tag: bytes, data: bytes) -> bytes:
+        return (
+            struct.pack(">I", len(data))
+            + tag
+            + data
+            + struct.pack(">I", zlib.crc32(tag + data) & 0xFFFFFFFF)
+        )
+    header = struct.pack(">IIBBBBB", width, height, 8, 2, 0, 0, 0)
+    return (
+        b"\x89PNG\r\n\x1a\n"
+        + chunk(b"IHDR", header)
+        + chunk(b"IDAT", zlib.compress(bytes(raw), 9))
+        + chunk(b"IEND", b"")
+    )
+
+
+def build_og_image(site: dict, path: Path) -> None:
+    W, H = 1200, 630
+    bg, panel, accent, fur, ink, line = (10, 13, 19), (18, 25, 38), (246, 130, 31), (238, 242, 248), (20, 28, 40), (33, 44, 61)
+    pixels = [[bg for _ in range(W)] for _ in range(H)]
+
+    def fill(x0, y0, w, h, colour):
+        for y in range(max(0, y0), min(H, y0 + h)):
+            row = pixels[y]
+            for x in range(max(0, x0), min(W, x0 + w)):
+                row[x] = colour
+
+    # 轻微渐变的底 + 左侧强调色竖条
+    for y in range(H):
+        shade = 14 + int(10 * (1 - y / H))
+        row = pixels[y]
+        for x in range(W):
+            row[x] = (bg[0] + shade // 3, bg[1] + shade // 2, bg[2] + shade)
+    fill(0, 0, 14, H, accent)
+
+    # 像素字：VPS DEALS RADAR（放在猫下面，缩到不会溢出右边缘）
+    text = "VPS DEALS RADAR"
+    scale, gap = 8, 3
+    gw, gh = 5 * scale, 7 * scale
+    total = len(text) * gw + (len(text) - 1) * gap
+    x = (W - total) // 2
+    y = 372
+    for ch in text:
+        glyph = PIXEL_FONT.get(ch, PIXEL_FONT[" "])
+        for gy, row in enumerate(glyph):
+            for gx, dot in enumerate(row):
+                if dot == "#":
+                    fill(x + gx * scale, y + gy * scale, scale, scale, fur)
+        x += gw + gap
+
+    # 那只猫（16x16 像素画，放大 11 倍，放在上半部）
+    cat_scale = 11
+    cat_w, cat_h = 16 * cat_scale, 16 * cat_scale
+    cx, cy = (W - cat_w) // 2, 118
+    for gy, row in enumerate(CAT_ART):
+        for gx, dot in enumerate(row):
+            if dot == "#":
+                fill(cx + gx * cat_scale, cy + gy * cat_scale, cat_scale, cat_scale, fur)
+    # 耳朵内侧 + 眼睛 + 鼻子 + 领圈（与页面上那只同一套配色）
+    fill(cx + 3 * cat_scale, cy + 1 * cat_scale, cat_scale, 2 * cat_scale, accent)
+    fill(cx + 12 * cat_scale, cy + 1 * cat_scale, cat_scale, 2 * cat_scale, accent)
+    fill(cx + 3 * cat_scale, cy + 5 * cat_scale, 2 * cat_scale, 2 * cat_scale, ink)
+    fill(cx + 9 * cat_scale, cy + 5 * cat_scale, 2 * cat_scale, 2 * cat_scale, ink)
+    fill(cx + 7 * cat_scale, cy + 8 * cat_scale, 2 * cat_scale, cat_scale, accent)
+    fill(cx, cy + 12 * cat_scale, cat_w, cat_scale, accent)
+
+    # 底部一条分隔线
+    fill(0, H - 96, W, 2, line)
+    path.write_bytes(_png_bytes(W, H, pixels))
+
+
 # 静态资产的缓存版本号：每次构建都不同，访客不会拿到上一版的 css/js。
 # 在 main() 里按数据快照时间赋值。
 ASSET_V = "0"
@@ -202,6 +316,7 @@ def head_block(meta: dict, extra_jsonld: list[dict] | None = None) -> str:
         '<meta name="viewport" content="width=device-width, initial-scale=1">',
         '<meta name="robots" content="index,follow,max-image-preview:large">',
         f'<link rel="stylesheet" href="/assets/style.css?v={ASSET_V}">',
+        f'<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg?v={ASSET_V}">',
         f'<script src="/assets/pets.js?v={ASSET_V}" defer></script>',
     ]
     social = [
@@ -688,6 +803,10 @@ def main() -> int:
             if asset.is_file():
                 (SITE_DIR / "assets" / asset.name).write_text(asset.read_text(encoding="utf-8"), encoding="utf-8")
                 asset_paths.append(f"/assets/{asset.name}")
+
+    # 社交分享大图（真 PNG，构建时用标准库生成；og:image 指向它，不再是一条坏链接）
+    build_og_image(site, SITE_DIR / "og.png")
+    asset_paths.append("/og.png")
 
     written = []
     for name, html in {
