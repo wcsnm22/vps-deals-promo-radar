@@ -24,6 +24,7 @@ from scraper import load_config
 ROOT = Path(__file__).resolve().parent
 DATA_PATH = ROOT / "data" / "offers.json"
 TEMPLATE_DIR = ROOT / "templates"
+ASSET_DIR = TEMPLATE_DIR / "assets"
 SITE_DIR = ROOT / "site"
 
 SYMBOLS = {"USD": "$", "EUR": "€", "GBP": "£"}
@@ -118,7 +119,10 @@ def render(template: str, values: dict[str, str]) -> str:
 
 
 def template(name: str) -> str:
-    return (TEMPLATE_DIR / name).read_text(encoding="utf-8")
+    html = (TEMPLATE_DIR / name).read_text(encoding="utf-8")
+    # 样式统一收在 assets/style.css 一份；模板里若有历史内联 <style> 一律剥掉，
+    # 否则内联样式会盖掉新设计（同权重下后出现的胜出）。
+    return re.sub(r"\s*<style>.*?</style>", "", html, flags=re.S)
 
 
 def money(price: float | None, currency: str) -> str:
@@ -135,6 +139,11 @@ def jsonld(payload: dict | list) -> str:
 
 def iso_now() -> str:
     return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+# 静态资产的缓存版本号：每次构建都不同，访客不会拿到上一版的 css/js。
+# 在 main() 里按数据快照时间赋值。
+ASSET_V = "0"
 
 
 # ------------------------------------------------------------------ 数据整理
@@ -192,6 +201,8 @@ def head_block(meta: dict, extra_jsonld: list[dict] | None = None) -> str:
         f'<link rel="alternate" hreflang="x-default" href="{escape(meta["canonical"])}">',
         '<meta name="viewport" content="width=device-width, initial-scale=1">',
         '<meta name="robots" content="index,follow,max-image-preview:large">',
+        f'<link rel="stylesheet" href="/assets/style.css?v={ASSET_V}">',
+        f'<script src="/assets/pets.js?v={ASSET_V}" defer></script>',
     ]
     social = [
         f'<meta property="og:type" content="{escape(meta["og_type"])}">',
@@ -237,6 +248,9 @@ def footer_block(site: dict, generated_at: str) -> str:
         '<p class="muted"><strong>Affiliate links:</strong> some outbound links are affiliate links.</p>'
         '<p class="muted"><strong>Commission:</strong> if you sign up through one of those links, we may earn a commission.</p>'
         f'<p class="muted">{escape(site["brand"])} · {nav_links}</p>'
+        # 像素小动物的挂载点：纯装饰，画布由 assets/pets.js 生成。
+        # 放在页脚里是因为页脚每页都有；它是 position:fixed，不影响版式。
+        '<div class="critter" aria-hidden="true"></div>'
     )
 
 
@@ -639,6 +653,7 @@ def build_404(site: dict, providers: list[dict], generated_at: str) -> str:
 # ------------------------------------------------------------------ 主流程
 
 def main() -> int:
+    global ASSET_V
     config = load_config()
     site_cfg = config["site"]
     payload = json.loads(DATA_PATH.read_text(encoding="utf-8"))
@@ -664,6 +679,15 @@ def main() -> int:
     SITE_DIR.mkdir(parents=True, exist_ok=True)
     (SITE_DIR / "provider").mkdir(exist_ok=True)
     (SITE_DIR / "deal").mkdir(exist_ok=True)
+    (SITE_DIR / "assets").mkdir(exist_ok=True)
+
+    ASSET_V = re.sub(r"[^0-9A-Za-z]", "", generated_at) or "0"
+    asset_paths = []
+    if ASSET_DIR.exists():
+        for asset in sorted(ASSET_DIR.iterdir()):
+            if asset.is_file():
+                (SITE_DIR / "assets" / asset.name).write_text(asset.read_text(encoding="utf-8"), encoding="utf-8")
+                asset_paths.append(f"/assets/{asset.name}")
 
     written = []
     for name, html in {
@@ -705,6 +729,7 @@ def main() -> int:
     # 合法路径白名单：由这次构建实际写出的页面生成，交给 _worker.js 判 404。
     # 不写死在这里，就不会出现"加了页面却忘了改 404 逻辑"。
     valid_paths = ["/", "/compare", "/about", "/privacy", "/contact", "/sitemap.xml", "/robots.txt"]
+    valid_paths += asset_paths
     valid_paths += [f"/provider/{slugify(row['name'])}" for row in providers]
     valid_paths += [f"/deal/{offer_slug(offer)}" for offer in offers]
     (SITE_DIR / "_worker.js").write_text(

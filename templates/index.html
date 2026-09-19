@@ -43,12 +43,14 @@
     <nav class="crumbs">{{nav}}</nav>
   </div></header>
   <main class="wrap">
-    <h1>{{brand}} — VPS deals tracked from provider pages</h1>
-    <p class="lede">{{tagline}}</p>
-    <div class="stats">
-      <div><b>{{offer_count}}</b><span class="muted">plans tracked</span></div>
-      <div><b>{{provider_count}}</b><span class="muted">providers</span></div>
-      <div><b>{{generated_at}}</b><span class="muted">last data pull (UTC)</span></div>
+    <div class="hero">
+      <h1>{{brand}} — VPS deals tracked from provider pages</h1>
+      <p class="lede">{{tagline}}</p>
+      <div class="stats">
+        <div><b>{{offer_count}}</b><span class="muted">plans tracked</span></div>
+        <div><b>{{provider_count}}</b><span class="muted">providers</span></div>
+        <div><b>{{generated_at}}</b><span class="muted">last data pull (UTC)</span></div>
+      </div>
     </div>
     <h2>Providers</h2>
     <div class="grid">{{cards}}</div>
