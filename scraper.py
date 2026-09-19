@@ -118,7 +118,7 @@ def parse_ilang(text: str) -> dict:
 def load_config(path: str | Path = DEFAULT_CONFIG) -> dict:
     config = parse_ilang(Path(path).read_text(encoding="utf-8"))
     if not config["providers"]:
-        raise SystemExit("site.ilang 里一家厂商都没有，停下来而不是猜")
+        raise SystemExit("site.ilang lists no provider; stopping instead of guessing")
     return config
 
 
@@ -140,12 +140,12 @@ def robots_allows(url: str) -> tuple[bool, str]:
         _robots_cache[origin] = parser
     parser = _robots_cache[origin]
     if parser is None:
-        return True, "robots.txt 读取失败，按允许处理"
+        return True, "robots.txt could not be read; treated as allowed"
     try:
         allowed = parser.can_fetch(USER_AGENT, url)
     except Exception:  # noqa: BLE001
-        return True, "robots 解析异常，按允许处理"
-    return allowed, "" if allowed else "robots.txt Disallow，跳过"
+        return True, "robots.txt could not be parsed; treated as allowed"
+    return allowed, "" if allowed else "skipped: robots.txt disallows this path"
 
 
 def fetch(url: str) -> tuple[int, str, str]:
@@ -449,7 +449,7 @@ def main() -> int:
         status, body, error = fetch(url)
         row["http"] = status
         if error or not body:
-            row["note"] = error or "空响应"
+            row["note"] = error or "empty response"
             report.append(row)
             print(f"[fail] {provider['name']}: {row['note']}")
             continue
@@ -468,12 +468,12 @@ def main() -> int:
         row["priced"] = sum(1 for record in found if "price" in record)
         skipped = provider.pop("_skipped_no_title", 0)
         if skipped:
-            row["note"] = f"另有 {skipped} 个价格没找到可信产品名，按规则未收录"
+            row["note"] = f"{skipped} further price(s) were found without a trustworthy plan name and left out"
         if not found and not row["note"]:
-            row["note"] = "页面里没找到可提取的优惠条目（不写假数据）"
+            row["note"] = "no offer could be extracted from this page; nothing was invented"
         report.append(row)
         offers.extend(found)
-        print(f"[ok]   {provider['name']}: 收录 {len(found)} 条，带价格 {row['priced']} 条")
+        print(f"[ok]   {provider['name']}: kept {len(found)} offer(s), {row['priced']} with a price")
         time.sleep(1)
 
     payload = {
@@ -492,7 +492,7 @@ def main() -> int:
     }
     OUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     OUT_PATH.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    print(f"\n写入 {OUT_PATH.name}：{len(offers)} 条优惠 / {len(report)} 家厂商")
+    print(f"\nwrote {OUT_PATH.name}: {len(offers)} offers from {len(report)} providers")
     return 0
 
 

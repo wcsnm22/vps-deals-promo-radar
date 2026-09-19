@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="{{lang}}">
+<head>
+  <meta charset="utf-8">
+  <title>{{title}}</title>
+  {{head}}
+  <style>
+    :root { color-scheme: dark; --bg:#0d1117; --panel:#161b22; --line:#232b36; --text:#e6edf3; --muted:#8b949e; --accent:#f6821f; }
+    * { box-sizing: border-box; }
+    body { margin:0; background:var(--bg); color:var(--text); font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; }
+    a { color:var(--accent); text-decoration:none; } a:hover { text-decoration:underline; }
+    .wrap { max-width:820px; margin:0 auto; padding:0 20px 64px; }
+    header.site { border-bottom:1px solid var(--line); background:var(--panel); }
+    header.site .wrap { padding:16px 20px; }
+    .brand { font-weight:700; font-size:20px; }
+    nav.crumbs { margin-top:6px; font-size:14px; color:var(--muted); }
+    h1 { font-size:28px; margin:32px 0 10px; }
+    h2 { font-size:19px; margin:32px 0 10px; }
+    p, li { color:var(--text); }
+    .muted { color:var(--muted); font-size:14px; }
+    ul { padding-left:20px; }
+    li { margin:6px 0; }
+    footer.site { border-top:1px solid var(--line); margin-top:48px; padding-top:20px; }
+  </style>
+</head>
+<body>
+  <header class="site"><div class="wrap">
+    <div class="brand">{{brand}}</div>
+    <nav class="crumbs">{{nav}}</nav>
+  </div></header>
+  <main class="wrap">
+    <h1>About VpsDealsRadar</h1>
+    <p>{{site_title}} is an independent price tracker for VPS (virtual private server) plans. It does one job:
+      it reads the prices that hosting providers publish on their own public pages, and shows them with the
+      source page and the exact UTC time each number was read.</p>
+    <p>Written and maintained by <strong>an independent developer</strong>. This site is not affiliated with,
+      endorsed by, or operated by any of the hosting providers it lists.</p>
+
+    <h2>What this site does</h2>
+    <ul>
+      <li>Reads public provider pages on a schedule (currently every six hours).</li>
+      <li>Checks each provider's <code>robots.txt</code> first and skips any page a provider has disallowed;
+        skipped providers are recorded in the dataset instead of being guessed at.</li>
+      <li>Links every listed price back to the page it came from, together with the time it was read.</li>
+      <li>Keeps each price in the currency the provider published it in.</li>
+    </ul>
+
+    <h2>What this site does not do</h2>
+    <ul>
+      <li>It does not invent, estimate or round prices. If a provider publishes no readable price for a plan,
+        that plan is listed with no price at all.</li>
+      <li>It does not convert currencies or add "approximate" figures.</li>
+      <li>It does not publish coupon codes it cannot verify.</li>
+      <li>It does not scrape behind a login, and it does not try to defeat anti-bot protection.</li>
+    </ul>
+
+    <h2>How it runs</h2>
+    <p>The whole pipeline is a small, deterministic Python program: one script fetches the provider pages and
+      writes a dataset, another renders this static site from that dataset. It runs on a schedule with no
+      server, no database and no runtime model calls. The full source is public at
+      <a href="{{repo_url}}" rel="noopener" target="_blank">{{repo_url}}</a>.</p>
+
+    <h2>How this site is funded</h2>
+    <ul>
+      <li><strong>Third-party advertising.</strong> This site displays third-party advertising.</li>
+      <li><strong>Affiliate links.</strong> Some outbound links are affiliate links.</li>
+      <li><strong>Commission.</strong> If you sign up through one of those links, we may earn a commission.</li>
+    </ul>
+    <p class="muted">Commission never changes the prices shown here, and it never changes which plans are listed.</p>
+
+    <h2>Corrections</h2>
+    <p>Prices change without notice and pages get rewritten. If a number here looks wrong, please write to
+      <a href="mailto:contact@vpsdealsradar.com">contact@vpsdealsradar.com</a> and it will be checked against the
+      provider's own page.</p>
+
+    <footer class="site">{{footer}}</footer>
+  </main>
+</body>
+</html>

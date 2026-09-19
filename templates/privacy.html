@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="{{lang}}">
+<head>
+  <meta charset="utf-8">
+  <title>{{title}}</title>
+  {{head}}
+  <style>
+    :root { color-scheme: dark; --bg:#0d1117; --panel:#161b22; --line:#232b36; --text:#e6edf3; --muted:#8b949e; --accent:#f6821f; }
+    * { box-sizing: border-box; }
+    body { margin:0; background:var(--bg); color:var(--text); font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; }
+    a { color:var(--accent); text-decoration:none; } a:hover { text-decoration:underline; }
+    .wrap { max-width:820px; margin:0 auto; padding:0 20px 64px; }
+    header.site { border-bottom:1px solid var(--line); background:var(--panel); }
+    header.site .wrap { padding:16px 20px; }
+    .brand { font-weight:700; font-size:20px; }
+    nav.crumbs { margin-top:6px; font-size:14px; color:var(--muted); }
+    h1 { font-size:28px; margin:32px 0 10px; }
+    h2 { font-size:19px; margin:32px 0 10px; }
+    .muted { color:var(--muted); font-size:14px; }
+    ul { padding-left:20px; }
+    li { margin:6px 0; }
+    footer.site { border-top:1px solid var(--line); margin-top:48px; padding-top:20px; }
+  </style>
+</head>
+<body>
+  <header class="site"><div class="wrap">
+    <div class="brand">{{brand}}</div>
+    <nav class="crumbs">{{nav}}</nav>
+  </div></header>
+  <main class="wrap">
+    <h1>Privacy Policy</h1>
+    <p class="muted">Last updated: {{generated_date}}</p>
+
+    <p>This policy describes what happens to data when you visit {{site_title}} ({{base_url}}). It is written to
+      match what the site actually does, so it is short.</p>
+
+    <h2>Third-party advertising</h2>
+    <p><strong>This site displays third-party advertising.</strong> Ads are served by third-party ad networks,
+      not by us. Those networks may set cookies or similar identifiers in your browser in order to measure,
+      cap or personalize advertising, and they process that data under their own privacy policies. We do not
+      control what those networks collect and we do not receive personal data from them.</p>
+    <p class="muted">Where advertising is not currently shown on a page, this section still describes the
+      practice for any page or future placement where it is.</p>
+
+    <h2>Affiliate links</h2>
+    <p>Some outbound links are affiliate links. If you follow one and sign up with the provider, we may earn a
+      commission. Affiliate links may carry a referral parameter so the provider can attribute the visit.
+      Commission never changes the prices shown on this site or which plans are listed.</p>
+
+    <h2>What we collect ourselves</h2>
+    <ul>
+      <li><strong>No accounts and no forms.</strong> There is no sign-up, no login, no comment system and no
+        newsletter, so there is no personal information for you to submit.</li>
+      <li><strong>No analytics and no tracking scripts of our own.</strong> This site does not run its own
+        analytics and does not set first-party cookies.</li>
+      <li><strong>No selling of data.</strong> We have no personal data to sell or share.</li>
+    </ul>
+
+    <h2>Hosting and server logs</h2>
+    <p>This site is hosted on Cloudflare Pages. As the hosting and network provider, Cloudflare processes the
+      request data needed to deliver and protect the site — typically IP address, user agent and the requested
+      URL — under its own privacy policy:
+      <a href="https://www.cloudflare.com/privacypolicy/" rel="noopener" target="_blank">cloudflare.com/privacypolicy</a>.</p>
+
+    <h2>Outbound links</h2>
+    <p>Links marked as going to a provider lead to third-party websites. Once you leave this site, those sites
+      and their own policies apply. Please review them before buying anything.</p>
+
+    <h2>Children</h2>
+    <p>This site is aimed at a professional audience and is not directed at children.</p>
+
+    <h2>Changes to this policy</h2>
+    <p>If the practices above change, this page will be updated and the date at the top will change with it.</p>
+
+    <h2>Contact</h2>
+    <p>Questions about this policy: <a href="mailto:contact@vpsdealsradar.com">contact@vpsdealsradar.com</a>.</p>
+
+    <footer class="site">{{footer}}</footer>
+  </main>
+</body>
+</html>
