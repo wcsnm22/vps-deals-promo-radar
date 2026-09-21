@@ -202,7 +202,7 @@ python report.py --creds C:\path\sa.json --gsc https://vpsdealsradar.com/ --ga4 
 2. 左侧菜单点 **「索引」→「站点地图」**
 3. 在「添加新的站点地图」框里填 `sitemap.xml`（要完整网址就填 `https://vpsdealsradar.com/sitemap.xml`）
 4. 点 **「提交」**
-5. 状态应显示 **「成功」**，并列出 **32** 个网址（等于我们构建时的条数）
+5. 状态应显示 **「成功」**，并列出 **33** 个网址（等于我们构建时的条数）
 
 > 每天的自动构建都会重写 `sitemap.xml`，谷歌会自己回来读，**不需要每天手动提交**。这一次只是让它知道有更新。
 
@@ -238,7 +238,7 @@ python report.py --creds C:\path\sa.json --gsc https://vpsdealsradar.com/ --ga4 
 ### 顺手能做的：确认 sitemap 本身没问题
 
 ```powershell
-# 线上 sitemap 应返回 200，且条数与构建一致（当前 32）
+# 线上 sitemap 应返回 200，且条数与构建一致（当前 33）
 node -e "fetch('https://vpsdealsradar.com/sitemap.xml').then(async r=>{const t=await r.text();console.log('HTTP',r.status,'| loc 条数',(t.match(/<loc>/g)||[]).length)})"
 ```
 

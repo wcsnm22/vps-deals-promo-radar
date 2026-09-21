@@ -1192,6 +1192,8 @@ def main() -> int:
     urls += [f"{base_url}/about", f"{base_url}/methodology", f"{base_url}/privacy", f"{base_url}/contact"]
     urls += [provider_page(site, row["name"]) for row in providers]
     urls += [deal_page(site, offer) for offer in offers]
+    # 可下载的 CSV 也进 sitemap：它是站上唯一的可下载资产页，值得被抓到
+    urls += [f"{base_url}/downloads/unit-price.csv"]
     urls += [guides_url(site)]
     urls += [guide_page(site, guide) for guide in guides]
     # 指南页用各自的发布日期做 lastmod（自动页有 published），其余用本次构建时间。
