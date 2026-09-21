@@ -413,9 +413,19 @@ def specs_by_price(lines: list[str], config: dict) -> dict[int, dict]:
     return {price: cluster["specs"] for price, cluster in out.items()}
 
 
+# 这些词出现在套餐名里等于没信息：OVHcloud 的 "VPS-1" 只抽出 {vps}，
+# 于是页面上每个带 vps 的导航链接都同分（1.00），谁先出现谁赢——
+# 实测结果是把按钮指到了 /en/bare-metal/（裸金属页），完全不是这个套餐。
+# 规则：套餐名只剩这类通用词时，不去猜具体页面，直接回落到抓取来源页。
+GENERIC_TITLE_TOKENS = {
+    "vps", "vserver", "server", "servers", "plan", "plans", "cloud", "hosting",
+    "virtual", "private", "instance", "instances", "package",
+}
+
+
 def match_anchor(title: str, anchor_list: list[tuple[str, str]], fallback: str) -> str:
     tokens = {t for t in re.findall(r"[a-z0-9]{3,}", title.lower())}
-    if not tokens:
+    if not tokens or tokens <= GENERIC_TITLE_TOKENS:
         return fallback
     best, best_score = fallback, 0.0
     for label, href in anchor_list:
