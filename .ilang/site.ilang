@@ -1,7 +1,11 @@
 ILANG
 TYPE:config PROJECT:vps-deals LANG:zh
 
-::STATE{@SITE, brand:vps-deals, niche:vps hosting, title:VPS Deals Radar, tagline:Prices read straight from each provider's own public page and refreshed every six hours, locale:en-US, currency:USD, domain:vpsdealsradar.com, repo:https://github.com/wcsnm22/vps-deals-promo-radar, max_price:5000, lookback_lines:12}
+::STATE{@SITE, brand:vps-deals, niche:vps hosting, title:VPS Deals Radar, tagline:Prices read straight from each provider's own public page and refreshed every six hours, locale:en-US, currency:USD, domain:vpsdealsradar.com, repo:https://github.com/wcsnm22/vps-deals-promo-radar, max_price:5000, lookback_lines:12, gsc_verification:, ga4_measurement_id:G-9EKG14K2LL}
+# gsc_verification：Search Console「HTML 标记」的 content 值（本域已用 DNS 验证，留空即可）
+# ga4_measurement_id：GA4 数据流衡量 ID。已填 G-9EKG14K2LL（2026-09-21 新建的数据流）
+# GA4 属性 ID（纯数字，报数用）：555210738   账号 ID：408899555
+# 两个留空 = 没有：页面不会出现验证 meta 或统计脚本，隐私政策也照实说"没有"
 
 ::MODULE{PROVIDERS|title:抓哪几家 这里改了站就变}
   # 每行: 名称 | 官网 | 优惠页(或 sitemap/feed 地址) | 联盟链接(留空则用裸链) | kind=page|feed|sitemap | currency=USD|EUR

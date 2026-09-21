@@ -25,6 +25,7 @@ from scraper import load_config
 
 ROOT = Path(__file__).resolve().parent
 DATA_PATH = ROOT / "data" / "offers.json"
+GUIDES_PATH = ROOT / "data" / "guides.json"
 TEMPLATE_DIR = ROOT / "templates"
 ASSET_DIR = TEMPLATE_DIR / "assets"
 SITE_DIR = ROOT / "site"
@@ -259,6 +260,9 @@ def build_og_image(site: dict, path: Path) -> None:
 # 在 main() 里按数据快照时间赋值。
 ASSET_V = "0"
 
+# 站点验证与统计：来自 .ilang/site.ilang 的 @SITE 状态；留空即不注入。
+VERIFY: dict[str, str] = {"gsc": "", "ga4": ""}
+
 
 # ------------------------------------------------------------------ 数据整理
 
@@ -319,6 +323,16 @@ def head_block(meta: dict, extra_jsonld: list[dict] | None = None) -> str:
         f'<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg?v={ASSET_V}">',
         f'<script src="/assets/pets.js?v={ASSET_V}" defer></script>',
     ]
+    # 站点验证与统计只在配置里填了值时才出现；留空时页面里干干净净，隐私政策也照实说没有。
+    if VERIFY.get("gsc"):
+        links.append(f'<meta name="google-site-verification" content="{escape(VERIFY["gsc"])}">')
+    if VERIFY.get("ga4"):
+        gid = escape(VERIFY["ga4"])
+        links.append(f'<script async src="https://www.googletagmanager.com/gtag/js?id={gid}"></script>')
+        links.append(
+            "<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}"
+            f"gtag('js',new Date());gtag('config','{gid}');</script>"
+        )
     social = [
         f'<meta property="og:type" content="{escape(meta["og_type"])}">',
         f'<meta property="og:title" content="{escape(meta["title"])}">',
@@ -656,6 +670,197 @@ def build_compare(site: dict, offers: list[dict], providers: list[dict], generat
     )
 
 
+# ------------------------------------------------------------------ 指南栏（补前十三页的缺口）
+
+def guides_url(site: dict) -> str:
+    return f'{site["base_url"]}/guide'
+
+
+def guide_page(site: dict, guide: dict) -> str:
+    return f'{site["base_url"]}/guide/{guide["slug"]}'
+
+
+def _csv_cell(value) -> str:
+    text = "" if value is None else str(value)
+    if any(ch in text for ch in ',"\n'):
+        return '"' + text.replace('"', '""') + '"'
+    return text
+
+
+def build_unit_price_csv(offers: list[dict]) -> tuple[str, int]:
+    """可下载的比价表：每行一个套餐，规格和单价都来自抓到的公开页面。
+
+    ::RULE{分母必须有出处⇒ram_gb / vcpu 缺失的行不写单价 写 not published}
+    ::RULE{不换算货币⇒价格按源页面原币种原样输出}
+    """
+    header = [
+        "provider", "plan", "price", "currency", "ram_gb", "vcpu", "disk_gb",
+        "price_per_gb_ram", "price_per_vcpu", "unit_price_formula",
+        "source_url", "fetched_at",
+    ]
+    lines = [",".join(header)]
+    rows = 0
+    for offer in sorted(offers, key=lambda o: (o["provider"], o.get("price") or 0)):
+        price = offer.get("price")
+        ram = offer.get("ram_gb")
+        vcpu = offer.get("vcpu")
+        per_gb = round(price / ram, 4) if price and ram else None
+        per_vcpu = round(price / vcpu, 4) if price and vcpu else None
+        formula = ""
+        if per_gb is not None:
+            formula = f'{price} {offer.get("currency", "")} / {ram} GB RAM'
+        elif per_vcpu is not None:
+            formula = f'{price} {offer.get("currency", "")} / {vcpu} vCPU'
+        lines.append(",".join(_csv_cell(v) for v in [
+            offer["provider"], offer["title"], price, offer.get("currency", ""),
+            ram, vcpu, offer.get("disk_gb"), per_gb, per_vcpu, formula,
+            offer["source_url"], offer["fetched_at"],
+        ]))
+        rows += 1
+    return "\n".join(lines) + "\n", rows
+
+
+def build_guide_index(
+    site: dict, guides: list[dict], offers: list[dict], providers: list[dict], generated_at: str
+) -> str:
+    title = f'Cheap VPS guides — downloadable comparison table, unit prices, setup steps ({site["title"]})'
+    description = (
+        f"{len(guides)} ordered walkthroughs that fill what the top-ranking pages leave out: "
+        "a comparison table you can download, prices broken down per GB of RAM and per vCPU, and numbered setup steps."
+    )
+    cards = []
+    for guide in guides:
+        cards.append(
+            f'<div class="card"><h3><a href="{escape(guide_page(site, guide))}">{escape(guide["title"])}</a></h3>'
+            f'<p class="muted">{escape(guide["answer"])}</p>'
+            f'<p class="muted">gap filled: {escape(guide["gap"])}</p></div>'
+        )
+    offer_count = len([o for o in offers if o.get("price")])
+    meta = _page_meta(site, "/guide", title, description)
+    return render(
+        template("guide.html"),
+        {
+            "lang": site["locale"],
+            "head": head_block(meta, [_webpage_graph(site, "/guide", title, description)]),
+            "nav": nav_block(site, providers),
+            "footer": footer_block(site, generated_at),
+            "title": escape(title),
+            "h1": escape(f"Cheap VPS guides ({len(guides)})"),
+            "answer": (
+                f'<p class="lede">Each guide answers one question on this page. '
+                f'Across {offer_count} tracked plans with a published price, here is what the provider pages '
+                f'themselves do not tell you.</p>'
+                f'<p><a class="cta" href="{escape(site["base_url"])}/downloads/unit-price.csv">Download the comparison table (CSV)</a></p>'
+            ),
+            "body": f'<div class="grid">{"".join(cards)}</div>',
+            "gap_note": "This index fills nothing by itself; each guide below fills exactly one gap.",
+            "sources": '<p class="muted">Sources: each guide lists its own.</p>',
+        },
+    )
+
+
+def answer_from_data(guide: dict, offers: list[dict]) -> str:
+    """第一屏的答案必须带可核对的数字，数字只能来自抓到的数据。
+
+    ::RULE{lede 里出现的每个数都能在 offers.json 或 CSV 里复算出来}
+    自动页（guides.py 生成）自己带着按主题算好的答案，直接用；
+    手写页没有当日主题，这里按缺口类型给一个汇总口径的答案。
+    """
+    if guide.get("auto") and guide.get("answer"):
+        return guide["answer"]
+    priced = [o for o in offers if o.get("price") is not None]
+    with_ram = [o for o in priced if o.get("ram_gb")]
+    ranked = sorted(with_ram, key=lambda o: o["price"] / o["ram_gb"])
+    providers = len({o["provider"] for o in priced})
+    gap = guide.get("gap")
+    if gap == "csv":
+        return (
+            f"{len(priced)} tracked plans across {providers} providers; {len(with_ram)} of them publish the RAM "
+            f"figure their price is quoted next to, so those rows carry a computed per-GB number. "
+            f"The CSV hands over the table itself."
+        )
+    if gap == "unitprice" and ranked:
+        best = ranked[0]
+        return (
+            f"Cheapest RAM per unit today is {best['provider']} {best['title']} at "
+            f"{best['price'] / best['ram_gb']:.4f} {best.get('currency', '')} per GB "
+            f"({best['price']} {best.get('currency', '')} / {best['ram_gb']} GB) — computed only from numbers the "
+            f"provider published. {len(with_ram)} of {len(priced)} priced plans can be ranked at all."
+        )
+    if gap == "steps":
+        cheapest = min(priced, key=lambda o: o["price"]) if priced else None
+        cheapest_text = money(cheapest["price"], cheapest.get("currency", "USD")) if cheapest else "n/a"
+        return (
+            f"{len(priced)} tracked plans, cheapest at {cheapest_text} per month "
+            f"({cheapest['provider']} {cheapest['title']}). Eight numbered steps from picking the plan to "
+            f"logging in, each sourced to provider documentation."
+            if cheapest
+            else "No tracked plan currently publishes a price, so no step cost can be quoted."
+        )
+    return guide["answer"]
+
+
+def build_guide(
+    site: dict, guide: dict, offers: list[dict], providers: list[dict], generated_at: str
+) -> str:
+    # 每一篇只补一个缺口，正文在 data/guides.json 里给定（自动页由 guides.py 生成）。
+    # 这里不再按 gap 现编内容，避免出现"同一份数据被渲染成两种说法"。
+    body = guide.get("body_html", "")
+    if re.search(r'href="[^"]*(/deal/|source_url)', body):
+        raise SystemExit(f'guide {guide["slug"]} must not link to per-offer pages; bodies stay data-free')
+    if not body:
+        raise SystemExit(f'guide {guide["slug"]} has no body_html; refusing to publish an empty page')
+
+    title = f'{guide["title"]} — {site["title"]}'
+    meta = {
+        "canonical": guide_page(site, guide),
+        "locale": site["locale"],
+        "title": title,
+        "description": guide["answer"],
+        "brand": site["brand"],
+        "og_type": "article",
+        "og_image": site["og_image"],
+    }
+    article = {
+        "@context": "https://schema.org",
+        "@type": "TechArticle",
+        "headline": guide["title"],
+        "description": guide["answer"],
+        "url": guide_page(site, guide),
+        "datePublished": generated_at[:10],
+        "isPartOf": {"@type": "WebSite", "name": site["title"], "url": home_url(site)},
+    }
+    breadcrumb = {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {"@type": "ListItem", "position": 1, "name": site["title"], "item": home_url(site)},
+            {"@type": "ListItem", "position": 2, "name": "Guides", "item": guides_url(site)},
+            {"@type": "ListItem", "position": 3, "name": guide["title"], "item": guide_page(site, guide)},
+        ],
+    }
+    sources = "".join(
+        f'<li><a href="{escape(item["url"])}" rel="nofollow noopener" target="_blank">{escape(item["label"])}</a>'
+        f' — read {escape(generated_at)}</li>'
+        for item in guide.get("sources", [])
+    )
+    return render(
+        template("guide.html"),
+        {
+            "lang": site["locale"],
+            "head": head_block(meta, [article, breadcrumb]),
+            "nav": nav_block(site, providers),
+            "footer": footer_block(site, generated_at),
+            "title": escape(title),
+            "h1": escape(guide["title"]),
+            "answer": f'<p class="lede">{escape(answer_from_data(guide, offers))}</p>',
+            "body": body,
+            "gap_note": escape(guide["gap_note"]),
+            "sources": f'<h2>Sources</h2><ul>{sources}</ul>' if sources else "",
+        },
+    )
+
+
 # ------------------------------------------------------------------ 必备三页 + 404
 
 def _page_meta(site: dict, path: str, title: str, description: str) -> dict:
@@ -709,9 +914,29 @@ def build_privacy(site: dict, providers: list[dict], generated_at: str) -> str:
     title = f'Privacy Policy - {site["title"]}'
     description = (
         "What data this site does and does not handle: third-party advertising, affiliate links, "
-        "no first-party analytics, no accounts and no forms."
+        "the analytics that are actually installed, no accounts and no forms."
     )
     meta = _page_meta(site, path, title, description)
+    # 隐私政策必须与"实际装了什么"一致：装了 GA4 就不能再写"没有任何统计"。
+    if VERIFY.get("ga4"):
+        analytics_sentence = (
+            "<strong>One analytics script is installed.</strong> This site uses Google Analytics 4 "
+            f"({escape(VERIFY['ga4'])}) to count visits and page views. It sets cookies and processes "
+            "your IP address and request data under Google's privacy policy."
+        )
+        analytics_detail = (
+            "<h2>Google Analytics 4</h2>"
+            f"<p>The measurement ID in use is <code>{escape(VERIFY['ga4'])}</code>. It is loaded on every page. "
+            "Google acts as a processor for this data; see "
+            '<a href="https://policies.google.com/privacy" rel="noopener" target="_blank">policies.google.com/privacy</a>. '
+            "You can block it with any content blocker or browser setting without losing access to the site.</p>"
+        )
+    else:
+        analytics_sentence = (
+            "<strong>No first-party analytics.</strong> No analytics or tracking script of our own is installed, "
+            "and no first-party cookies are set."
+        )
+        analytics_detail = ""
     return render(
         template("privacy.html"),
         {
@@ -724,6 +949,8 @@ def build_privacy(site: dict, providers: list[dict], generated_at: str) -> str:
             "site_title": escape(site["title"]),
             "base_url": site["base_url"],
             "generated_date": generated_at[:10],
+            "analytics_sentence": analytics_sentence,
+            "analytics_detail": analytics_detail,
         },
     )
 
@@ -795,8 +1022,14 @@ def main() -> int:
     (SITE_DIR / "provider").mkdir(exist_ok=True)
     (SITE_DIR / "deal").mkdir(exist_ok=True)
     (SITE_DIR / "assets").mkdir(exist_ok=True)
+    (SITE_DIR / "guide").mkdir(exist_ok=True)
+    (SITE_DIR / "downloads").mkdir(exist_ok=True)
 
     ASSET_V = re.sub(r"[^0-9A-Za-z]", "", generated_at) or "0"
+    VERIFY["gsc"] = (site_cfg.get("gsc_verification") or "").strip()
+    VERIFY["ga4"] = (site_cfg.get("ga4_measurement_id") or "").strip()
+    if VERIFY["ga4"] and not re.fullmatch(r"G-[A-Z0-9]{4,}", VERIFY["ga4"]):
+        raise SystemExit(f'ga4_measurement_id 看起来不是 GA4 衡量 ID：{VERIFY["ga4"]!r}（应形如 G-XXXXXXXXXX）')
     asset_paths = []
     if ASSET_DIR.exists():
         for asset in sorted(ASSET_DIR.iterdir()):
@@ -833,13 +1066,43 @@ def main() -> int:
         path.write_text(html, encoding="utf-8")
         written.append(f"deal/{path.name}")
 
+    # 可下载的比价表：三家里没有任何一家提供这种文件，这是这个词最集中的缺口。
+    csv_body, csv_rows = build_unit_price_csv(offers)
+    (SITE_DIR / "downloads" / "unit-price.csv").write_text(csv_body, encoding="utf-8")
+
+    # 指南栏：每篇只补一个缺口，内容由 data/guides.json 提供，渲染是确定性的。
+    guides = json.loads(GUIDES_PATH.read_text(encoding="utf-8")) if GUIDES_PATH.exists() else []
+    # 清掉已经不存在的指南页，否则旧日期的页面会一直留在线上的目录里变成孤儿页。
+    # 只删"带日期后缀的自动页"（csv-YYYY-MM-DD-n / unitprice-... / steps-...），手写页不碰。
+    keep = {f'{guide["slug"]}.html' for guide in guides}
+    for stale in sorted((SITE_DIR / "guide").glob("*.html")):
+        if stale.name in keep:
+            continue
+        if re.match(r"^(csv|unitprice|steps)-\d{4}-\d{2}-\d{2}-\d+\.html$", stale.name):
+            stale.unlink()
+            written.append(f"removed stale guide/{stale.name}")
+    (SITE_DIR / "guide.html").write_text(
+        build_guide_index(site, guides, offers, providers, generated_at), encoding="utf-8"
+    )
+    written.append("guide.html")
+    for guide in guides:
+        html = build_guide(site, guide, offers, providers, generated_at)
+        path = SITE_DIR / "guide" / f'{guide["slug"]}.html'
+        path.write_text(html, encoding="utf-8")
+        written.append(f"guide/{path.name}")
+
     urls = [home_url(site), compare_url(site)]
     urls += [f"{base_url}/about", f"{base_url}/privacy", f"{base_url}/contact"]
     urls += [provider_page(site, row["name"]) for row in providers]
     urls += [deal_page(site, offer) for offer in offers]
+    urls += [guides_url(site)]
+    urls += [guide_page(site, guide) for guide in guides]
+    # 指南页用各自的发布日期做 lastmod（自动页有 published），其余用本次构建时间。
+    lastmod_for = {guide_page(site, guide): guide.get("published", generated_at) for guide in guides}
     sitemap = ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
     for url in urls:
-        sitemap.append(f"  <url><loc>{escape(url)}</loc><lastmod>{generated_at}</lastmod></url>")
+        lastmod = lastmod_for.get(url, generated_at)
+        sitemap.append(f"  <url><loc>{escape(url)}</loc><lastmod>{escape(lastmod)}</lastmod></url>")
     sitemap.append("</urlset>")
     (SITE_DIR / "sitemap.xml").write_text("\n".join(sitemap) + "\n", encoding="utf-8")
     (SITE_DIR / "robots.txt").write_text(
@@ -847,10 +1110,12 @@ def main() -> int:
     )
     # 合法路径白名单：由这次构建实际写出的页面生成，交给 _worker.js 判 404。
     # 不写死在这里，就不会出现"加了页面却忘了改 404 逻辑"。
-    valid_paths = ["/", "/compare", "/about", "/privacy", "/contact", "/sitemap.xml", "/robots.txt"]
+    valid_paths = ["/", "/compare", "/about", "/privacy", "/contact", "/sitemap.xml", "/robots.txt", "/guide"]
     valid_paths += asset_paths
+    valid_paths.append("/downloads/unit-price.csv")
     valid_paths += [f"/provider/{slugify(row['name'])}" for row in providers]
     valid_paths += [f"/deal/{offer_slug(offer)}" for offer in offers]
+    valid_paths += [f'/guide/{guide["slug"]}' for guide in guides]
     (SITE_DIR / "_worker.js").write_text(
         WORKER_TEMPLATE.replace("__CANONICAL_HOST__", site_cfg["domain"]).replace(
             "__VALID_PATHS__", json.dumps(valid_paths)

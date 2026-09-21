@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-19T10:33:23Z",
+  "generated_at": "2026-09-21T09:34:01Z",
   "brand": "vps-deals",
   "niche": "vps hosting",
   "site_title": "VPS Deals Radar",
@@ -65,7 +65,7 @@
       "http": 200,
       "offers": 1,
       "priced": 1,
-      "note": "16 further price(s) were found without a trustworthy plan name and left out"
+      "note": "13 further price(s) were found without a trustworthy plan name and left out"
     },
     {
       "name": "IONOS",
@@ -75,8 +75,8 @@
       "kind": "page",
       "currency": "USD",
       "http": 200,
-      "offers": 10,
-      "priced": 10,
+      "offers": 5,
+      "priced": 5,
       "note": "5 further price(s) were found without a trustworthy plan name and left out"
     },
     {
@@ -100,7 +100,10 @@
       "currency": "USD",
       "offer_url": "https://www.ovhcloud.com/en/bare-metal/",
       "source_url": "https://www.ovhcloud.com/en/vps/",
-      "fetched_at": "2026-09-19T10:33:23Z"
+      "vcpu": 2,
+      "ram_gb": 4,
+      "disk_gb": 40,
+      "fetched_at": "2026-09-21T09:34:01Z"
     },
     {
       "provider": "OVHcloud",
@@ -109,7 +112,10 @@
       "currency": "USD",
       "offer_url": "https://www.ovhcloud.com/en/bare-metal/",
       "source_url": "https://www.ovhcloud.com/en/vps/",
-      "fetched_at": "2026-09-19T10:33:23Z"
+      "vcpu": 4,
+      "ram_gb": 8,
+      "disk_gb": 75,
+      "fetched_at": "2026-09-21T09:34:01Z"
     },
     {
       "provider": "OVHcloud",
@@ -118,7 +124,10 @@
       "currency": "USD",
       "offer_url": "https://www.ovhcloud.com/en/bare-metal/",
       "source_url": "https://www.ovhcloud.com/en/vps/",
-      "fetched_at": "2026-09-19T10:33:23Z"
+      "vcpu": 6,
+      "ram_gb": 12,
+      "disk_gb": 100,
+      "fetched_at": "2026-09-21T09:34:01Z"
     },
     {
       "provider": "OVHcloud",
@@ -127,7 +136,10 @@
       "currency": "USD",
       "offer_url": "https://www.ovhcloud.com/en/bare-metal/",
       "source_url": "https://www.ovhcloud.com/en/vps/",
-      "fetched_at": "2026-09-19T10:33:23Z"
+      "vcpu": 8,
+      "ram_gb": 24,
+      "disk_gb": 200,
+      "fetched_at": "2026-09-21T09:34:01Z"
     },
     {
       "provider": "netcup",
@@ -136,7 +148,10 @@
       "currency": "EUR",
       "offer_url": "https://www.netcup.com/en/server/vps/vps-500-g12-iv-12m#vps-500-g12-iv-12m-nue",
       "source_url": "https://www.netcup.com/en/server/vps",
-      "fetched_at": "2026-09-19T10:33:23Z"
+      "vcpu": 2,
+      "ram_gb": 4,
+      "disk_gb": 128,
+      "fetched_at": "2026-09-21T09:34:01Z"
     },
     {
       "provider": "netcup",
@@ -145,7 +160,10 @@
       "currency": "EUR",
       "offer_url": "https://www.netcup.com/en/server/vps/vps-1000-g12-iv-12m#vps-1000-g12-iv-12m-nue",
       "source_url": "https://www.netcup.com/en/server/vps",
-      "fetched_at": "2026-09-19T10:33:23Z"
+      "vcpu": 4,
+      "ram_gb": 8,
+      "disk_gb": 256,
+      "fetched_at": "2026-09-21T09:34:01Z"
     },
     {
       "provider": "netcup",
@@ -154,7 +172,10 @@
       "currency": "EUR",
       "offer_url": "https://www.netcup.com/en/server/vps/vps-2000-g12-iv-12m#vps-2000-g12-iv-12m-nue",
       "source_url": "https://www.netcup.com/en/server/vps",
-      "fetched_at": "2026-09-19T10:33:23Z"
+      "vcpu": 8,
+      "ram_gb": 16,
+      "disk_gb": 512,
+      "fetched_at": "2026-09-21T09:34:01Z"
     },
     {
       "provider": "netcup",
@@ -163,7 +184,10 @@
       "currency": "EUR",
       "offer_url": "https://www.netcup.com/en/server/vps/vps-4000-g12-iv-12m#vps-4000-g12-iv-12m-nue",
       "source_url": "https://www.netcup.com/en/server/vps",
-      "fetched_at": "2026-09-19T10:33:23Z"
+      "vcpu": 12,
+      "ram_gb": 32,
+      "disk_gb": 1024,
+      "fetched_at": "2026-09-21T09:34:01Z"
     },
     {
       "provider": "netcup",
@@ -172,7 +196,10 @@
       "currency": "EUR",
       "offer_url": "https://www.netcup.com/en/server/vps/vps-8000-g12-iv-12m#vps-8000-g12-iv-12m-nue",
       "source_url": "https://www.netcup.com/en/server/vps",
-      "fetched_at": "2026-09-19T10:33:23Z"
+      "vcpu": 16,
+      "ram_gb": 64,
+      "disk_gb": 2048,
+      "fetched_at": "2026-09-21T09:34:01Z"
     },
     {
       "provider": "BuyVM",
@@ -181,16 +208,10 @@
       "currency": "USD",
       "offer_url": "https://buyvm.net/kvm-dedicated-server-slices/",
       "source_url": "https://buyvm.net/kvm-dedicated-server-slices/",
-      "fetched_at": "2026-09-19T10:33:23Z"
-    },
-    {
-      "provider": "IONOS",
-      "title": "VPS S+",
-      "price": 6.0,
-      "currency": "USD",
-      "offer_url": "https://www.ionos.com/servers/vps",
-      "source_url": "https://www.ionos.com/servers/vps",
-      "fetched_at": "2026-09-19T10:33:23Z"
+      "vcpu": 2,
+      "ram_gb": 8,
+      "disk_gb": 160,
+      "fetched_at": "2026-09-21T09:34:01Z"
     },
     {
       "provider": "IONOS",
@@ -199,16 +220,10 @@
       "currency": "USD",
       "offer_url": "https://www.ionos.com/servers/vps",
       "source_url": "https://www.ionos.com/servers/vps",
-      "fetched_at": "2026-09-19T10:33:23Z"
-    },
-    {
-      "provider": "IONOS",
-      "title": "VPS M+",
-      "price": 14.0,
-      "currency": "USD",
-      "offer_url": "https://www.ionos.com/servers/vps",
-      "source_url": "https://www.ionos.com/servers/vps",
-      "fetched_at": "2026-09-19T10:33:23Z"
+      "vcpu": 1,
+      "ram_gb": 2,
+      "disk_gb": 60,
+      "fetched_at": "2026-09-21T09:34:01Z"
     },
     {
       "provider": "IONOS",
@@ -217,16 +232,10 @@
       "currency": "USD",
       "offer_url": "https://www.ionos.com/servers/vps",
       "source_url": "https://www.ionos.com/servers/vps",
-      "fetched_at": "2026-09-19T10:33:23Z"
-    },
-    {
-      "provider": "IONOS",
-      "title": "VPS L+",
-      "price": 25.0,
-      "currency": "USD",
-      "offer_url": "https://www.ionos.com/servers/vps",
-      "source_url": "https://www.ionos.com/servers/vps",
-      "fetched_at": "2026-09-19T10:33:23Z"
+      "vcpu": 2,
+      "ram_gb": 4,
+      "disk_gb": 120,
+      "fetched_at": "2026-09-21T09:34:01Z"
     },
     {
       "provider": "IONOS",
@@ -235,16 +244,10 @@
       "currency": "USD",
       "offer_url": "https://www.ionos.com/servers/vps",
       "source_url": "https://www.ionos.com/servers/vps",
-      "fetched_at": "2026-09-19T10:33:23Z"
-    },
-    {
-      "provider": "IONOS",
-      "title": "VPS XL+",
-      "price": 47.0,
-      "currency": "USD",
-      "offer_url": "https://www.ionos.com/servers/vps",
-      "source_url": "https://www.ionos.com/servers/vps",
-      "fetched_at": "2026-09-19T10:33:23Z"
+      "vcpu": 4,
+      "ram_gb": 8,
+      "disk_gb": 240,
+      "fetched_at": "2026-09-21T09:34:01Z"
     },
     {
       "provider": "IONOS",
@@ -253,16 +256,10 @@
       "currency": "USD",
       "offer_url": "https://www.ionos.com/servers/vps",
       "source_url": "https://www.ionos.com/servers/vps",
-      "fetched_at": "2026-09-19T10:33:23Z"
-    },
-    {
-      "provider": "IONOS",
-      "title": "VPS XXL+",
-      "price": 68.0,
-      "currency": "USD",
-      "offer_url": "https://www.ionos.com/servers/vps",
-      "source_url": "https://www.ionos.com/servers/vps",
-      "fetched_at": "2026-09-19T10:33:23Z"
+      "vcpu": 8,
+      "ram_gb": 16,
+      "disk_gb": 480,
+      "fetched_at": "2026-09-21T09:34:01Z"
     },
     {
       "provider": "IONOS",
@@ -271,7 +268,10 @@
       "currency": "USD",
       "offer_url": "https://www.ionos.com/servers/vps",
       "source_url": "https://www.ionos.com/servers/vps",
-      "fetched_at": "2026-09-19T10:33:23Z"
+      "vcpu": 12,
+      "ram_gb": 24,
+      "disk_gb": 720,
+      "fetched_at": "2026-09-21T09:34:01Z"
     }
   ]
 }

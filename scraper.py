@@ -196,6 +196,17 @@ CURRENCY_SYMBOLS = {
     "usd": "USD",
 }
 
+# 规格提取：只从"价格附近的那几行"里取，取的必须是页面上本来就写着的数字。
+# ::RULE{规格只从价格上下邻域提取⇒找不到就整条不写规格字段 不许拿别的行凑}
+# ::RULE{单位换算一律不做⇒页面上写 GB 就记 GB 数值 不替它换成别的单位}
+SPEC_LOOKBACK = 5
+SPEC_LOOKAHEAD = 8
+RAM_RE = re.compile(r"(?<![0-9a-z])(\d{1,4})\s?gb\s*(?:ram|memory|ddr\d?|ecc)\b", re.I)
+RAM_RE_ALT = re.compile(r"\b(?:ram|memory|ddr\d?|ecc)\b[^0-9\n]{0,12}(?<![0-9a-z])(\d{1,4})\s?gb\b", re.I)
+# 只认真的 CPU 计数：不能把促销语 "with a 1-year term" 里的 1 当成 1 个核。
+VCPU_RE = re.compile(r"(?<![0-9a-z-])(\d{1,3})\s*(?:x\s*)?(?:vcpus?|vcores?|v-cores?)\b|\b(\d{1,3})\s+(?:cpu\s+)?cores?\b", re.I)
+DISK_RE = re.compile(r"(?<![0-9a-z])(\d{1,5})\s?(gb|tb)\s*(?:ssd|nvme|storage|disk|raid\d*)\b", re.I)
+
 
 def rendered_lines(html: str) -> list[str]:
     text = BLOCK_RE.sub("\n", html)
@@ -290,6 +301,118 @@ def clean_title(text: str) -> str:
     return " ".join(title.split())[:80]
 
 
+def title_key(text: str) -> str:
+    """把标题压成可比较的 key，用来判断"这是不是另一个套餐"。"""
+    return re.sub(r"[^a-z0-9]", "", text.lower())
+
+
+def _specs_from(window: list[str]) -> dict:
+    specs: dict = {}
+    for line in window:
+        if "ram_gb" not in specs:
+            match = RAM_RE.search(line) or RAM_RE_ALT.search(line)
+            if match:
+                specs["ram_gb"] = int(match.group(1))
+        if "vcpu" not in specs:
+            match = VCPU_RE.search(line)
+            if match:
+                specs["vcpu"] = int(match.group(1) or match.group(2))
+        if "disk_gb" not in specs:
+            match = DISK_RE.search(line)
+            if match:
+                amount = int(match.group(1))
+                specs["disk_gb"] = amount * 1024 if match.group(2).lower() == "tb" else amount
+    return specs
+
+
+def _is_other_plan(line: str, config: dict, current_key: str) -> bool:
+    candidate = strip_filler(clean_title(line), config["filler"])
+    lowered = candidate.lower()
+    return (
+        title_score(candidate, config) >= 2
+        and any(hint in lowered for hint in config["title_hints"])
+        and title_key(candidate) != current_key
+    )
+
+
+SPEC_OWNERSHIP_REACH = 12
+
+
+def spec_clusters(lines: list[str], config: dict) -> list[dict]:
+    """把页面切成"规格块"：连续若干行里带单位数字（GB / cores / NVMe ...），允许夹一个非规格行。
+
+    归属规则（对两种真实卡片布局都成立）：
+      1. 一个规格块优先归"紧跟它下面、且距离最近"的那个套餐价格
+         —— netcup / BuyVM 是这种布局（规格在上面，价格在下面）。
+      2. 如果它下面没有在 SPEC_OWNERSHIP_REACH 行内的价格，就归它上面最近的那个价格
+         —— IONOS / OVHcloud 是这种布局（价格在上面，规格在下面）。
+      3. 同一个价格名下只留距离最近的那个块。
+    只认套餐月费行：带 "per hour / hourly / setup fee" 的行（netcup 的 €0.052 per hour）
+    不参与归属，否则会把规格块拽到小时价上。
+    """
+    def is_spec(line: str) -> bool:
+        return bool(
+            RAM_RE.search(line) or RAM_RE_ALT.search(line) or VCPU_RE.search(line) or DISK_RE.search(line)
+        )
+
+    def is_plan_price(line: str) -> bool:
+        if not PRICE_RE.search(line):
+            return False
+        lowered = line.lower()
+        return not any(word in lowered for word in config["skip_price"])
+
+    clusters: list[dict] = []
+    current: list[int] = []
+    gap = 0
+    for index, line in enumerate(lines):
+        if is_spec(line) and not PRICE_RE.search(line):
+            current.append(index)
+            gap = 0
+            continue
+        if current and gap == 0 and not PRICE_RE.search(line):
+            gap = 1  # 容忍一行间隔
+            continue
+        if current:
+            clusters.append({"start": current[0], "end": current[-1],
+                             "specs": _specs_from([lines[i] for i in current])})
+            current = []
+            gap = 0
+    if current:
+        clusters.append({"start": current[0], "end": current[-1],
+                         "specs": _specs_from([lines[i] for i in current])})
+
+    price_indices = [i for i, line in enumerate(lines) if is_plan_price(line)]
+    for cluster in clusters:
+        following = [p for p in price_indices if p > cluster["end"] and p - cluster["end"] <= SPEC_OWNERSHIP_REACH]
+        if following:
+            owner = min(following, key=lambda p: p - cluster["end"])
+            distance = owner - cluster["end"]
+        else:
+            preceding = [p for p in price_indices if p < cluster["start"]]
+            if not preceding:
+                cluster["owner"] = None
+                cluster["distance"] = None
+                continue
+            owner = max(preceding)
+            distance = cluster["start"] - owner
+        cluster["owner"] = owner
+        cluster["distance"] = distance
+    return clusters
+
+
+def specs_by_price(lines: list[str], config: dict) -> dict[int, dict]:
+    """算出每个价格行该拿到哪份规格：同一价格名下距离最近的那个规格块胜出。"""
+    out: dict[int, dict] = {}
+    for cluster in spec_clusters(lines, config):
+        owner = cluster["owner"]
+        if owner is None:
+            continue
+        current = out.get(owner)
+        if current is None or cluster["distance"] < current["distance"]:
+            out[owner] = cluster
+    return {price: cluster["specs"] for price, cluster in out.items()}
+
+
 def match_anchor(title: str, anchor_list: list[tuple[str, str]], fallback: str) -> str:
     tokens = {t for t in re.findall(r"[a-z0-9]{3,}", title.lower())}
     if not tokens:
@@ -305,8 +428,132 @@ def match_anchor(title: str, anchor_list: list[tuple[str, str]], fallback: str) 
     return best if best_score >= 0.6 else fallback
 
 
+def promo_pair_indices(lines: list[str]) -> set[int]:
+    """找出"原价行 + 紧跟着的促销价行"里的原价行，把它们排除。
+
+    卡片通常两行相邻给价：上面是常规价，下面一行是促销价（$6 然后 $ 2）。同一个套餐只留
+    促销价那一行，否则同一套餐会产出两条记录、而且规格只挂在其中一条上。
+    """
+    skip: set[int] = set()
+    for index, line in enumerate(lines):
+        if not PRICE_RE.search(line):
+            continue
+        for forward in (1, 2, 3):
+            if index + forward >= len(lines):
+                break
+            following = lines[index + forward]
+            if not PRICE_RE.search(following):
+                continue
+            first = PRICE_RE.search(line)
+            second = PRICE_RE.search(following)
+            a = normalize_amount(first.group("amt"), 1e9)
+            b = normalize_amount(second.group("amt"), 1e9)
+            if a is not None and b is not None and b < a:
+                skip.add(index)
+            break
+    return skip
+
+
+PLAN_STOPWORDS = {
+    "at", "the", "is", "are", "for", "and", "or", "with", "from", "your", "our", "we", "you",
+    "hosting", "server", "servers", "price", "prices", "plans", "plan", "more", "learn", "read",
+    "details", "order", "buy", "now", "get", "started", "starting", "monthly", "month", "year",
+    "per", "hour", "included", "unbeatable", "powerful", "flexible", "affordable", "cheap",
+}
+
+
+def plan_title_line(line: str, config: dict) -> str:
+    """这一行是不是"套餐名"（用来切分套餐区块）。
+
+    认的是产品名形态：短、不是句子、带产品名词，且不含英文虚词。
+    "VPS-1" / "VPS 500 G12" / "VPS S+" / "HIGH VOLUME VPS" 都算；
+    "VPS hosting at an unbeatable price" / "Explore our Windows VPS servers" 不算。
+    """
+    candidate = strip_filler(clean_title(line), config["filler"])
+    if not candidate or len(candidate) > 40 or PRICE_RE.search(candidate):
+        return ""
+    lowered = candidate.lower()
+    if not re.search(r"\b(?:vps|vserver|v-?server|kvm|slice)\b", lowered):
+        return ""
+    words = re.findall(r"[a-z]+", lowered)
+    if any(word in PLAN_STOPWORDS for word in words):
+        return ""
+    if len(words) > 4:
+        return ""
+    return candidate
+
+
+def plan_segment_offers(lines: list[str], config: dict) -> list[tuple[str, int, dict]]:
+    """按套餐名切段，每段内部把价格和规格配成对。
+
+    为什么必须切段：跨套餐做"最近价格"匹配时，两种布局都会互相抢
+    （OVHcloud 的规格块离下一个套餐的价格更近；IONOS 的规格块离下一个套餐的价格也更近），
+    只有先框定一个套餐的范围，规格才不会被邻档认领。
+    """
+    titles = [(index, plan_title_line(line, config)) for index, line in enumerate(lines)]
+    titles = [(index, name) for index, name in titles if name]
+    results: list[tuple[str, int, dict]] = []
+    for position, (start, name) in enumerate(titles):
+        end = titles[position + 1][0] if position + 1 < len(titles) else len(lines)
+        segment = []
+        for index in range(start, end):
+            line = lines[index]
+            if index > start and plan_title_line(line, config):
+                break
+            segment.append((index, line))
+        prices = [(index, line) for index, line in segment if PRICE_RE.search(line)
+                  and not any(word in line.lower() for word in config["skip_price"])]
+        specs = [
+            (index, line) for index, line in segment
+            if index > start
+            and (RAM_RE.search(line) or RAM_RE_ALT.search(line) or VCPU_RE.search(line) or DISK_RE.search(line))
+            and not PRICE_RE.search(line)
+        ]
+        if not prices or not specs:
+            continue
+        # 贪心就近配对：先配距离最近的一对，配过的两边都不再参与。
+        # 这样 "规格在价格上面"（netcup / BuyVM）和"规格在价格下面"（IONOS / OVHcloud）
+        # 都能各自配上，且不会像逐行方向判断那样错位到邻档。
+        candidates = []
+        for price_index, price_line in prices:
+            for spec_index, _spec_line in specs:
+                candidates.append((abs(spec_index - price_index), price_index, spec_index))
+        candidates.sort(key=lambda item: (item[0], item[1]))
+        taken_prices: set[int] = set()
+        taken_specs: set[int] = set()
+        for _distance, price_index, spec_index in candidates:
+            if price_index in taken_prices or spec_index in taken_specs:
+                continue
+            # 这个规格行所属的整个规格块
+            block_start = spec_index
+            while block_start - 1 >= start and any(
+                RAM_RE.search(lines[block_start - 1]) or RAM_RE_ALT.search(lines[block_start - 1])
+                or VCPU_RE.search(lines[block_start - 1]) or DISK_RE.search(lines[block_start - 1])
+                for _ in (0,)
+            ) and not PRICE_RE.search(lines[block_start - 1]):
+                block_start -= 1
+            block_end = spec_index
+            while block_end + 1 < end and any(
+                RAM_RE.search(lines[block_end + 1]) or RAM_RE_ALT.search(lines[block_end + 1])
+                or VCPU_RE.search(lines[block_end + 1]) or DISK_RE.search(lines[block_end + 1])
+                for _ in (0,)
+            ) and not PRICE_RE.search(lines[block_end + 1]):
+                block_end += 1
+            given = _specs_from([lines[i] for i in range(block_start, block_end + 1)])
+            if not given:
+                continue
+            taken_prices.add(price_index)
+            taken_specs.update(range(block_start, block_end + 1))
+            results.append((name, price_index, given))
+    return results
+
+
 def extract_page_offers(html: str, source_url: str, provider: dict, config: dict) -> list[dict]:
     lines = rendered_lines(html)
+    skip_lines = promo_pair_indices(lines)
+    # 规格归属按"套餐区块"算：先切段再配对，避免邻档互相抢规格。
+    # 用价格行号做键，绝不用标题字符串做键（抓到的标题和区块标题不保证逐字相同）。
+    segment_specs = {index: specs for _name, index, specs in plan_segment_offers(lines, config)}
     anchor_list = anchors(html, source_url)
     lookback = int(config["site"].get("lookback_lines", 12))
     max_price = float(config["site"].get("max_price", 5000))
@@ -314,6 +561,8 @@ def extract_page_offers(html: str, source_url: str, provider: dict, config: dict
     skipped_no_title = 0
 
     for index, line in enumerate(lines):
+        if index in skip_lines:
+            continue
         if any(word in line.lower() for word in config["skip_price"]):
             continue  # 同行出现 per hour / setup fee 之类，说明这个价格不是套餐月费
         for match in PRICE_RE.finditer(line):
@@ -351,6 +600,7 @@ def extract_page_offers(html: str, source_url: str, provider: dict, config: dict
                 "offer_url": match_anchor(title, anchor_list, source_url),
                 "source_url": source_url,
             }
+            record.update(segment_specs.get(index, {}))
             date_match = DATE_RE.search(" ".join(lines[max(0, index - 1) : index + 2]))
             if date_match:
                 record["valid_until"] = date_match.group(1)

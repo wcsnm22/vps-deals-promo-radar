@@ -1,0 +1,31 @@
+[
+  {
+    "round": 1,
+    "ran_at": "2026-09-21T09:05:14Z",
+    "source": "操作者从 GSC/GA4 后台复制",
+    "numbers": {
+      "indexed": 2,
+      "clicks": 0,
+      "clicks_prev": null,
+      "position": 0,
+      "position_prev": null,
+      "active_users": null,
+      "window": {
+        "current": [
+          "2026-09-14",
+          "2026-09-20"
+        ],
+        "previous": [
+          "2026-09-07",
+          "2026-09-13"
+        ]
+      },
+      "indexed_window": [
+        "2026-08-24",
+        "2026-09-20"
+      ]
+    },
+    "published_pages": 4,
+    "file": "round-1-2026-09-21.txt"
+  }
+]

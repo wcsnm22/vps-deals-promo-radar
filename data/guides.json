@@ -1,0 +1,83 @@
+[
+  {
+    "slug": "vps-comparison-table-csv",
+    "title": "Cheap VPS comparison table you can download (CSV, with per-GB RAM prices)",
+    "gap": "csv",
+    "gap_note": "None of the three domains that rank for this term — us.ovhcloud.com, digitalocean.com, lowendbox.com — serves a downloadable price-comparison file in their top pages. This page hands you the file and keeps it in sync with the tracked plans.",
+    "answer": "Download unit-price.csv: every tracked plan with a published price, plus the RAM and vCPU figures that were published next to it, and a computed price per GB of RAM and per vCPU.",
+    "body_html": "<h2>The file</h2><p><a class=\"cta\" href=\"/downloads/unit-price.csv\">Download unit-price.csv</a></p><p>The CSV is written by the same build that renders this page, so it always matches the price table on the site. Columns: <code>provider, plan, price, currency, ram_gb, vcpu, disk_gb, price_per_gb_ram, price_per_vcpu, unit_price_formula, source_url, fetched_at</code>.</p><h2>What is in it and what is not</h2><p>A row carries a per-GB number only when the provider published a RAM figure in the same place as the price. Rows without a published RAM figure keep that cell empty on purpose: a headline price on its own cannot be converted into a per-GB figure without inventing the denominator.</p><h2>How to recompute any row yourself</h2><p>Every per-unit cell equals <code>price ÷ ram_gb</code> (or <code>price ÷ vcpu</code>). The <code>unit_price_formula</code> column spells out the arithmetic for the row, and <code>source_url</code> plus <code>fetched_at</code> say which public page it was read from and when.</p>",
+    "sources": [
+      {
+        "label": "Tracked provider pages (see source_url column in the CSV)",
+        "url": "https://vpsdealsradar.com/compare"
+      }
+    ],
+    "published": "2026-09-19T00:00:00Z"
+  },
+  {
+    "slug": "how-to-buy-and-connect-a-cheap-vps",
+    "title": "How to pick a cheap VPS plan, deploy it, and connect (numbered steps)",
+    "gap": "steps",
+    "gap_note": "The top pages for this term in the three benchmarked domains describe plans but do not walk you through the purchase-to-login sequence. The steps below are taken from provider-published documentation, with the source linked at each step.",
+    "answer": "Pick by RAM per dollar and published bandwidth, deploy from the provider panel, then connect over SSH (Linux) or RDP (Windows). The whole sequence is eight steps below.",
+    "body_html": "<ol><li><strong>Decide the resource floor from the workload, not from the price.</strong> Write down the smallest RAM figure that will run your stack. A single small web app or VPN fits in 1&ndash;2 GB; a database doing real work wants 4 GB or more.</li><li><strong>Compare plans on published numbers only.</strong> Use the <a href=\"/downloads/unit-price.csv\">CSV</a> and divide price by the RAM figure the provider published. If a plan publishes no RAM figure next to the price, treat the per-GB number as unknown rather than guessing it.</li><li><strong>Check what the price excludes before you commit.</strong> Backups, control panels, extra IPv4 addresses and Windows licences are commonly billed separately. Open the provider's pricing page and read the row under the plan card.</li><li><strong>Create the account and deploy the server.</strong> From the provider's control panel choose the plan, the data-centre region closest to your users, and the operating system image. Linux distributions are offered at no extra licence cost on the low-cost plans; Windows normally adds a licence fee.</li><li><strong>Whitelist your SSH key.</strong> Paste your public key during deployment. With key authentication you can disable password login later instead of relying on a password over the open internet.</li><li><strong>Connect over SSH (Linux plans).</strong> The provider gives you the server's IPv4 address at deploy time; connect from a terminal with the username and key you configured. An out-of-band console in the panel is the fallback when SSH does not answer.</li><li><strong>Connect over RDP (Windows plans).</strong> A Windows VPS is reached with Remote Desktop to the server address using the administrator credentials the provider issued. If the vendor documents a bring-your-own-licence path, activate your own retail or volume licence after installation.</li><li><strong>Update, then harden before you point traffic at it.</strong> Apply operating-system updates, replace password login with keys where the OS supports it, open only the ports you need, and confirm you have a backup or snapshot you can actually restore.</li></ol><h2>What this sequence does not include</h2><p>Control-panel installation, application deployment and migration are separate tasks; providers document those on their own help pages, and this page does not paraphrase them.</p>",
+    "sources": [
+      {
+        "label": "RamNode — Installing Windows on Cloud VPS (bring-your-own-licence, VirtIO drivers, minimum 2 GB RAM)",
+        "url": "https://ramnode.com/support/documentation/cloud-vps/windows-install"
+      },
+      {
+        "label": "OVHcloud — VPS documentation entry point (connect and manage your VPS)",
+        "url": "https://us.ovhcloud.com/vps/"
+      },
+      {
+        "label": "DigitalOcean — VPS hosting explained (shared vs dedicated CPU, Droplet tiers)",
+        "url": "https://www.digitalocean.com/solutions/vps-hosting"
+      }
+    ],
+    "published": "2026-09-19T00:00:00Z"
+  },
+  {
+    "slug": "how-vps-pricing-works",
+    "title": "How VPS pricing actually works: per-GB RAM, egress and the licence that is not in the headline price",
+    "gap": "unitprice",
+    "gap_note": "The benchmarked pages list plan prices but do not break them down per unit. This page computes the per-unit figure from published prices only, and is explicit about which plans cannot be computed at all.",
+    "answer": "Rank plans by price divided by published RAM in GB. Where RAM is not published next to the price, the per-GB figure is unknown — a headline price alone cannot rank two plans.",
+    "body_html": "<h2>Why the headline price cannot rank plans</h2><p>Two plans at the same monthly price are not the same product. One may include twice the memory of the other, or include it in a different currency, or leave the memory figure off the pricing page altogether. Dividing the published price by the published RAM figure is the only comparison that needs no assumption.</p><h2>The three inputs a per-GB number needs</h2><ol><li>The plan's monthly price, exactly as published.</li><li>The RAM figure for that same plan, from the same page.</li><li>Which page and which read time the two came from.</li></ol><p>If any of the three is missing, the per-GB number is unknown. This site leaves the cell empty in that case; it does not estimate.</p><h2>What this site does not do</h2><p>It does not convert currencies, because a converted number is no longer the number the provider published. It does not treat a promotional first-month price as the ongoing price. It does not compare a plan's price against another plan's specification.</p>",
+    "sources": [
+      {
+        "label": "Tracked provider price pages (source_url per row in unit-price.csv)",
+        "url": "https://vpsdealsradar.com/downloads/unit-price.csv"
+      }
+    ],
+    "published": "2026-09-19T00:00:00Z"
+  },
+  {
+    "slug": "csv-2026-09-21-1",
+    "title": "Cheap VPS price table to download - IONOS plans, 2026-09-21 snapshot",
+    "gap": "csv",
+    "gap_note": "None of the benchmarked top pages for this term serves a downloadable comparison file. This entry hands over the file and shows the rows for one provider at a time.",
+    "answer": "5 tracked IONOS plans with a published price, 5 of them carry a per-GB figure; cheapest per GB is VPS XXL+ at 0.8333 USD/GB. The full 15-plan table is downloadable as CSV.",
+    "auto": true,
+    "published": "2026-09-21T04:24:32Z",
+    "body_html": "<h2>The file</h2><p><a class=\"cta\" href=\"/downloads/unit-price.csv\">Download unit-price.csv (15 plans, all providers)</a></p><h2>IONOS plans in the table</h2><div class=\"table-shell\"><table><thead><tr><th>Plan</th><th>Published price</th><th>RAM (GB)</th><th>vCPU</th><th>Price per GB</th></tr></thead><tbody><tr><td>VPS S+</td><td class=\"price\">2.0 USD</td><td>2</td><td>1</td><td class=\"price\">1.0000 USD/GB</td></tr><tr><td>VPS M+</td><td class=\"price\">5.0 USD</td><td>4</td><td>2</td><td class=\"price\">1.2500 USD/GB</td></tr><tr><td>VPS L+</td><td class=\"price\">8.0 USD</td><td>8</td><td>4</td><td class=\"price\">1.0000 USD/GB</td></tr><tr><td>VPS XL+</td><td class=\"price\">14.0 USD</td><td>16</td><td>8</td><td class=\"price\">0.8750 USD/GB</td></tr><tr><td>VPS XXL+</td><td class=\"price\">20.0 USD</td><td>24</td><td>12</td><td class=\"price\">0.8333 USD/GB</td></tr></tbody></table></div><h2>Coverage</h2><p>15 of 15 tracked plans publish both a price and a RAM figure. The rest keep an empty per-GB cell rather than a guess.</p>",
+    "sources": [
+      {
+        "label": "OVHcloud published price page",
+        "url": "https://www.ovhcloud.com/en/vps/"
+      },
+      {
+        "label": "netcup published price page",
+        "url": "https://www.netcup.com/en/server/vps"
+      },
+      {
+        "label": "BuyVM published price page",
+        "url": "https://buyvm.net/kvm-dedicated-server-slices/"
+      },
+      {
+        "label": "IONOS published price page",
+        "url": "https://www.ionos.com/servers/vps"
+      }
+    ]
+  }
+]
