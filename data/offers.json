@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-21T11:37:55Z",
+  "generated_at": "2026-09-21T12:33:04Z",
   "brand": "vps-deals",
   "niche": "vps hosting",
   "site_title": "VPS Deals Radar",
@@ -80,6 +80,18 @@
       "note": "5 further price(s) were found without a trustworthy plan name and left out"
     },
     {
+      "name": "Hostwinds",
+      "homepage": "https://www.hostwinds.com",
+      "deals_url": "https://www.hostwinds.com/vps/unmanaged-linux",
+      "affiliate_url": "https://www.hostwinds.com/vps/unmanaged-linux?aff=10500",
+      "kind": "page",
+      "currency": "USD",
+      "http": 200,
+      "offers": 10,
+      "priced": 10,
+      "note": ""
+    },
+    {
       "name": "Hetzner",
       "homepage": "https://www.hetzner.com",
       "deals_url": "https://www.hetzner.com/cloud/",
@@ -103,7 +115,7 @@
       "vcpu": 2,
       "ram_gb": 4,
       "disk_gb": 40,
-      "fetched_at": "2026-09-21T11:37:55Z"
+      "fetched_at": "2026-09-21T12:33:04Z"
     },
     {
       "provider": "OVHcloud",
@@ -115,7 +127,7 @@
       "vcpu": 4,
       "ram_gb": 8,
       "disk_gb": 75,
-      "fetched_at": "2026-09-21T11:37:55Z"
+      "fetched_at": "2026-09-21T12:33:04Z"
     },
     {
       "provider": "OVHcloud",
@@ -127,7 +139,7 @@
       "vcpu": 6,
       "ram_gb": 12,
       "disk_gb": 100,
-      "fetched_at": "2026-09-21T11:37:55Z"
+      "fetched_at": "2026-09-21T12:33:04Z"
     },
     {
       "provider": "OVHcloud",
@@ -139,7 +151,7 @@
       "vcpu": 8,
       "ram_gb": 24,
       "disk_gb": 200,
-      "fetched_at": "2026-09-21T11:37:55Z"
+      "fetched_at": "2026-09-21T12:33:04Z"
     },
     {
       "provider": "netcup",
@@ -151,7 +163,7 @@
       "vcpu": 2,
       "ram_gb": 4,
       "disk_gb": 128,
-      "fetched_at": "2026-09-21T11:37:55Z"
+      "fetched_at": "2026-09-21T12:33:04Z"
     },
     {
       "provider": "netcup",
@@ -163,7 +175,7 @@
       "vcpu": 4,
       "ram_gb": 8,
       "disk_gb": 256,
-      "fetched_at": "2026-09-21T11:37:55Z"
+      "fetched_at": "2026-09-21T12:33:04Z"
     },
     {
       "provider": "netcup",
@@ -175,7 +187,7 @@
       "vcpu": 8,
       "ram_gb": 16,
       "disk_gb": 512,
-      "fetched_at": "2026-09-21T11:37:55Z"
+      "fetched_at": "2026-09-21T12:33:04Z"
     },
     {
       "provider": "netcup",
@@ -187,7 +199,7 @@
       "vcpu": 12,
       "ram_gb": 32,
       "disk_gb": 1024,
-      "fetched_at": "2026-09-21T11:37:55Z"
+      "fetched_at": "2026-09-21T12:33:04Z"
     },
     {
       "provider": "netcup",
@@ -199,7 +211,7 @@
       "vcpu": 16,
       "ram_gb": 64,
       "disk_gb": 2048,
-      "fetched_at": "2026-09-21T11:37:55Z"
+      "fetched_at": "2026-09-21T12:33:04Z"
     },
     {
       "provider": "BuyVM",
@@ -211,7 +223,7 @@
       "vcpu": 2,
       "ram_gb": 8,
       "disk_gb": 160,
-      "fetched_at": "2026-09-21T11:37:55Z"
+      "fetched_at": "2026-09-21T12:33:04Z"
     },
     {
       "provider": "IONOS",
@@ -223,7 +235,7 @@
       "vcpu": 1,
       "ram_gb": 2,
       "disk_gb": 60,
-      "fetched_at": "2026-09-21T11:37:55Z"
+      "fetched_at": "2026-09-21T12:33:04Z"
     },
     {
       "provider": "IONOS",
@@ -235,7 +247,7 @@
       "vcpu": 2,
       "ram_gb": 4,
       "disk_gb": 120,
-      "fetched_at": "2026-09-21T11:37:55Z"
+      "fetched_at": "2026-09-21T12:33:04Z"
     },
     {
       "provider": "IONOS",
@@ -247,7 +259,7 @@
       "vcpu": 4,
       "ram_gb": 8,
       "disk_gb": 240,
-      "fetched_at": "2026-09-21T11:37:55Z"
+      "fetched_at": "2026-09-21T12:33:04Z"
     },
     {
       "provider": "IONOS",
@@ -259,7 +271,7 @@
       "vcpu": 8,
       "ram_gb": 16,
       "disk_gb": 480,
-      "fetched_at": "2026-09-21T11:37:55Z"
+      "fetched_at": "2026-09-21T12:33:04Z"
     },
     {
       "provider": "IONOS",
@@ -271,7 +283,127 @@
       "vcpu": 12,
       "ram_gb": 24,
       "disk_gb": 720,
-      "fetched_at": "2026-09-21T11:37:55Z"
+      "fetched_at": "2026-09-21T12:33:04Z"
+    },
+    {
+      "provider": "Hostwinds",
+      "title": "Unmanaged Linux VPS Hosting - 1 CPU / 1 GB RAM / 30 GB",
+      "price": 4.99,
+      "currency": "USD",
+      "offer_url": "https://www.hostwinds.com/vps/unmanaged-linux?aff=10500",
+      "source_url": "https://www.hostwinds.com/vps/unmanaged-linux",
+      "disk_gb": 30,
+      "ram_gb": 1,
+      "vcpu": 1,
+      "fetched_at": "2026-09-21T12:33:04Z"
+    },
+    {
+      "provider": "Hostwinds",
+      "title": "Unmanaged Linux VPS Hosting - 1 CPU / 2 GB RAM / 50 GB",
+      "price": 9.99,
+      "currency": "USD",
+      "offer_url": "https://www.hostwinds.com/vps/unmanaged-linux?aff=10500",
+      "source_url": "https://www.hostwinds.com/vps/unmanaged-linux",
+      "disk_gb": 50,
+      "ram_gb": 2,
+      "vcpu": 1,
+      "fetched_at": "2026-09-21T12:33:04Z"
+    },
+    {
+      "provider": "Hostwinds",
+      "title": "Unmanaged Linux VPS Hosting - 2 CPU / 4 GB RAM / 75 GB",
+      "price": 18.99,
+      "currency": "USD",
+      "offer_url": "https://www.hostwinds.com/vps/unmanaged-linux?aff=10500",
+      "source_url": "https://www.hostwinds.com/vps/unmanaged-linux",
+      "disk_gb": 75,
+      "ram_gb": 4,
+      "vcpu": 2,
+      "fetched_at": "2026-09-21T12:33:04Z"
+    },
+    {
+      "provider": "Hostwinds",
+      "title": "Unmanaged Linux VPS Hosting - 2 CPU / 6 GB RAM / 100 GB",
+      "price": 28.99,
+      "currency": "USD",
+      "offer_url": "https://www.hostwinds.com/vps/unmanaged-linux?aff=10500",
+      "source_url": "https://www.hostwinds.com/vps/unmanaged-linux",
+      "disk_gb": 100,
+      "ram_gb": 6,
+      "vcpu": 2,
+      "fetched_at": "2026-09-21T12:33:04Z"
+    },
+    {
+      "provider": "Hostwinds",
+      "title": "Unmanaged Linux VPS Hosting - 4 CPU / 8 GB RAM / 150 GB",
+      "price": 38.99,
+      "currency": "USD",
+      "offer_url": "https://www.hostwinds.com/vps/unmanaged-linux?aff=10500",
+      "source_url": "https://www.hostwinds.com/vps/unmanaged-linux",
+      "disk_gb": 150,
+      "ram_gb": 8,
+      "vcpu": 4,
+      "fetched_at": "2026-09-21T12:33:04Z"
+    },
+    {
+      "provider": "Hostwinds",
+      "title": "Unmanaged Linux VPS Hosting - 4 CPU / 12 GB RAM / 200 GB",
+      "price": 49.99,
+      "currency": "USD",
+      "offer_url": "https://www.hostwinds.com/vps/unmanaged-linux?aff=10500",
+      "source_url": "https://www.hostwinds.com/vps/unmanaged-linux",
+      "disk_gb": 200,
+      "ram_gb": 12,
+      "vcpu": 4,
+      "fetched_at": "2026-09-21T12:33:04Z"
+    },
+    {
+      "provider": "Hostwinds",
+      "title": "Unmanaged Linux VPS Hosting - 6 CPU / 16 GB RAM / 300 GB",
+      "price": 76.99,
+      "currency": "USD",
+      "offer_url": "https://www.hostwinds.com/vps/unmanaged-linux?aff=10500",
+      "source_url": "https://www.hostwinds.com/vps/unmanaged-linux",
+      "disk_gb": 300,
+      "ram_gb": 16,
+      "vcpu": 6,
+      "fetched_at": "2026-09-21T12:33:04Z"
+    },
+    {
+      "provider": "Hostwinds",
+      "title": "Unmanaged Linux VPS Hosting - 8 CPU / 32 GB RAM / 400 GB",
+      "price": 124.99,
+      "currency": "USD",
+      "offer_url": "https://www.hostwinds.com/vps/unmanaged-linux?aff=10500",
+      "source_url": "https://www.hostwinds.com/vps/unmanaged-linux",
+      "disk_gb": 400,
+      "ram_gb": 32,
+      "vcpu": 8,
+      "fetched_at": "2026-09-21T12:33:04Z"
+    },
+    {
+      "provider": "Hostwinds",
+      "title": "Unmanaged Linux VPS Hosting - 12 CPU / 64 GB RAM / 500 GB",
+      "price": 214.99,
+      "currency": "USD",
+      "offer_url": "https://www.hostwinds.com/vps/unmanaged-linux?aff=10500",
+      "source_url": "https://www.hostwinds.com/vps/unmanaged-linux",
+      "disk_gb": 500,
+      "ram_gb": 64,
+      "vcpu": 12,
+      "fetched_at": "2026-09-21T12:33:04Z"
+    },
+    {
+      "provider": "Hostwinds",
+      "title": "Unmanaged Linux VPS Hosting - 16 CPU / 96 GB RAM / 750 GB",
+      "price": 328.99,
+      "currency": "USD",
+      "offer_url": "https://www.hostwinds.com/vps/unmanaged-linux?aff=10500",
+      "source_url": "https://www.hostwinds.com/vps/unmanaged-linux",
+      "disk_gb": 750,
+      "ram_gb": 96,
+      "vcpu": 16,
+      "fetched_at": "2026-09-21T12:33:04Z"
     }
   ]
 }

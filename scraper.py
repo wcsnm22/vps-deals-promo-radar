@@ -93,6 +93,7 @@ def parse_ilang(text: str) -> dict:
             "deals_url": parts[2],
             "affiliate_url": parts[3] if len(parts) > 3 else "",
             "kind": "page",
+            "layout": "card",
             "currency": state.get("currency", "USD"),
         }
         for option in parts[4:]:
@@ -558,7 +559,91 @@ def plan_segment_offers(lines: list[str], config: dict) -> list[tuple[str, int, 
     return results
 
 
+
+# 竖排规格表布局（Hostwinds 这类）：每个套餐是
+#   CPU / 值 / RAM / 值 / Storage / 值 / Bandwidth / 值 / Price / 价格
+# 规格与标签分列，且**页面上没有套餐名，只有规格数字**。
+# 因此名字只能由已公布的规格拼出（例如 "Unmanaged Linux VPS - 1 CPU / 1 GB / 30 GB"），
+# 这不违反"找不到可信产品名就不收录"：块本身就是产品，规格就是它的唯一标识。
+# ::RULE{表布局只在 site.ilang 里 layout=table 的厂商上启用⇒不在代码里写死厂商名}
+_TABLE_LABELS = {"cpu": "vcpu", "ram": "ram_gb", "storage": "disk_gb"}
+
+
+def extract_table_offers(html: str, source_url: str, provider: dict, config: dict) -> list[dict]:
+    lines = rendered_lines(html)
+    max_price = float(config["site"].get("max_price", 5000))
+    # 取页面上方那行 H1 作为产品名（例如 "Unmanaged Linux VPS Hosting"）。
+    # 只在前 60 行里找，且排除含 "|" 的站点标题行——否则会抓到页脚那句带竖线的句子。
+    product = ""
+    for line in lines[:60]:
+        lowered = line.lower()
+        if "|" in line:
+            continue
+        if lowered.endswith("vps hosting") or lowered.endswith("cloud servers"):
+            product = clean_title(line)
+            break
+
+    def spec_number(text: str, kind: str) -> int | None:
+        match = re.search(r"(\d{1,5})\s*(gb|tb)", text, re.I)
+        if match:
+            value = int(match.group(1))
+            return value * 1024 if match.group(2).lower() == "tb" else value
+        match = re.search(r"(\d{1,3})\s*cpu", text, re.I)
+        return int(match.group(1)) if match else None
+
+    found: list[dict] = []
+    for index, line in enumerate(lines):
+        if line.strip().lower() != "price":
+            continue
+        match = PRICE_RE.search(lines[index + 1]) if index + 1 < len(lines) else None
+        if not match:
+            continue
+        amount = normalize_amount(match.group("amt"), max_price)
+        if amount is None:
+            continue
+        specs: dict = {}
+        for back in range(1, 13):
+            position = index - back
+            if position < 1:
+                break
+            label = lines[position - 1].strip().lower()
+            if label in _TABLE_LABELS:
+                value = spec_number(lines[position], label)
+                if value is not None:
+                    specs.setdefault(_TABLE_LABELS[label], value)
+        currency = CURRENCY_SYMBOLS.get(match.group("cur").lower(), provider.get("currency", "USD"))
+        bits = []
+        if specs.get("vcpu"):
+            bits.append(f"{specs['vcpu']} CPU")
+        if specs.get("ram_gb"):
+            bits.append(f"{specs['ram_gb']} GB RAM")
+        if specs.get("disk_gb"):
+            bits.append(f"{specs['disk_gb']} GB")
+        if not bits:
+            continue
+        title = f"{product} - {' / '.join(bits)}" if product else " / ".join(bits)
+        record = {
+            "provider": provider["name"],
+            "title": title,
+            "price": amount,
+            "currency": currency,
+            "offer_url": provider.get("affiliate_url") or source_url,
+            "source_url": source_url,
+        }
+        record.update(specs)
+        key = (record["title"].lower(), amount)
+        if any(r["title"].lower() == record["title"].lower() and r["price"] == amount for r in found):
+            continue
+        found.append(record)
+        if len(found) >= MAX_OFFERS_PER_PROVIDER:
+            break
+    return found
+
+
 def extract_page_offers(html: str, source_url: str, provider: dict, config: dict) -> list[dict]:
+    # 布局由 site.ilang 的 layout= 决定，默认 card（价格与规格在同一个卡片内的布局）
+    if (provider.get("layout") or "card").lower() == "table":
+        return extract_table_offers(html, source_url, provider, config)
     lines = rendered_lines(html)
     skip_lines = promo_pair_indices(lines)
     # 规格归属按"套餐区块"算：先切段再配对，避免邻档互相抢规格。

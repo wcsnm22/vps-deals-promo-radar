@@ -15,6 +15,12 @@ TYPE:config PROJECT:vps-deals LANG:zh
   DigitalOcean | https://www.digitalocean.com | https://www.digitalocean.com/pricing |  | kind=page | currency=USD
   BuyVM | https://buyvm.net | https://buyvm.net/kvm-dedicated-server-slices/ |  | kind=page | currency=USD
   IONOS | https://www.ionos.com | https://www.ionos.com/servers/vps |  | kind=page | currency=USD
+  Hostwinds | https://www.hostwinds.com | https://www.hostwinds.com/vps/unmanaged-linux | https://www.hostwinds.com/vps/unmanaged-linux?aff=10500 | kind=page | layout=table | currency=USD
+  # layout=table：该页是竖排规格表（CPU/RAM/Storage/Bandwidth/Price 分列），且没有套餐名，
+  # 名字由已公布的规格拼出，例如 "Unmanaged Linux VPS - 1 CPU / 1 GB RAM / 30 GB"。
+  # Hostwinds 联盟链接（2026-09-21 接入，操作者提供）：clients.hostwinds.com/aff.php?aff=10500
+  # 原始链接 clients.hostwinds.com/aff.php?aff=10500 会 301 到首页；实测把 ?aff=10500 直接挂到
+  # 产品页上返回 200 且不跳转，所以按钮用产品页地址，用户点进去直接看到被展示的那一档。
   Hetzner | https://www.hetzner.com | https://www.hetzner.com/cloud/ |  | kind=page | currency=EUR
   # Hetzner 说明（2026-09-21 实测）：其 /cloud/ 页面的价格**不在服务端 HTML 里**——服务端渲染出 466 行
   # 文本、含价格的行数为 0，价格由 JS 之后加载。按本仓库"只抓公开页面、不执行 JS、不绕反爬"的规矩，
