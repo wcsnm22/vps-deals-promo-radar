@@ -191,3 +191,55 @@ python report.py --creds C:\path\sa.json --gsc https://vpsdealsradar.com/ --ga4 
 | 规格读错 | 跑 `python -c "import json;print(json.load(open('data/offers.json'))['offers'])"` 看每条的 `ram_gb/vcpu/disk_gb`，与厂商页面逐档核对 |
 | 页面被判不合格 | 看 `data/daily-log.jsonl` 最后一行 `content_check_tail` |
 | 线上是旧的 | 说明只跑了抓取+构建，没发布（第三节） |
+
+## 七、让谷歌尽快收录（当前唯一瓶颈）
+
+现状（2026-09-21 实测）：站上 33 页，**GSC 只收录 2 页**。这是现在唯一真正的短板——联盟申请、报数、收益全卡在这里。这一步要登录 GSC，只能你本人操作。
+
+### 第一步：重新提交站点地图
+
+1. 打开 <https://search.google.com/search-console>，左上角确认选中的是 `vpsdealsradar.com`
+2. 左侧菜单点 **「索引」→「站点地图」**
+3. 在「添加新的站点地图」框里填 `sitemap.xml`（要完整网址就填 `https://vpsdealsradar.com/sitemap.xml`）
+4. 点 **「提交」**
+5. 状态应显示 **「成功」**，并列出 **32** 个网址（等于我们构建时的条数）
+
+> 每天的自动构建都会重写 `sitemap.xml`，谷歌会自己回来读，**不需要每天手动提交**。这一次只是让它知道有更新。
+
+### 第二步：手动请求索引几页（有每日配额，省着用）
+
+1. 页面最上方那个搜索框（「检查任何网址」）粘贴 `https://vpsdealsradar.com/guide`，回车
+2. 等检查结果出来，点 **「请求编入索引」**
+3. 对这几页各做一次：
+   - `https://vpsdealsradar.com/`
+   - `https://vpsdealsradar.com/guide/how-vps-pricing-works`
+   - `https://vpsdealsradar.com/methodology`
+   - `https://vpsdealsradar.com/downloads/unit-price.csv`
+
+**配额有限**（通常每天十几条），只挑这几页，别把 33 页全试一遍。
+
+### 第三步：等，并按周看两个数
+
+| 看什么 | 在哪 | 期望 |
+|---|---|---|
+| 已编入索引页数 | 索引 → 网页 | 从 2 逐步上升 |
+| 「已发现 - 尚未编入索引」 | 同上，灰色块 | 这批会慢慢转绿 |
+
+**不要每天去点提交**——重复提交没有加速作用，还占配额。
+
+### 要等多久
+
+新域名从「已发现」到「已编入索引」通常要几天到几周，取决于站点体量和谷歌当时的抓取预算。**我没有实测天数，所以不编具体数字。**
+
+### 想加快，唯一真正有效的事
+
+**持续更新**。每天一篇的循环已经在跑，谷歌对"持续有新内容的站"抓取频率会自然提高——所以这件事不用额外操作，让它自己跑。
+
+### 顺手能做的：确认 sitemap 本身没问题
+
+```powershell
+# 线上 sitemap 应返回 200，且条数与构建一致（当前 32）
+node -e "fetch('https://vpsdealsradar.com/sitemap.xml').then(async r=>{const t=await r.text();console.log('HTTP',r.status,'| loc 条数',(t.match(/<loc>/g)||[]).length)})"
+```
+
+`/sitemap.xml` 里的每个 `<loc>` 都必须真实可开——这件事已经由 `verify_deploy.py` 在每天发布后自动核（内容不符会让当天任务失败）。
