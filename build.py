@@ -263,6 +263,10 @@ ASSET_V = "0"
 # 站点验证与统计：来自 .ilang/site.ilang 的 @SITE 状态；留空即不注入。
 VERIFY: dict[str, str] = {"gsc": "", "ga4": ""}
 
+# 本次构建的厂商清单（main 里赋值）。页脚要据此决定"有没有联盟链接"的自述，
+# 用模块变量是为了不去改十几处 footer_block 调用点。
+PROVIDERS_CTX: list[dict] = []
+
 
 # ------------------------------------------------------------------ 数据整理
 
@@ -360,23 +364,41 @@ def nav_block(site: dict, providers: list[dict]) -> str:
     return " · ".join(links)
 
 
-def footer_block(site: dict, generated_at: str) -> str:
+def affiliate_live(providers: list[dict]) -> bool:
+    """真的有联盟链接才算"有"。空着的时候不许在页脚或隐私政策里声称有。"""
+    return any((row.get("affiliate_url") or "").strip() for row in providers)
+
+
+def footer_block(site: dict, generated_at: str, providers: list[dict] | None = None) -> str:
     nav_links = " · ".join(
         [
             f'<a href="{escape(site["base_url"])}/about">About</a>',
+            f'<a href="{escape(site["base_url"])}/methodology">Methodology</a>',
             f'<a href="{escape(site["base_url"])}/privacy">Privacy Policy</a>',
             f'<a href="{escape(site["base_url"])}/contact">Contact</a>',
             f'<a href="{escape(site["base_url"])}/sitemap.xml">Sitemap</a>',
         ]
     )
+    # 资助方式的自述随事实变：没接联盟就说没接，别写将来时当现在时。
+    if affiliate_live(providers if providers is not None else PROVIDERS_CTX):
+        money = (
+            '<p class="muted"><strong>Affiliate links:</strong> some outbound links to providers are affiliate '
+            'links.</p>'
+            '<p class="muted"><strong>Commission:</strong> if you sign up through one of those links, this site '
+            'may earn a commission at no extra cost to you.</p>'
+        )
+    else:
+        money = (
+            '<p class="muted"><strong>Affiliate links:</strong> none active at present — outbound provider links '
+            'carry no tracking parameter, so no commission is earned from them.</p>'
+            '<p class="muted"><strong>Advertising:</strong> none shown — no ad network script runs on these pages.</p>'
+        )
     return (
         f'<p class="muted">Prices are read from each provider\'s own public page on {escape(generated_at)} '
         "and can change without notice — always confirm on the provider site before buying.</p>"
         '<p class="muted">Independent listings. No invented prices: a plan without a published price shows no price.</p>'
-        '<p class="muted"><strong>Third-party advertising:</strong> this site displays third-party advertising.</p>'
-        '<p class="muted"><strong>Affiliate links:</strong> some outbound links are affiliate links.</p>'
-        '<p class="muted"><strong>Commission:</strong> if you sign up through one of those links, we may earn a commission.</p>'
-        f'<p class="muted">{escape(site["brand"])} · {nav_links}</p>'
+        + money
+        + f'<p class="muted">{escape(site["brand"])} · {nav_links}</p>'
         # 像素小动物的挂载点：纯装饰，画布由 assets/pets.js 生成。
         # 放在页脚里是因为页脚每页都有；它是 position:fixed，不影响版式。
         '<div class="critter" aria-hidden="true"></div>'
@@ -886,13 +908,35 @@ def _webpage_graph(site: dict, path: str, title: str, description: str) -> dict:
     }
 
 
-def build_about(site: dict, providers: list[dict], generated_at: str) -> str:
+def build_about(site: dict, providers: list[dict], generated_at: str,
+                offers: list[dict] | None = None, guide_count: int = 0) -> str:
     path = "/about"
     title = f'About {site["title"]}'
     description = (
         f'{site["title"]} is an independent tracker of VPS prices published by hosting providers. '
         "Every number links back to the provider page it came from. Written and maintained by an independent developer."
     )
+    # 自述必须与事实一致：只有真的接了联盟/广告才那么写，否则照实说没有。
+    affiliate_live = any((row.get("affiliate_url") or "").strip() for row in providers)
+    if affiliate_live:
+        funding = (
+            "<ul>"
+            "<li><strong>Affiliate links.</strong> Some outbound links to providers are affiliate links.</li>"
+            "<li><strong>Commission.</strong> If you sign up through one of those links, this site may earn a "
+            "commission from the provider. It costs you nothing extra.</li>"
+            "</ul>"
+        )
+    else:
+        funding = (
+            "<ul>"
+            "<li><strong>No affiliate links are active yet.</strong> Outbound links to providers are currently "
+            "plain links with no tracking parameter, so no commission is earned from them.</li>"
+            "<li><strong>No advertising is shown.</strong> No ad network script is loaded on these pages.</li>"
+            "</ul>"
+            "<p>This site is self-funded and run as an independent project. If affiliate links are enabled later, "
+            "this section will say so before they go live.</p>"
+        )
+    offer_count = len([o for o in (offers or []) if o.get("price") is not None])
     meta = _page_meta(site, path, title, description)
     return render(
         template("about.html"),
@@ -905,6 +949,33 @@ def build_about(site: dict, providers: list[dict], generated_at: str) -> str:
             "brand": escape(site["brand"]),
             "site_title": escape(site["title"]),
             "repo_url": escape(site["repo_url"]),
+            "base_url": escape(site["base_url"]),
+            "funding": funding,
+            "offer_count": str(offer_count),
+            "provider_count": str(len(providers)),
+            "guide_count": str(guide_count),
+        },
+    )
+
+
+def build_methodology(site: dict, providers: list[dict], generated_at: str) -> str:
+    path = "/methodology"
+    title = f'How this site reads prices - {site["title"]}'
+    description = (
+        "The exact method behind every number on this site: which page is fetched, how a monthly plan price is "
+        "separated from per-hour rates and fees, how per-GB figures are computed, and what is never estimated."
+    )
+    meta = _page_meta(site, path, title, description)
+    return render(
+        template("methodology.html"),
+        {
+            "lang": site["locale"],
+            "head": head_block(meta, [_webpage_graph(site, path, title, description)]),
+            "nav": nav_block(site, providers),
+            "footer": footer_block(site, generated_at),
+            "title": escape(title),
+            "brand": escape(site["brand"]),
+            "base_url": escape(site["base_url"]),
         },
     )
 
@@ -917,6 +988,25 @@ def build_privacy(site: dict, providers: list[dict], generated_at: str) -> str:
         "the analytics that are actually installed, no accounts and no forms."
     )
     meta = _page_meta(site, path, title, description)
+    # 广告与联盟两段必须与事实一致：没接就写没接。联盟审核最看重的就是披露是否真实。
+    if affiliate_live(providers):
+        affiliate_section = (
+            "<p>Some outbound links are affiliate links. If you follow one and sign up with the provider, this "
+            "site may earn a commission. Affiliate links may carry a referral parameter so the provider can "
+            "attribute the visit. Commission never changes the prices shown on this site or which plans are "
+            "listed.</p>"
+        )
+    else:
+        affiliate_section = (
+            "<p><strong>No affiliate links are active on this site at present.</strong> Outbound links to hosting "
+            "providers are plain links: they carry no referral parameter, and no commission is earned when you "
+            "follow them. This section will be updated before any affiliate link is enabled.</p>"
+        )
+    advertising_section = (
+        "<p><strong>No advertising is shown on this site.</strong> No advertising network script is loaded on "
+        "these pages. If that changes, this policy will be updated first and the change will be visible on the "
+        "date at the top of this page.</p>"
+    )
     # 隐私政策必须与"实际装了什么"一致：装了 GA4 就不能再写"没有任何统计"。
     if VERIFY.get("ga4"):
         analytics_sentence = (
@@ -950,6 +1040,8 @@ def build_privacy(site: dict, providers: list[dict], generated_at: str) -> str:
             "base_url": site["base_url"],
             "generated_date": generated_at[:10],
             "analytics_sentence": analytics_sentence,
+            "advertising_section": advertising_section,
+            "affiliate_section": affiliate_section,
             "analytics_detail": analytics_detail,
         },
     )
@@ -1016,6 +1108,8 @@ def main() -> int:
     offers, variants = collapse_offers(offers)
     providers = payload["providers"]
     by_name = {row["name"]: row for row in providers}
+    global PROVIDERS_CTX
+    PROVIDERS_CTX = providers
     generated_at = payload["generated_at"]
 
     SITE_DIR.mkdir(parents=True, exist_ok=True)
@@ -1041,11 +1135,15 @@ def main() -> int:
     build_og_image(site, SITE_DIR / "og.png")
     asset_paths.append("/og.png")
 
+    # 指南清单提前载入：about 页要引用当期篇数，页脚导航也要用
+    guides = json.loads(GUIDES_PATH.read_text(encoding="utf-8")) if GUIDES_PATH.exists() else []
+
     written = []
     for name, html in {
         "index.html": build_index(site, offers, providers, generated_at),
         "compare.html": build_compare(site, offers, providers, generated_at),
-        "about.html": build_about(site, providers, generated_at),
+        "about.html": build_about(site, providers, generated_at, offers, len(guides)),
+        "methodology.html": build_methodology(site, providers, generated_at),
         "privacy.html": build_privacy(site, providers, generated_at),
         "contact.html": build_contact(site, providers, generated_at),
         "404.html": build_404(site, providers, generated_at),
@@ -1071,7 +1169,6 @@ def main() -> int:
     (SITE_DIR / "downloads" / "unit-price.csv").write_text(csv_body, encoding="utf-8")
 
     # 指南栏：每篇只补一个缺口，内容由 data/guides.json 提供，渲染是确定性的。
-    guides = json.loads(GUIDES_PATH.read_text(encoding="utf-8")) if GUIDES_PATH.exists() else []
     # 清掉已经不存在的指南页，否则旧日期的页面会一直留在线上的目录里变成孤儿页。
     # 只删"带日期后缀的自动页"（csv-YYYY-MM-DD-n / unitprice-... / steps-...），手写页不碰。
     keep = {f'{guide["slug"]}.html' for guide in guides}
@@ -1092,7 +1189,7 @@ def main() -> int:
         written.append(f"guide/{path.name}")
 
     urls = [home_url(site), compare_url(site)]
-    urls += [f"{base_url}/about", f"{base_url}/privacy", f"{base_url}/contact"]
+    urls += [f"{base_url}/about", f"{base_url}/methodology", f"{base_url}/privacy", f"{base_url}/contact"]
     urls += [provider_page(site, row["name"]) for row in providers]
     urls += [deal_page(site, offer) for offer in offers]
     urls += [guides_url(site)]
@@ -1110,7 +1207,7 @@ def main() -> int:
     )
     # 合法路径白名单：由这次构建实际写出的页面生成，交给 _worker.js 判 404。
     # 不写死在这里，就不会出现"加了页面却忘了改 404 逻辑"。
-    valid_paths = ["/", "/compare", "/about", "/privacy", "/contact", "/sitemap.xml", "/robots.txt", "/guide"]
+    valid_paths = ["/", "/compare", "/about", "/methodology", "/privacy", "/contact", "/sitemap.xml", "/robots.txt", "/guide"]
     valid_paths += asset_paths
     valid_paths.append("/downloads/unit-price.csv")
     valid_paths += [f"/provider/{slugify(row['name'])}" for row in providers]

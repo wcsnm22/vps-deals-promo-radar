@@ -33,8 +33,22 @@
     <p>{{site_title}} is an independent price tracker for VPS (virtual private server) plans. It does one job:
       it reads the prices that hosting providers publish on their own public pages, and shows them with the
       source page and the exact UTC time each number was read.</p>
-    <p>Written and maintained by <strong>an independent developer</strong>. This site is not affiliated with,
-      endorsed by, or operated by any of the hosting providers it lists.</p>
+    <p>Written and maintained by <strong>an independent developer</strong>, for people who need a straight answer
+      about what a small server costs. This site is not affiliated with, endorsed by, or operated by any of the
+      hosting providers it lists, and no provider can pay to change a price or to be included.</p>
+
+    <h2>What is on this site today</h2>
+    <ul>
+      <li><strong>{{offer_count}} plans</strong> across <strong>{{provider_count}} providers</strong>, each with the
+        page and UTC read time it came from.</li>
+      <li><strong>{{guide_count}} guides</strong> covering what provider pages usually leave out: a downloadable
+        price table, per-unit pricing computed from published figures, and a numbered setup walkthrough.</li>
+      <li>A <a href="{{base_url}}/compare">side-by-side price list</a>, a
+        <a href="{{base_url}}/downloads/unit-price.csv">downloadable CSV</a>, and a
+        <a href="{{base_url}}/methodology">methodology page</a> describing how every number is read.</li>
+      <li>The dataset is refreshed on a schedule (currently every six hours). Each price is dropped the moment it
+        can no longer be read from the provider's page, rather than carried over from an earlier run.</li>
+    </ul>
 
     <h2>What this site does</h2>
     <ul>
@@ -52,6 +66,7 @@
       <li>It does not convert currencies or add "approximate" figures.</li>
       <li>It does not publish coupon codes it cannot verify.</li>
       <li>It does not scrape behind a login, and it does not try to defeat anti-bot protection.</li>
+      <li>It does not accept payment for placement, and no provider sees a listing before it is published.</li>
     </ul>
 
     <h2>How it runs</h2>
@@ -61,12 +76,14 @@
       <a href="{{repo_url}}" rel="noopener" target="_blank">{{repo_url}}</a>.</p>
 
     <h2>How this site is funded</h2>
-    <ul>
-      <li><strong>Third-party advertising.</strong> This site displays third-party advertising.</li>
-      <li><strong>Affiliate links.</strong> Some outbound links are affiliate links.</li>
-      <li><strong>Commission.</strong> If you sign up through one of those links, we may earn a commission.</li>
-    </ul>
-    <p class="muted">Commission never changes the prices shown here, and it never changes which plans are listed.</p>
+    {{funding}}
+    <p class="muted">Commission never changes the prices shown here, and it never changes which plans are listed.
+      No provider can pay to be included or to move up.</p>
+
+    <h2>How the numbers are read</h2>
+    <p>The full method — what is fetched, what is discarded, and what is never done — is written out on the
+      <a href="{{base_url}}/methodology">methodology page</a>. In short: one published number at a time, with
+      its source page and timestamp, and nothing invented to fill a gap.</p>
 
     <h2>Corrections</h2>
     <p>Prices change without notice and pages get rewritten. If a number here looks wrong, please write to

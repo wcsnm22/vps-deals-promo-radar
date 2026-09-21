@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+  <meta charset="utf-8">
+  <title>How this site reads prices - VPS Deals Radar</title>
+  <link rel="canonical" href="https://vpsdealsradar.com/methodology">
+  <link rel="alternate" hreflang="en-US" href="https://vpsdealsradar.com/methodology">
+  <link rel="alternate" hreflang="x-default" href="https://vpsdealsradar.com/methodology">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="index,follow,max-image-preview:large">
+  <link rel="stylesheet" href="/assets/style.css?v=20260921T112047Z">
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg?v=20260921T112047Z">
+  <script src="/assets/pets.js?v=20260921T112047Z" defer></script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-9EKG14K2LL"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-9EKG14K2LL');</script>
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="How this site reads prices - VPS Deals Radar">
+  <meta property="og:description" content="The exact method behind every number on this site: which page is fetched, how a monthly plan price is separated from per-hour rates and fees, how per-GB figures are computed, and what is never estimated.">
+  <meta property="og:url" content="https://vpsdealsradar.com/methodology">
+  <meta property="og:site_name" content="vps-deals">
+  <meta property="og:image" content="https://vpsdealsradar.com/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="How this site reads prices - VPS Deals Radar">
+  <meta name="twitter:description" content="The exact method behind every number on this site: which page is fetched, how a monthly plan price is separated from per-hour rates and fees, how per-GB figures are computed, and what is never estimated.">
+  <meta name="twitter:image" content="https://vpsdealsradar.com/og.png">
+  <meta name="description" content="The exact method behind every number on this site: which page is fetched, how a monthly plan price is separated from per-hour rates and fees, how per-GB figures are computed, and what is never estimated.">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"How this site reads prices - VPS Deals Radar","description":"The exact method behind every number on this site: which page is fetched, how a monthly plan price is separated from per-hour rates and fees, how per-GB figures are computed, and what is never estimated.","url":"https://vpsdealsradar.com/methodology","isPartOf":{"@type":"WebSite","name":"VPS Deals Radar","url":"https://vpsdealsradar.com/"}}</script>
+</head>
+<body>
+  <header class="site"><div class="wrap">
+    <div class="brand">vps-deals</div>
+    <nav class="crumbs"><a href="https://vpsdealsradar.com/">Home</a> · <a href="https://vpsdealsradar.com/compare">Compare all</a> · <a href="https://vpsdealsradar.com/provider/ovhcloud">OVHcloud</a> · <a href="https://vpsdealsradar.com/provider/netcup">netcup</a> · <a href="https://vpsdealsradar.com/provider/digitalocean">DigitalOcean</a> · <a href="https://vpsdealsradar.com/provider/buyvm">BuyVM</a> · <a href="https://vpsdealsradar.com/provider/ionos">IONOS</a> · <a href="https://vpsdealsradar.com/provider/hetzner">Hetzner</a></nav>
+  </div></header>
+  <main class="wrap">
+    <h1>How this site reads prices</h1>
+    <p class="lede">Every number on this site comes from a page the provider publishes itself. This page describes
+      exactly how it is read, what is thrown away, and what is never done.</p>
+
+    <h2>The rule that comes first</h2>
+    <p>Before reading anything from a provider, the crawler loads that provider's <code>robots.txt</code>. If the
+      path is disallowed, the provider is skipped for that run and the skip is recorded in the dataset with its
+      reason. Nothing is fetched from a disallowed path, and no login is ever used.</p>
+
+    <h2>How a price is found</h2>
+    <ol>
+      <li>The provider's public pricing page is fetched once, as a plain HTTP request with an identifying
+        user agent. The crawler does not retry in a loop and does not attempt to defeat bot protection.</li>
+      <li>The HTML is reduced to lines of visible text.</li>
+      <li>A line is treated as a price candidate when it contains a currency symbol or code followed by a number.
+        Lines that mention per-hour rates, setup fees, extra IPs, licences or startup credits are rejected,
+        because those are not the monthly plan price.</li>
+      <li>Each accepted price is paired with the plan name that appears next to it, and with the resource
+        specifications printed in the same plan block (memory, vCPU count, disk size) when they are present.</li>
+    </ol>
+
+    <h2>How the per-GB figures are computed</h2>
+    <p>The only arithmetic this site performs is a division of two published numbers:</p>
+    <pre><code>price per GB of RAM = published monthly price ÷ published RAM in GB</code></pre>
+    <p>Both inputs must come from the same plan block on the same page. If a plan publishes a price but no RAM
+      figure, no per-GB number is shown for it — the cell stays empty. A headline price on its own cannot be
+      turned into a per-GB figure without inventing the denominator, so it is left unknown.</p>
+
+    <h2>What is deliberately absent</h2>
+    <ul>
+      <li><strong>No estimates.</strong> Nothing is rounded, interpolated or inferred.</li>
+      <li><strong>No currency conversion.</strong> A price stays in the currency the provider published.</li>
+      <li><strong>No stale prices.</strong> Each price carries the UTC time it was read, and a plan whose price
+        can no longer be read is dropped rather than carried over from an earlier run.</li>
+      <li><strong>No unverifiable coupons.</strong> A code is listed only if it appears on the provider's own
+        page.</li>
+      <li><strong>No invented plans.</strong> If a price is found without a trustworthy plan name next to it,
+        the row is left out and the omission is counted in the dataset.</li>
+    </ul>
+
+    <h2>What that means for you</h2>
+    <p>Prices on provider pages change without notice, and this site mirrors them on a schedule — so treat every
+      figure here as a pointer with a timestamp, not as a quote. Confirm on the provider's own page before
+      buying. If a number here looks wrong, write to
+      <a href="mailto:contact@vpsdealsradar.com">contact@vpsdealsradar.com</a> and it will be checked against
+      the source page.</p>
+
+    <h2>Where the data ends up</h2>
+    <p>The same dataset drives the price table, the downloadable CSV, and the guides. The
+      <a href="https://vpsdealsradar.com/downloads/unit-price.csv">CSV</a> carries the formula and the source URL for every
+      row, so any figure here can be recomputed by hand.</p>
+
+    <footer class="site"><p class="muted">Prices are read from each provider's own public page on 2026-09-21T11:20:47Z and can change without notice — always confirm on the provider site before buying.</p><p class="muted">Independent listings. No invented prices: a plan without a published price shows no price.</p><p class="muted"><strong>Affiliate links:</strong> none active at present — outbound provider links carry no tracking parameter, so no commission is earned from them.</p><p class="muted"><strong>Advertising:</strong> none shown — no ad network script runs on these pages.</p><p class="muted">vps-deals · <a href="https://vpsdealsradar.com/about">About</a> · <a href="https://vpsdealsradar.com/methodology">Methodology</a> · <a href="https://vpsdealsradar.com/privacy">Privacy Policy</a> · <a href="https://vpsdealsradar.com/contact">Contact</a> · <a href="https://vpsdealsradar.com/sitemap.xml">Sitemap</a></p><div class="critter" aria-hidden="true"></div></footer>
+  </main>
+</body>
+</html>
