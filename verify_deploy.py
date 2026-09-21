@@ -35,11 +35,20 @@ def fetch(url: str) -> str:
 
 
 def fingerprint(text: str) -> set[str]:
-    """只比会随构建变化的关键片段，避免整页对比被时间戳噪声干扰。"""
+    """只比会随构建变化的关键片段，避免整页对比被时间戳噪声干扰。
+
+    除了指南的 lastmod 和资源版本号，还要把 sitemap 的**网址清单**纳入比对：
+    否则"新增了一个页面但线上还是旧版"这种情况会被判为通过
+    （旧版和构建版的 guide lastmod 是一样的，比不出来）。
+    """
     import re
 
     out = set(re.findall(r"guide/[a-z0-9-]+</loc><lastmod>[^<]+", text))
     out |= set(re.findall(r'assets/style\.css\?v=[0-9A-Za-z]+', text))
+    locs = re.findall(r"<loc>([^<]+)</loc>", text)
+    if locs:
+        out.add(f"urlcount={len(locs)}")
+        out |= {f"loc={url}" for url in locs}
     return out
 
 
