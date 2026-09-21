@@ -110,3 +110,40 @@ OVHcloud | https://www.ovhcloud.com | https://www.ovhcloud.com/en/vps/ |  | kind
 - 不要为了好看往链接里塞一个猜的参数（我不会做，也不会替你拼）
 - 不要夸大站点流量去骗过审——审下来后数据对不上，账号会被封
 - 不要在多个平台重复注册同一家厂商的计划（容易触发风控）
+
+---
+
+## 九、换哪家：已核实条款的联盟计划对比（2026-09-21 用真实浏览器/官方页读到）
+
+按「能不能直接申请、是否必须先买产品、佣金多少、钱能不能拿出来」排序。**只写我读到的，读不到就标出来。**
+
+| 厂商 | 佣金 | 是否 recurring | 门槛/前置 | 我方状态 | 来源 |
+|---|---|---|---|---|---|
+| **Hostwinds** | **10% recurring** | ✅ 持续性（月度服务的每笔付款各自计算） | **不需要网站**（可填社交账号）、**不需要先当客户**、无流量门槛 | ✅ **推荐优先试** | [官方 FAQ](https://www.hostwinds.com/product-docs/account/affiliate-faq)（已读全文） |
+| **Hostinger** | **40% 起**，按业绩上升 | 页面未明说 | **"注册不到一分钟、完全免费"**，`affiliates.hostinger.com` 自助注册 | ✅ 推荐试 | [affiliates 页](https://www.hostinger.com/affiliates)（已读） |
+| **Namecheap** | 按新客首单 | 页面未明说 | 需先注册 **CJ** 或 **Impact** 平台账号，通过后拿链接；最低提现 **$10** | ⚠️ 要过平台审核 | [Namecheap 联盟页](https://www.namecheap.com/affiliates/)（已读） |
+| **DigitalOcean** | **10% recurring，持续 12 个月** | ✅（一年） | 官方页写「**Anyone can join**」，但**经 CJ 网络**加入 | ⚠️ 注意：**官方联盟页说走 CJ，法律页却说走 Awin**（我们之前申请的是 Awin，被拒）。两边矛盾，**建议按联盟页走 CJ** | [DigitalOcean 联盟页](https://www.digitalocean.com/affiliates)（已读） |
+| **OVHcloud** | 未读到 | 未读到 | 只有协议 PDF（我打不开 PDF），申请入口未确认 | ❓ 待你自找 | [协议](https://www.ovh.ie/support/termsofservice/OVHcloud%20Affiliates.pdf) |
+| **IONOS** | 未读到 | 未读到 | 走 Agency Partner 体系 | ❓ | [afiliado 页](https://www.ionos.es/agency-partner/afiliado) |
+| **netcup** | 10% recurring | ✅ | **必须先是 netcup 客户**；私人客户佣金**只能抵自己账单、超额作废** | ⛔ 对"拿现金"不实用 | [官方文档](https://www.netcup.com/en/helpcenter/documentation/general/affiliate-program)（已读全文） |
+| **Vultr** | 未读到 | 未读到 | `/affiliate/` 会跳转到品牌素材页；`/affiliates/` 等返回 **403**，读不到 | ❓ 需你自行打开 | — |
+| **Contabo** | 未读到 | 未读到 | 页面被 Cloudflare 挑战页挡住（"Just a moment..."） | ❓ | — |
+| **RackNerd** | 疑似 recurring（官方博客提过） | ❓ | 页面被 Cloudflare 挡住；有 [`affiliates-terms-of-service`](https://racknerd.com/affiliates-terms-of-service) | ❓ | — |
+| **BuyVM / Hetzner** | 无第一方计划 | — | — | ⛔ 放弃 | — |
+
+### 我建议的申请顺序
+
+1. **Hostwinds** — 条款最松的一条：不用网站、不用先当客户、10% 持续性佣金、$100 起提现、每月 1 号和 15 号结算。它对小站最友好。
+2. **Hostinger** — 40% 起步、自助注册、号称一分钟免费开通。但它是共享主机为主，VPS 只是产品线之一；且**佣金率是否含 VPS 要你自己在注册时确认**（我只读到"40% 起"，没读到分产品的费率表）。
+3. **DigitalOcean 走 CJ** — 注意别再用 Awin 那个入口（已拒）；官方联盟页给的是 CJ。
+4. **Namecheap 走 CJ/Impact** — 顺路申请，它是域名+主机综合商家，转化面更宽。
+
+### ⚠️ 三条要你知道的差异
+
+- **Hostwinds 不需要网站**：原文 "That is okay. You can provide the website, social media page, platform, or other promotional channel where you plan to advertise Hostwinds."
+- **Hostwinds 的 60 天持有期**：佣金要等被推荐客户付款后 60 天且服务仍在用，才算"成熟"。
+- **DigitalOcean 自己的两个页面互相矛盾**（CJ vs Awin）。这不是我读错，是官方文档不一致——**申请前先按联盟页的 CJ 走**，被拒再问客服要哪个网络。
+
+### 还没读到的
+
+Vultr、Contabo、RackNerd 三家的页面分别被重定向或 Cloudflare 挑战页挡住，**我没有拿到它们的佣金率与门槛**。要的话我换个时间或用别的方式再试；或者你直接打开这三个链接看一眼也行。
