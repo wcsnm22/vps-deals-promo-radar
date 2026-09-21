@@ -1,16 +1,16 @@
 provider,plan,price,currency,ram_gb,vcpu,disk_gb,price_per_gb_ram,price_per_vcpu,unit_price_formula,source_url,fetched_at
-BuyVM,HIGH VOLUME VPS,30.0,USD,8,2,160,3.75,15.0,30.0 USD / 8 GB RAM,https://buyvm.net/kvm-dedicated-server-slices/,2026-09-21T11:26:53Z
-IONOS,VPS S+,2.0,USD,2,1,60,1.0,2.0,2.0 USD / 2 GB RAM,https://www.ionos.com/servers/vps,2026-09-21T11:26:53Z
-IONOS,VPS M+,5.0,USD,4,2,120,1.25,2.5,5.0 USD / 4 GB RAM,https://www.ionos.com/servers/vps,2026-09-21T11:26:53Z
-IONOS,VPS L+,8.0,USD,8,4,240,1.0,2.0,8.0 USD / 8 GB RAM,https://www.ionos.com/servers/vps,2026-09-21T11:26:53Z
-IONOS,VPS XL+,14.0,USD,16,8,480,0.875,1.75,14.0 USD / 16 GB RAM,https://www.ionos.com/servers/vps,2026-09-21T11:26:53Z
-IONOS,VPS XXL+,20.0,USD,24,12,720,0.8333,1.6667,20.0 USD / 24 GB RAM,https://www.ionos.com/servers/vps,2026-09-21T11:26:53Z
-OVHcloud,VPS-1,4.54,USD,4,2,40,1.135,2.27,4.54 USD / 4 GB RAM,https://www.ovhcloud.com/en/vps/,2026-09-21T11:26:53Z
-OVHcloud,VPS-2,8.5,USD,8,4,75,1.0625,2.125,8.5 USD / 8 GB RAM,https://www.ovhcloud.com/en/vps/,2026-09-21T11:26:53Z
-OVHcloud,VPS-3,12.32,USD,12,6,100,1.0267,2.0533,12.32 USD / 12 GB RAM,https://www.ovhcloud.com/en/vps/,2026-09-21T11:26:53Z
-OVHcloud,VPS-4,23.37,USD,24,8,200,0.9738,2.9213,23.37 USD / 24 GB RAM,https://www.ovhcloud.com/en/vps/,2026-09-21T11:26:53Z
-netcup,VPS 500 G12,5.91,EUR,4,2,128,1.4775,2.955,5.91 EUR / 4 GB RAM,https://www.netcup.com/en/server/vps,2026-09-21T11:26:53Z
-netcup,VPS 1000 G12,10.37,EUR,8,4,256,1.2962,2.5925,10.37 EUR / 8 GB RAM,https://www.netcup.com/en/server/vps,2026-09-21T11:26:53Z
-netcup,VPS 2000 G12,19.25,EUR,16,8,512,1.2031,2.4062,19.25 EUR / 16 GB RAM,https://www.netcup.com/en/server/vps,2026-09-21T11:26:53Z
-netcup,VPS 4000 G12,32.41,EUR,32,12,1024,1.0128,2.7008,32.41 EUR / 32 GB RAM,https://www.netcup.com/en/server/vps,2026-09-21T11:26:53Z
-netcup,VPS 8000 G12,47.95,EUR,64,16,2048,0.7492,2.9969,47.95 EUR / 64 GB RAM,https://www.netcup.com/en/server/vps,2026-09-21T11:26:53Z
+BuyVM,HIGH VOLUME VPS,30.0,USD,8,2,160,3.75,15.0,30.0 USD / 8 GB RAM,https://buyvm.net/kvm-dedicated-server-slices/,2026-09-21T11:37:55Z
+IONOS,VPS S+,2.0,USD,2,1,60,1.0,2.0,2.0 USD / 2 GB RAM,https://www.ionos.com/servers/vps,2026-09-21T11:37:55Z
+IONOS,VPS M+,5.0,USD,4,2,120,1.25,2.5,5.0 USD / 4 GB RAM,https://www.ionos.com/servers/vps,2026-09-21T11:37:55Z
+IONOS,VPS L+,8.0,USD,8,4,240,1.0,2.0,8.0 USD / 8 GB RAM,https://www.ionos.com/servers/vps,2026-09-21T11:37:55Z
+IONOS,VPS XL+,14.0,USD,16,8,480,0.875,1.75,14.0 USD / 16 GB RAM,https://www.ionos.com/servers/vps,2026-09-21T11:37:55Z
+IONOS,VPS XXL+,20.0,USD,24,12,720,0.8333,1.6667,20.0 USD / 24 GB RAM,https://www.ionos.com/servers/vps,2026-09-21T11:37:55Z
+OVHcloud,VPS-1,4.54,USD,4,2,40,1.135,2.27,4.54 USD / 4 GB RAM,https://www.ovhcloud.com/en/vps/,2026-09-21T11:37:55Z
+OVHcloud,VPS-2,8.5,USD,8,4,75,1.0625,2.125,8.5 USD / 8 GB RAM,https://www.ovhcloud.com/en/vps/,2026-09-21T11:37:55Z
+OVHcloud,VPS-3,12.32,USD,12,6,100,1.0267,2.0533,12.32 USD / 12 GB RAM,https://www.ovhcloud.com/en/vps/,2026-09-21T11:37:55Z
+OVHcloud,VPS-4,23.37,USD,24,8,200,0.9738,2.9213,23.37 USD / 24 GB RAM,https://www.ovhcloud.com/en/vps/,2026-09-21T11:37:55Z
+netcup,VPS 500 G12,5.91,EUR,4,2,128,1.4775,2.955,5.91 EUR / 4 GB RAM,https://www.netcup.com/en/server/vps,2026-09-21T11:37:55Z
+netcup,VPS 1000 G12,10.37,EUR,8,4,256,1.2962,2.5925,10.37 EUR / 8 GB RAM,https://www.netcup.com/en/server/vps,2026-09-21T11:37:55Z
+netcup,VPS 2000 G12,19.25,EUR,16,8,512,1.2031,2.4062,19.25 EUR / 16 GB RAM,https://www.netcup.com/en/server/vps,2026-09-21T11:37:55Z
+netcup,VPS 4000 G12,32.41,EUR,32,12,1024,1.0128,2.7008,32.41 EUR / 32 GB RAM,https://www.netcup.com/en/server/vps,2026-09-21T11:37:55Z
+netcup,VPS 8000 G12,47.95,EUR,64,16,2048,0.7492,2.9969,47.95 EUR / 64 GB RAM,https://www.netcup.com/en/server/vps,2026-09-21T11:37:55Z

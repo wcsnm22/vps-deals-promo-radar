@@ -550,6 +550,57 @@ def build_provider(site: dict, provider: dict, offers: list[dict], generated_at:
             ],
         }
     )
+    # 两段都由已抓到的数字算出；没有数据就如实说明原因，不填充套话。
+    if offers:
+        basis_rows = [
+            f"<tr><th>Plans readable on the source page</th><td>{len(offers)}</td></tr>",
+            f"<tr><th>Of those, publishing a price</th><td>{len(priced)}</td></tr>",
+        ]
+        with_ram = [o for o in priced if o.get("ram_gb")]
+        basis_rows.append(
+            f"<tr><th>Publishing a RAM figure beside the price</th><td>{len(with_ram)}</td></tr>")
+        basis_rows.append(
+            f"<tr><th>Read from</th><td><a href=\"{escape(provider['deals_url'])}\" rel=\"nofollow noopener\" "
+            f"target=\"_blank\">{escape(provider['deals_url'])}</a></td></tr>")
+        basis_rows.append(f"<tr><th>Read at (UTC)</th><td>{escape(generated_at)}</td></tr>")
+        basis = ('<div class="table-shell"><table><tbody>' + "".join(basis_rows) + "</tbody></table></div>")
+    else:
+        reason = escape(provider.get("note") or "no readable price was found on the source page")
+        basis = (
+            f'<p>Nothing from {escape(name)} appears in the price table at the moment. The reason recorded by '
+            f"the crawler for this run is: <em>{reason}</em>.</p>"
+            f'<p class="muted">That is not a judgement about the provider — it means this site could not read a '
+            f"published price from "
+            f'<a href="{escape(provider["deals_url"])}" rel="nofollow noopener" target="_blank">their page</a> '
+            f"on {escape(generated_at)} (UTC), and it does not publish a price it cannot read.</p>"
+        )
+
+    ranked = sorted([o for o in priced if o.get("ram_gb")], key=lambda o: o["price"] / o["ram_gb"])
+    if ranked:
+        per_rows = "".join(
+            "<tr>"
+            f'<td>{i + 1}</td>'
+            f'<td><a href="{escape(deal_page(site, o))}">{escape(o["title"])}</a></td>'
+            f'<td class="price">{escape(money(o["price"], o.get("currency", "USD")))}</td>'
+            f'<td>{o["ram_gb"]} GB</td>'
+            f'<td class="price">{o["price"] / o["ram_gb"]:.4f} {escape(o.get("currency", ""))}</td>'
+            "</tr>"
+            for i, o in enumerate(ranked)
+        )
+        per_gb = (
+            '<div class="table-shell"><table><thead><tr><th>#</th><th>Plan</th><th>Published price</th>'
+            '<th>RAM</th><th>Per GB</th></tr></thead><tbody>' + per_rows + "</tbody></table></div>"
+            + f'<p class="muted">{len(ranked)} of {len(priced)} priced plans publish the RAM figure this '
+              f'division needs. The rest are left out rather than estimated.</p>'
+        )
+    else:
+        per_gb = (
+            '<p class="muted">A price-per-GB figure needs two published numbers: the monthly price and the RAM '
+            'figure beside it. No plan from this provider currently publishes both, so no per-unit figure is '
+            'shown. See the '
+            f'<a href="{escape(site["base_url"])}/methodology">methodology page</a> for how that decision is made.</p>'
+        )
+
     meta = {
         "canonical": provider_page(site, name),
         "locale": site["locale"],
@@ -577,11 +628,15 @@ def build_provider(site: dict, provider: dict, offers: list[dict], generated_at:
             "offer_count": str(len(offers)),
             "priced_count": str(len(priced)),
             "note": escape(provider.get("note") or ""),
+            "basis": basis,
+            "per_gb": per_gb,
+            "base_url": escape(site["base_url"]),
         },
     )
 
 
-def build_deal(site: dict, offer: dict, generated_at: str, variants: int = 1) -> str:
+def build_deal(site: dict, offer: dict, generated_at: str, variants: int = 1,
+               provider_offers: list[dict] | None = None) -> str:
     month = MONTHS[datetime.now(timezone.utc).month - 1]
     currency = offer.get("currency", "USD")
     price_text = money(offer.get("price"), currency)
@@ -624,6 +679,94 @@ def build_deal(site: dict, offer: dict, generated_at: str, variants: int = 1) ->
         "og_type": "product",
         "og_image": site["og_image"],
     }
+    # 三张表全部由已抓到的数字算出；缺输入就如实写"未公布"，不补不估。
+    def _row(label: str, value: str) -> str:
+        return f"<tr><th>{escape(label)}</th><td>{value}</td></tr>"
+
+    price_value = offer.get("price")
+    ram = offer.get("ram_gb")
+    vcpu = offer.get("vcpu")
+    disk = offer.get("disk_gb")
+    currency_code = escape(currency)
+
+    specs_rows = []
+    specs_rows.append(_row("Published price",
+                           escape(price_text) if price_text else
+                           '<span class="muted">no price published on the source page</span>'))
+    specs_rows.append(_row("Memory (RAM)",
+                           f"{ram} GB" if ram else '<span class="muted">not published next to the price</span>'))
+    specs_rows.append(_row("vCPU",
+                           str(vcpu) if vcpu else '<span class="muted">not published next to the price</span>'))
+    specs_rows.append(_row("Disk",
+                           f"{disk} GB" if disk else '<span class="muted">not published next to the price</span>'))
+    specs_rows.append(_row("Currency", currency_code))
+    specs_rows.append(_row("Read from",
+                           f'<a href="{escape(offer["source_url"])}" rel="nofollow noopener" target="_blank">'
+                           f'{escape(offer["source_url"])}</a>'))
+    specs_rows.append(_row("Read at (UTC)", escape(offer["fetched_at"])))
+    specs_table = ('<div class="table-shell"><table><tbody>' + "".join(specs_rows)
+                   + "</tbody></table></div>")
+
+    unit_rows = []
+    if price_value and ram:
+        unit_rows.append(_row(f"Price per GB of RAM",
+                              f'<span class="price">{price_value / ram:.4f} {currency_code}</span> '
+                              f'<span class="muted">= {price_value} {currency_code} ÷ {ram} GB</span>'))
+    else:
+        unit_rows.append(_row("Price per GB of RAM",
+                              '<span class="muted">cannot be computed — the RAM figure is not published '
+                              'next to this price</span>'))
+    if price_value and vcpu:
+        unit_rows.append(_row("Price per vCPU",
+                              f'<span class="price">{price_value / vcpu:.4f} {currency_code}</span> '
+                              f'<span class="muted">= {price_value} {currency_code} ÷ {vcpu} vCPU</span>'))
+    else:
+        unit_rows.append(_row("Price per vCPU",
+                              '<span class="muted">cannot be computed — the vCPU count is not published '
+                              'next to this price</span>'))
+    if disk and ram:
+        unit_rows.append(_row("Disk per GB of RAM",
+                              f'{disk / ram:.1f} GB <span class="muted">= {disk} GB ÷ {ram} GB</span>'))
+    unit_table = ('<div class="table-shell"><table><tbody>' + "".join(unit_rows)
+                  + "</tbody></table></div>"
+                  + '<p class="muted">Both inputs must come from the same plan block on the same page. '
+                    'Where one is missing the cell says so instead of estimating it.</p>')
+
+    siblings = [o for o in (provider_offers or []) if o.get("title") != offer.get("title")]
+    if siblings:
+        cmp_rows = []
+        for other in sorted(siblings, key=lambda o: (o.get("price") is None, o.get("price") or 0)):
+            other_price = money(other.get("price"), other.get("currency", currency))
+            other_ram = other.get("ram_gb")
+            per_gb = (f'{other["price"] / other_ram:.4f} {other.get("currency", "")}'
+                      if other.get("price") and other_ram else '<span class="muted">-</span>')
+            delta = ""
+            if price_value and other.get("price"):
+                diff = other["price"] - price_value
+                delta = (f'<span class="muted">{diff:+.2f}</span>' if diff else
+                         '<span class="muted">same</span>')
+            cmp_rows.append(
+                "<tr>"
+                f'<td><a href="{escape(deal_page(site, other))}">{escape(other["title"])}</a></td>'
+                f'<td class="price">{escape(other_price) if other_price else "not published"}</td>'
+                f'<td>{escape(str(other_ram)) if other_ram else "-"}</td>'
+                f'<td class="price">{per_gb}</td>'
+                f'<td>{delta}</td>'
+                "</tr>"
+            )
+        provider_table = (
+            '<div class="table-shell"><table><thead><tr><th>Plan</th><th>Published price</th>'
+            '<th>RAM (GB)</th><th>Per GB</th><th>vs this plan</th></tr></thead><tbody>'
+            + "".join(cmp_rows) + "</tbody></table></div>"
+            + f'<p class="muted">{len(siblings) + 1} {escape(offer["provider"])} plans were readable on the '
+              f'source page. Differences are shown in {currency_code} without conversion.</p>'
+        )
+    else:
+        provider_table = (
+            f'<p class="muted">Only one {escape(offer["provider"])} plan could be read from the source page, '
+            'so there is nothing to compare it against yet.</p>'
+        )
+
     return render(
         template("deal.html"),
         {
@@ -641,6 +784,10 @@ def build_deal(site: dict, offer: dict, generated_at: str, variants: int = 1) ->
             "source_url": escape(offer["source_url"]),
             "fetched_at": escape(offer["fetched_at"]),
             "offer_url": escape(offer["offer_url"]),
+            "specs_table": specs_table,
+            "unit_table": unit_table,
+            "provider_table": provider_table,
+            "base_url": escape(site["base_url"]),
             "variants_note": (
                 f'The provider page currently lists {variants} different prices for this plan; the lowest is shown here.'
                 if variants > 1
@@ -1159,7 +1306,9 @@ def main() -> int:
         written.append(f"provider/{path.name}")
 
     for offer in offers:
-        html = build_deal(site, offer, generated_at, variants.get((offer["provider"], offer["title"].lower()), 1))
+        html = build_deal(site, offer, generated_at,
+                            variants.get((offer["provider"], offer["title"].lower()), 1),
+                            grouped.get(offer["provider"], []))
         path = SITE_DIR / "deal" / f"{offer_slug(offer)}.html"
         path.write_text(html, encoding="utf-8")
         written.append(f"deal/{path.name}")

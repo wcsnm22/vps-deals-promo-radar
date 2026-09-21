@@ -39,6 +39,16 @@
     <p class="muted">Price exactly as published on the provider page — this site never estimates or converts it.</p>
     <p class="muted">{{variants_note}}</p>
     <a class="cta" rel="nofollow sponsored noopener" target="_blank" href="{{offer_url}}">Check this plan on {{provider}}</a>
+
+    <h2>This plan at a glance</h2>
+    {{specs_table}}
+
+    <h2>Price per unit, computed from published figures</h2>
+    {{unit_table}}
+
+    <h2>How {{deal_title}} compares inside {{provider}}</h2>
+    {{provider_table}}
+
     <h2>Where this number came from</h2>
     <dl>
       <dt>Source page</dt><dd><a href="{{source_url}}" rel="nofollow noopener" target="_blank">{{source_url}}</a></dd>
@@ -48,6 +58,15 @@
       <dt>Provider page</dt><dd><a href="{{provider_url}}">All {{provider}} plans tracked</a></dd>
     </dl>
     <p class="muted">Prices and availability change without notice. Confirm on the provider's own page before buying.</p>
+
+    <h2>More on this site</h2>
+    <ul>
+      <li><a href="{{base_url}}/downloads/unit-price.csv">Download the full price table (CSV)</a> — every tracked
+        plan with its formula and source URL.</li>
+      <li><a href="{{provider_url}}">All {{provider}} plans we could read</a>.</li>
+      <li><a href="{{base_url}}/compare">Compare every tracked plan side by side</a>.</li>
+      <li><a href="{{base_url}}/methodology">How these prices are read and checked</a>.</li>
+    </ul>
     <footer class="site">{{footer}}</footer>
   </main>
 </body>

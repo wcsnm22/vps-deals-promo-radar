@@ -51,6 +51,25 @@
       <thead><tr><th>Provider</th><th>Plan</th><th>Price as published</th><th></th></tr></thead>
       <tbody>{{rows}}</tbody>
     </table>
+
+    <h2>What these numbers are based on</h2>
+    {{basis}}
+
+    <h2>Cheapest per GB of RAM at {{provider}}</h2>
+    {{per_gb}}
+
+    <h2>Reading this page</h2>
+    <ul>
+      <li>Every price was read from <a href="{{source_url}}" rel="nofollow noopener" target="_blank">the
+        provider's own page</a> on {{generated_at}} (UTC) and is shown in the currency that page used.</li>
+      <li>A plan with no readable price is listed without one. It is never estimated, converted or carried over
+        from an earlier run.</li>
+      <li>The full dataset, with a formula and source URL per row, is available as
+        <a href="{{base_url}}/downloads/unit-price.csv">CSV</a>; the method is described on the
+        <a href="{{base_url}}/methodology">methodology page</a>.</li>
+      <li><a href="{{base_url}}/compare">Compare every tracked plan across all providers</a>, or go back to the
+        <a href="{{base_url}}/">full deal list</a>.</li>
+    </ul>
     <footer class="site">{{footer}}</footer>
   </main>
 </body>

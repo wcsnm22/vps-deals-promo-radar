@@ -16,6 +16,11 @@ TYPE:config PROJECT:vps-deals LANG:zh
   BuyVM | https://buyvm.net | https://buyvm.net/kvm-dedicated-server-slices/ |  | kind=page | currency=USD
   IONOS | https://www.ionos.com | https://www.ionos.com/servers/vps |  | kind=page | currency=USD
   Hetzner | https://www.hetzner.com | https://www.hetzner.com/cloud/ |  | kind=page | currency=EUR
+  # Hetzner 说明（2026-09-21 实测）：其 /cloud/ 页面的价格**不在服务端 HTML 里**——服务端渲染出 466 行
+  # 文本、含价格的行数为 0，价格由 JS 之后加载。按本仓库"只抓公开页面、不执行 JS、不绕反爬"的规矩，
+  # 读不到就读不到，页面照实写明原因，不硬接、不猜价。
+  # 如果以后要收录：正道是接入他们公开的 pricing API（需要给 scraper 加一种新数据源类型，
+  # 且其 Cloud API 目前正在变更），属独立改动，先不做。
 
 ::MODULE{FIELDS|title:每条优惠提取什么 抓不到就不写这个字段}
   title price currency offer_url valid_until source_url fetched_at
