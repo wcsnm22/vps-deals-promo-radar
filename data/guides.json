@@ -79,5 +79,61 @@
         "url": "https://www.ionos.com/servers/vps"
       }
     ]
+  },
+  {
+    "slug": "unitprice-2026-09-22-1",
+    "title": "Cheapest VPS per GB of RAM: Hostwinds - 2026-09-22 ranking from 10 computable plans",
+    "gap": "unitprice",
+    "gap_note": "The benchmarked top pages list headline prices without breaking them down per unit. This entry divides only the numbers the provider itself published.",
+    "answer": "Hostwinds: cheapest RAM per unit is Unmanaged Linux VPS Hosting - 12 CPU / 64 GB RAM / 500 GB at 3.3592 USD per GB (214.99 USD / 64 GB), computed from the published price only.",
+    "auto": true,
+    "published": "2026-09-22T01:00:25Z",
+    "body_html": "<h2>Hostwinds plans ranked by price per GB</h2><div class=\"table-shell\"><table><thead><tr><th>#</th><th>Plan</th><th>Published price</th><th>RAM (GB)</th><th>Price per GB</th></tr></thead><tbody><tr><td>1</td><td>Unmanaged Linux VPS Hosting - 12 CPU / 64 GB RAM / 500 GB</td><td class=\"price\">214.99 USD</td><td>64</td><td class=\"price\">3.3592 USD/GB</td></tr><tr><td>2</td><td>Unmanaged Linux VPS Hosting - 16 CPU / 96 GB RAM / 750 GB</td><td class=\"price\">328.99 USD</td><td>96</td><td class=\"price\">3.4270 USD/GB</td></tr><tr><td>3</td><td>Unmanaged Linux VPS Hosting - 8 CPU / 32 GB RAM / 400 GB</td><td class=\"price\">124.99 USD</td><td>32</td><td class=\"price\">3.9059 USD/GB</td></tr><tr><td>4</td><td>Unmanaged Linux VPS Hosting - 4 CPU / 12 GB RAM / 200 GB</td><td class=\"price\">49.99 USD</td><td>12</td><td class=\"price\">4.1658 USD/GB</td></tr><tr><td>5</td><td>Unmanaged Linux VPS Hosting - 2 CPU / 4 GB RAM / 75 GB</td><td class=\"price\">18.99 USD</td><td>4</td><td class=\"price\">4.7475 USD/GB</td></tr><tr><td>6</td><td>Unmanaged Linux VPS Hosting - 6 CPU / 16 GB RAM / 300 GB</td><td class=\"price\">76.99 USD</td><td>16</td><td class=\"price\">4.8119 USD/GB</td></tr><tr><td>7</td><td>Unmanaged Linux VPS Hosting - 2 CPU / 6 GB RAM / 100 GB</td><td class=\"price\">28.99 USD</td><td>6</td><td class=\"price\">4.8317 USD/GB</td></tr><tr><td>8</td><td>Unmanaged Linux VPS Hosting - 4 CPU / 8 GB RAM / 150 GB</td><td class=\"price\">38.99 USD</td><td>8</td><td class=\"price\">4.8738 USD/GB</td></tr><tr><td>9</td><td>Unmanaged Linux VPS Hosting - 1 CPU / 1 GB RAM / 30 GB</td><td class=\"price\">4.99 USD</td><td>1</td><td class=\"price\">4.9900 USD/GB</td></tr><tr><td>10</td><td>Unmanaged Linux VPS Hosting - 1 CPU / 2 GB RAM / 50 GB</td><td class=\"price\">9.99 USD</td><td>2</td><td class=\"price\">4.9950 USD/GB</td></tr></tbody></table></div><h2>How to recompute</h2><p>Every per-GB cell equals the published monthly price divided by the RAM figure printed beside it. Plans without a published RAM figure are excluded instead of estimated.</p>",
+    "sources": [
+      {
+        "label": "OVHcloud published price page",
+        "url": "https://www.ovhcloud.com/en/vps/"
+      },
+      {
+        "label": "netcup published price page",
+        "url": "https://www.netcup.com/en/server/vps"
+      },
+      {
+        "label": "BuyVM published price page",
+        "url": "https://buyvm.net/kvm-dedicated-server-slices/"
+      },
+      {
+        "label": "IONOS published price page",
+        "url": "https://www.ionos.com/servers/vps"
+      },
+      {
+        "label": "Hostwinds published price page",
+        "url": "https://www.hostwinds.com/vps/unmanaged-linux"
+      }
+    ]
+  },
+  {
+    "slug": "steps-2026-09-23-1",
+    "title": "Cheap VPS setup and connection steps: Hostwinds plan - numbered walkthrough, 2026-09-23",
+    "gap": "steps",
+    "gap_note": "Only one page across the benchmarked domains gives numbered steps, and it covers Windows installation alone. This entry keeps the purchase-to-login sequence in one place with the source beside each step.",
+    "answer": "Eight numbered steps from picking the plan to logging in. Hostwinds currently tracks 10 priced plan(s), cheapest at 4.99 USD (Unmanaged Linux VPS Hosting - 1 CPU / 1 GB RAM / 30 GB).",
+    "auto": true,
+    "published": "2026-09-23T01:00:24Z",
+    "body_html": "<h2>Ordered steps (checked against what Hostwinds publishes today)</h2><ol><li><strong>Decide the resource floor from the workload, not the price</strong> Write down the smallest RAM figure that will run your stack. A single small web app or VPN fits in 1-2 GB; a database doing real work wants 4 GB or more.</li><li><strong>Compare plans on published numbers only</strong> Use the tracked price list and divide price by the RAM figure the provider published. If a plan publishes no RAM figure next to its price, the per-GB number is unknown - do not guess it.</li><li><strong>Check what the price excludes before you commit</strong> Backups, control panels, extra IPv4 addresses and Windows licences are commonly billed separately. Read the row underneath the plan card on the provider's own pricing page.</li><li><strong>Create the account and deploy the server</strong> In the provider's control panel choose the plan, the region closest to your users, and the operating system image. Linux images carry no extra licence fee on the low-cost plans; Windows normally adds one.</li><li><strong>Add your SSH key during deployment</strong> Paste your public key at deploy time. With key authentication you can turn password login off later instead of leaving a password exposed to the internet.</li><li><strong>Connect over SSH on Linux plans</strong> The provider issues the server address at deploy time; connect from a terminal with the username and key you configured. The out-of-band console in the panel is the fallback when SSH does not answer.</li><li><strong>Connect over RDP on Windows plans</strong> Reach a Windows VPS with Remote Desktop using the administrator credentials the provider issued. Where a bring-your-own-licence path is documented, activate your own retail or volume licence after installation.</li><li><strong>Update and harden before pointing traffic at it</strong> Apply operating-system updates, replace password login with keys where the OS supports it, open only the ports you need, and confirm you hold a backup or snapshot you can actually restore.</li></ol>",
+    "sources": [
+      {
+        "label": "RamNode - Installing Windows on Cloud VPS",
+        "url": "https://ramnode.com/support/documentation/cloud-vps/windows-install"
+      },
+      {
+        "label": "OVHcloud - VPS documentation entry point",
+        "url": "https://us.ovhcloud.com/vps/"
+      },
+      {
+        "label": "DigitalOcean - VPS hosting explained",
+        "url": "https://www.digitalocean.com/solutions/vps-hosting"
+      }
+    ]
   }
 ]

@@ -1313,6 +1313,15 @@ def main() -> int:
         path.write_text(html, encoding="utf-8")
         written.append(f"deal/{path.name}")
 
+    # 厂商改型号或改套餐名之后，旧 slug 的 deal 页会变成孤儿页：线上已被 _worker.js
+    # 的白名单判 404，文件却还留在 site/ 里被每次部署一起上传。deal 页全部由本次 offers
+    # 生成，所以直接和本次产出的集合对齐；和指南那段的清理保持同一套做法。
+    deal_keep = {f"{offer_slug(offer)}.html" for offer in offers}
+    for stale in sorted((SITE_DIR / "deal").glob("*.html")):
+        if stale.name not in deal_keep:
+            stale.unlink()
+            written.append(f"removed stale deal/{stale.name}")
+
     # 可下载的比价表：三家里没有任何一家提供这种文件，这是这个词最集中的缺口。
     csv_body, csv_rows = build_unit_price_csv(offers)
     (SITE_DIR / "downloads" / "unit-price.csv").write_text(csv_body, encoding="utf-8")
