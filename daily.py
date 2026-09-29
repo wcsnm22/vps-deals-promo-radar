@@ -2,6 +2,7 @@
 # TYPE:schedule ROLE:daily-run PROJECT:vps-deals
 # ::RULE{每天跑一次 先抓后建⇒抓不到就照实跳过 不许补数}
 # ::RULE{每次都要写一行日志⇒日期 篇数 缺口 结果 地址}
+# ::RULE{通过自查就提交并推回 origin⇒本地和 Actions 永远构建同一棵树 不许只留在本地}
 # ::BOUNDARY{never:编价格 编索引数|scope:file}
 """每天的自动任务：抓公开页 -> 重建站点 -> 更新指南栏 -> 写日志。
 
@@ -64,6 +65,46 @@ def deploy() -> tuple[int, str]:
     return proc.returncode, "\n".join(cleaned[-4:])
 
 
+def git_sync(ran_tag: str) -> tuple[int, str]:
+    """把本次产出提交并推回 origin，让 Actions 和本地永远构建同一棵树。
+
+    推不上去（远端刚被 Actions 刷新过等竞态）就先合一下再推；还不行就照实返回
+    非零记进日志，内容留在本地，下一次运行重试——不为了同步去改写远端历史。
+    """
+
+    def git(*args: str) -> tuple[int, str]:
+        proc = subprocess.run(
+            ["git", *args],
+            cwd=str(ROOT),
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+        )
+        return proc.returncode, (proc.stdout or "") + (proc.stderr or "")
+
+    add_code, add_out = git("add", "data", "site")
+    if add_code != 0:
+        return 1, "[fail] git add: " + " ".join(add_out.strip().splitlines()[-1:])
+    staged_code, _ = git("diff", "--staged", "--quiet")  # 0=无改动 1=有改动
+    if staged_code == 0:
+        return 0, "[skip] nothing to commit"
+    commit_code, commit_out = git("commit", "-m", f"daily: refresh {ran_tag}")
+    if commit_code != 0:
+        return 1, "[fail] git commit: " + " ".join(commit_out.strip().splitlines()[-1:])
+    push_code, push_out = git("push", "origin", "main")
+    if push_code != 0:
+        # 远端被 Actions 抢先刷新：合入远端（冲突一律保留本次产出）再推一次
+        git("fetch", "origin")
+        merge_code, merge_out = git("merge", "origin/main", "-X", "ours", "--no-edit")
+        if merge_code != 0:
+            return 1, "[fail] merge after push race: " + " ".join(merge_out.strip().splitlines()[-1:])
+        push_code, push_out = git("push", "origin", "main")
+        if push_code != 0:
+            return 1, "[fail] git push: " + " ".join(push_out.strip().splitlines()[-1:])
+    return 0, "[ok] committed and pushed to origin/main"
+
+
 def main() -> int:
     started = datetime.now(timezone.utc)
     scrape_code, scrape_out = run("scraper.py")
@@ -73,6 +114,12 @@ def main() -> int:
     # 写稿判据自查：第一屏有答案、独家≥30%、无中文残留/视频痕迹。不合格照实记，
     # 不因此停下循环（页面已经生成，判据结果用于次日修正）。
     check_code, check_out = run("content_check.py")
+    # 通过自查就把产出推回远端：Actions 由此永远构建同一棵树（分叉就是这一步从前缺失）。
+    # 不通过就不推——和"不发布"同一个口径，内容只留本地等次日修正。
+    if check_code == 0:
+        git_code, git_out = git_sync(started.strftime("%Y-%m-%d"))
+    else:
+        git_code, git_out = 1, "[skip] content_check failed; not syncing to git"
     # 发布：自查通过才发；被判不合格就只留在本地，线上保持上一版
     if check_code == 0:
         deploy_code, deploy_out = deploy()
@@ -109,6 +156,7 @@ def main() -> int:
         "guides_exit": guides_code,
         "build_exit": build_code,
         "content_check_exit": check_code,
+        "git_exit": git_code,
         "deploy_exit": deploy_code,
         "verify_exit": verify_code,
         "offers": offers,
@@ -123,6 +171,8 @@ def main() -> int:
         "content_check_tail": [
             line for line in check_out.strip().splitlines() if line.startswith("[FAIL]") or line.strip().startswith("-")
         ][:6],
+        # git 同步结果原样留证：push 失败就写失败原因，下一次运行会重试
+        "git_tail": git_out.strip().splitlines()[-2:],
         # 发布结果原样留证：成功会带 pages.dev 地址，失败带原因
         "deploy_tail": deploy_out.strip().splitlines()[-3:],
         "verify_tail": verify_out.strip().splitlines()[-2:],

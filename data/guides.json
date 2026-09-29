@@ -135,5 +135,181 @@
         "url": "https://www.digitalocean.com/solutions/vps-hosting"
       }
     ]
+  },
+  {
+    "slug": "csv-2026-09-24-1",
+    "title": "Cheap VPS price table to download - IONOS plans, 2026-09-24 snapshot",
+    "gap": "csv",
+    "gap_note": "None of the benchmarked top pages for this term serves a downloadable comparison file. This entry hands over the file and shows the rows for one provider at a time.",
+    "answer": "5 tracked IONOS plans with a published price, 5 of them carry a per-GB figure; cheapest per GB is VPS XXL+ at 0.8333 USD/GB. The full 25-plan table is downloadable as CSV.",
+    "auto": true,
+    "published": "2026-09-24T01:00:35Z",
+    "body_html": "<h2>The file</h2><p><a class=\"cta\" href=\"/downloads/unit-price.csv\">Download unit-price.csv (25 plans, all providers)</a></p><h2>IONOS plans in the table</h2><div class=\"table-shell\"><table><thead><tr><th>Plan</th><th>Published price</th><th>RAM (GB)</th><th>vCPU</th><th>Price per GB</th></tr></thead><tbody><tr><td>VPS S+</td><td class=\"price\">2.0 USD</td><td>2</td><td>1</td><td class=\"price\">1.0000 USD/GB</td></tr><tr><td>VPS M+</td><td class=\"price\">5.0 USD</td><td>4</td><td>2</td><td class=\"price\">1.2500 USD/GB</td></tr><tr><td>VPS L+</td><td class=\"price\">8.0 USD</td><td>8</td><td>4</td><td class=\"price\">1.0000 USD/GB</td></tr><tr><td>VPS XL+</td><td class=\"price\">14.0 USD</td><td>16</td><td>8</td><td class=\"price\">0.8750 USD/GB</td></tr><tr><td>VPS XXL+</td><td class=\"price\">20.0 USD</td><td>24</td><td>12</td><td class=\"price\">0.8333 USD/GB</td></tr></tbody></table></div><h2>Coverage</h2><p>20 of 25 tracked plans publish both a price and a RAM figure. The rest keep an empty per-GB cell rather than a guess.</p>",
+    "sources": [
+      {
+        "label": "OVHcloud published price page",
+        "url": "https://www.ovhcloud.com/en/vps/"
+      },
+      {
+        "label": "netcup published price page",
+        "url": "https://www.netcup.com/en/server/vps"
+      },
+      {
+        "label": "BuyVM published price page",
+        "url": "https://buyvm.net/kvm-dedicated-server-slices/"
+      },
+      {
+        "label": "IONOS published price page",
+        "url": "https://www.ionos.com/servers/vps"
+      },
+      {
+        "label": "Hostwinds published price page",
+        "url": "https://www.hostwinds.com/vps/unmanaged-linux"
+      }
+    ]
+  },
+  {
+    "slug": "unitprice-2026-09-25-1",
+    "title": "Cheapest VPS per GB of RAM: IONOS - 2026-09-25 ranking from 5 computable plans",
+    "gap": "unitprice",
+    "gap_note": "The benchmarked top pages list headline prices without breaking them down per unit. This entry divides only the numbers the provider itself published.",
+    "answer": "IONOS: cheapest RAM per unit is VPS XXL+ at 0.8333 USD per GB (20.0 USD / 24 GB), computed from the published price only.",
+    "auto": true,
+    "published": "2026-09-25T01:00:23Z",
+    "body_html": "<h2>IONOS plans ranked by price per GB</h2><div class=\"table-shell\"><table><thead><tr><th>#</th><th>Plan</th><th>Published price</th><th>RAM (GB)</th><th>Price per GB</th></tr></thead><tbody><tr><td>1</td><td>VPS XXL+</td><td class=\"price\">20.0 USD</td><td>24</td><td class=\"price\">0.8333 USD/GB</td></tr><tr><td>2</td><td>VPS XL+</td><td class=\"price\">14.0 USD</td><td>16</td><td class=\"price\">0.8750 USD/GB</td></tr><tr><td>3</td><td>VPS S+</td><td class=\"price\">2.0 USD</td><td>2</td><td class=\"price\">1.0000 USD/GB</td></tr><tr><td>4</td><td>VPS L+</td><td class=\"price\">8.0 USD</td><td>8</td><td class=\"price\">1.0000 USD/GB</td></tr><tr><td>5</td><td>VPS M+</td><td class=\"price\">5.0 USD</td><td>4</td><td class=\"price\">1.2500 USD/GB</td></tr></tbody></table></div><h2>How to recompute</h2><p>Every per-GB cell equals the published monthly price divided by the RAM figure printed beside it. Plans without a published RAM figure are excluded instead of estimated.</p>",
+    "sources": [
+      {
+        "label": "OVHcloud published price page",
+        "url": "https://www.ovhcloud.com/en/vps/"
+      },
+      {
+        "label": "netcup published price page",
+        "url": "https://www.netcup.com/en/server/vps"
+      },
+      {
+        "label": "BuyVM published price page",
+        "url": "https://buyvm.net/kvm-dedicated-server-slices/"
+      },
+      {
+        "label": "IONOS published price page",
+        "url": "https://www.ionos.com/servers/vps"
+      },
+      {
+        "label": "Hostwinds published price page",
+        "url": "https://www.hostwinds.com/vps/unmanaged-linux"
+      }
+    ]
+  },
+  {
+    "slug": "steps-2026-09-26-1",
+    "title": "Cheap VPS setup and connection steps: IONOS plan - numbered walkthrough, 2026-09-26",
+    "gap": "steps",
+    "gap_note": "Only one page across the benchmarked domains gives numbered steps, and it covers Windows installation alone. This entry keeps the purchase-to-login sequence in one place with the source beside each step.",
+    "answer": "Eight numbered steps from picking the plan to logging in. IONOS currently tracks 5 priced plan(s), cheapest at 2.0 USD (VPS S+).",
+    "auto": true,
+    "published": "2026-09-26T01:00:25Z",
+    "body_html": "<h2>Ordered steps (checked against what IONOS publishes today)</h2><ol><li><strong>Decide the resource floor from the workload, not the price</strong> Write down the smallest RAM figure that will run your stack. A single small web app or VPN fits in 1-2 GB; a database doing real work wants 4 GB or more.</li><li><strong>Compare plans on published numbers only</strong> Use the tracked price list and divide price by the RAM figure the provider published. If a plan publishes no RAM figure next to its price, the per-GB number is unknown - do not guess it.</li><li><strong>Check what the price excludes before you commit</strong> Backups, control panels, extra IPv4 addresses and Windows licences are commonly billed separately. Read the row underneath the plan card on the provider's own pricing page.</li><li><strong>Create the account and deploy the server</strong> In the provider's control panel choose the plan, the region closest to your users, and the operating system image. Linux images carry no extra licence fee on the low-cost plans; Windows normally adds one.</li><li><strong>Add your SSH key during deployment</strong> Paste your public key at deploy time. With key authentication you can turn password login off later instead of leaving a password exposed to the internet.</li><li><strong>Connect over SSH on Linux plans</strong> The provider issues the server address at deploy time; connect from a terminal with the username and key you configured. The out-of-band console in the panel is the fallback when SSH does not answer.</li><li><strong>Connect over RDP on Windows plans</strong> Reach a Windows VPS with Remote Desktop using the administrator credentials the provider issued. Where a bring-your-own-licence path is documented, activate your own retail or volume licence after installation.</li><li><strong>Update and harden before pointing traffic at it</strong> Apply operating-system updates, replace password login with keys where the OS supports it, open only the ports you need, and confirm you hold a backup or snapshot you can actually restore.</li></ol>",
+    "sources": [
+      {
+        "label": "RamNode - Installing Windows on Cloud VPS",
+        "url": "https://ramnode.com/support/documentation/cloud-vps/windows-install"
+      },
+      {
+        "label": "OVHcloud - VPS documentation entry point",
+        "url": "https://us.ovhcloud.com/vps/"
+      },
+      {
+        "label": "DigitalOcean - VPS hosting explained",
+        "url": "https://www.digitalocean.com/solutions/vps-hosting"
+      }
+    ]
+  },
+  {
+    "slug": "csv-2026-09-27-1",
+    "title": "Cheap VPS price table to download - OVHcloud plans, 2026-09-27 snapshot",
+    "gap": "csv",
+    "gap_note": "None of the benchmarked top pages for this term serves a downloadable comparison file. This entry hands over the file and shows the rows for one provider at a time.",
+    "answer": "4 tracked OVHcloud plans with a published price, 4 of them carry a per-GB figure; cheapest per GB is VPS-4 at 0.9738 USD/GB. The full 25-plan table is downloadable as CSV.",
+    "auto": true,
+    "published": "2026-09-27T01:00:24Z",
+    "body_html": "<h2>The file</h2><p><a class=\"cta\" href=\"/downloads/unit-price.csv\">Download unit-price.csv (25 plans, all providers)</a></p><h2>OVHcloud plans in the table</h2><div class=\"table-shell\"><table><thead><tr><th>Plan</th><th>Published price</th><th>RAM (GB)</th><th>vCPU</th><th>Price per GB</th></tr></thead><tbody><tr><td>VPS-1</td><td class=\"price\">4.54 USD</td><td>4</td><td>2</td><td class=\"price\">1.1350 USD/GB</td></tr><tr><td>VPS-2</td><td class=\"price\">8.5 USD</td><td>8</td><td>4</td><td class=\"price\">1.0625 USD/GB</td></tr><tr><td>VPS-3</td><td class=\"price\">12.32 USD</td><td>12</td><td>6</td><td class=\"price\">1.0267 USD/GB</td></tr><tr><td>VPS-4</td><td class=\"price\">23.37 USD</td><td>24</td><td>8</td><td class=\"price\">0.9738 USD/GB</td></tr></tbody></table></div><h2>Coverage</h2><p>20 of 25 tracked plans publish both a price and a RAM figure. The rest keep an empty per-GB cell rather than a guess.</p>",
+    "sources": [
+      {
+        "label": "OVHcloud published price page",
+        "url": "https://www.ovhcloud.com/en/vps/"
+      },
+      {
+        "label": "netcup published price page",
+        "url": "https://www.netcup.com/en/server/vps"
+      },
+      {
+        "label": "BuyVM published price page",
+        "url": "https://buyvm.net/kvm-dedicated-server-slices/"
+      },
+      {
+        "label": "IONOS published price page",
+        "url": "https://www.ionos.com/servers/vps"
+      },
+      {
+        "label": "Hostwinds published price page",
+        "url": "https://www.hostwinds.com/vps/unmanaged-linux"
+      }
+    ]
+  },
+  {
+    "slug": "unitprice-2026-09-28-1",
+    "title": "Cheapest VPS per GB of RAM: OVHcloud - 2026-09-28 ranking from 4 computable plans",
+    "gap": "unitprice",
+    "gap_note": "The benchmarked top pages list headline prices without breaking them down per unit. This entry divides only the numbers the provider itself published.",
+    "answer": "OVHcloud: cheapest RAM per unit is VPS-4 at 0.9738 USD per GB (23.37 USD / 24 GB), computed from the published price only.",
+    "auto": true,
+    "published": "2026-09-28T01:00:52Z",
+    "body_html": "<h2>OVHcloud plans ranked by price per GB</h2><div class=\"table-shell\"><table><thead><tr><th>#</th><th>Plan</th><th>Published price</th><th>RAM (GB)</th><th>Price per GB</th></tr></thead><tbody><tr><td>1</td><td>VPS-4</td><td class=\"price\">23.37 USD</td><td>24</td><td class=\"price\">0.9738 USD/GB</td></tr><tr><td>2</td><td>VPS-3</td><td class=\"price\">12.32 USD</td><td>12</td><td class=\"price\">1.0267 USD/GB</td></tr><tr><td>3</td><td>VPS-2</td><td class=\"price\">8.5 USD</td><td>8</td><td class=\"price\">1.0625 USD/GB</td></tr><tr><td>4</td><td>VPS-1</td><td class=\"price\">4.54 USD</td><td>4</td><td class=\"price\">1.1350 USD/GB</td></tr></tbody></table></div><h2>How to recompute</h2><p>Every per-GB cell equals the published monthly price divided by the RAM figure printed beside it. Plans without a published RAM figure are excluded instead of estimated.</p>",
+    "sources": [
+      {
+        "label": "OVHcloud published price page",
+        "url": "https://www.ovhcloud.com/en/vps/"
+      },
+      {
+        "label": "netcup published price page",
+        "url": "https://www.netcup.com/en/server/vps"
+      },
+      {
+        "label": "BuyVM published price page",
+        "url": "https://buyvm.net/kvm-dedicated-server-slices/"
+      },
+      {
+        "label": "IONOS published price page",
+        "url": "https://www.ionos.com/servers/vps"
+      },
+      {
+        "label": "Hostwinds published price page",
+        "url": "https://www.hostwinds.com/vps/unmanaged-linux"
+      }
+    ]
+  },
+  {
+    "slug": "steps-2026-09-29-1",
+    "title": "Cheap VPS setup and connection steps: OVHcloud plan - numbered walkthrough, 2026-09-29",
+    "gap": "steps",
+    "gap_note": "Only one page across the benchmarked domains gives numbered steps, and it covers Windows installation alone. This entry keeps the purchase-to-login sequence in one place with the source beside each step.",
+    "answer": "Eight numbered steps from picking the plan to logging in. OVHcloud currently tracks 4 priced plan(s), cheapest at 4.54 USD (VPS-1).",
+    "auto": true,
+    "published": "2026-09-29T01:00:35Z",
+    "body_html": "<h2>Ordered steps (checked against what OVHcloud publishes today)</h2><ol><li><strong>Decide the resource floor from the workload, not the price</strong> Write down the smallest RAM figure that will run your stack. A single small web app or VPN fits in 1-2 GB; a database doing real work wants 4 GB or more.</li><li><strong>Compare plans on published numbers only</strong> Use the tracked price list and divide price by the RAM figure the provider published. If a plan publishes no RAM figure next to its price, the per-GB number is unknown - do not guess it.</li><li><strong>Check what the price excludes before you commit</strong> Backups, control panels, extra IPv4 addresses and Windows licences are commonly billed separately. Read the row underneath the plan card on the provider's own pricing page.</li><li><strong>Create the account and deploy the server</strong> In the provider's control panel choose the plan, the region closest to your users, and the operating system image. Linux images carry no extra licence fee on the low-cost plans; Windows normally adds one.</li><li><strong>Add your SSH key during deployment</strong> Paste your public key at deploy time. With key authentication you can turn password login off later instead of leaving a password exposed to the internet.</li><li><strong>Connect over SSH on Linux plans</strong> The provider issues the server address at deploy time; connect from a terminal with the username and key you configured. The out-of-band console in the panel is the fallback when SSH does not answer.</li><li><strong>Connect over RDP on Windows plans</strong> Reach a Windows VPS with Remote Desktop using the administrator credentials the provider issued. Where a bring-your-own-licence path is documented, activate your own retail or volume licence after installation.</li><li><strong>Update and harden before pointing traffic at it</strong> Apply operating-system updates, replace password login with keys where the OS supports it, open only the ports you need, and confirm you hold a backup or snapshot you can actually restore.</li></ol>",
+    "sources": [
+      {
+        "label": "RamNode - Installing Windows on Cloud VPS",
+        "url": "https://ramnode.com/support/documentation/cloud-vps/windows-install"
+      },
+      {
+        "label": "OVHcloud - VPS documentation entry point",
+        "url": "https://us.ovhcloud.com/vps/"
+      },
+      {
+        "label": "DigitalOcean - VPS hosting explained",
+        "url": "https://www.digitalocean.com/solutions/vps-hosting"
+      }
+    ]
   }
 ]

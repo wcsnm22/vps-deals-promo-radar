@@ -1322,6 +1322,14 @@ def main() -> int:
             stale.unlink()
             written.append(f"removed stale deal/{stale.name}")
 
+    # 厂商从 site.ilang 删掉之后，它的 provider 页同样会变成孤儿页（deal 页上面清了，
+    # provider 页当初漏了，自测 TEST2 抓到过）：和本次 providers 集合对齐，同一套做法。
+    provider_keep = {f"{slugify(provider['name'])}.html" for provider in providers}
+    for stale in sorted((SITE_DIR / "provider").glob("*.html")):
+        if stale.name not in provider_keep:
+            stale.unlink()
+            written.append(f"removed stale provider/{stale.name}")
+
     # 可下载的比价表：三家里没有任何一家提供这种文件，这是这个词最集中的缺口。
     csv_body, csv_rows = build_unit_price_csv(offers)
     (SITE_DIR / "downloads" / "unit-price.csv").write_text(csv_body, encoding="utf-8")
