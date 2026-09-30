@@ -311,5 +311,37 @@
         "url": "https://www.digitalocean.com/solutions/vps-hosting"
       }
     ]
+  },
+  {
+    "slug": "csv-2026-09-30-1",
+    "title": "Cheap VPS price table to download - netcup plans, 2026-09-30 snapshot",
+    "gap": "csv",
+    "gap_note": "None of the benchmarked top pages for this term serves a downloadable comparison file. This entry hands over the file and shows the rows for one provider at a time.",
+    "answer": "5 tracked netcup plans with a published price, 0 of them carry a per-GB figure. The full 25-plan table is downloadable as CSV.",
+    "auto": true,
+    "published": "2026-09-30T01:00:27Z",
+    "body_html": "<h2>The file</h2><p><a class=\"cta\" href=\"/downloads/unit-price.csv\">Download unit-price.csv (25 plans, all providers)</a></p><h2>netcup plans in the table</h2><div class=\"table-shell\"><table><thead><tr><th>Plan</th><th>Published price</th><th>RAM (GB)</th><th>vCPU</th><th>Price per GB</th></tr></thead><tbody><tr><td>VPS 500 G12.5</td><td class=\"price\">8.26 EUR</td><td><span class=\"muted\">not published</span></td><td>2</td><td class=\"price\"><span class=\"muted\">-</span></td></tr><tr><td>VPS 1000 G12.5</td><td class=\"price\">14.5 EUR</td><td><span class=\"muted\">not published</span></td><td>4</td><td class=\"price\"><span class=\"muted\">-</span></td></tr><tr><td>VPS 2000 G12.5</td><td class=\"price\">26.92 EUR</td><td><span class=\"muted\">not published</span></td><td>8</td><td class=\"price\"><span class=\"muted\">-</span></td></tr><tr><td>VPS 4000 G12.5</td><td class=\"price\">45.36 EUR</td><td><span class=\"muted\">not published</span></td><td>12</td><td class=\"price\"><span class=\"muted\">-</span></td></tr><tr><td>VPS 8000 G12.5</td><td class=\"price\">67.11 EUR</td><td><span class=\"muted\">not published</span></td><td>16</td><td class=\"price\"><span class=\"muted\">-</span></td></tr></tbody></table></div><h2>Coverage</h2><p>20 of 25 tracked plans publish both a price and a RAM figure. The rest keep an empty per-GB cell rather than a guess.</p>",
+    "sources": [
+      {
+        "label": "OVHcloud published price page",
+        "url": "https://www.ovhcloud.com/en/vps/"
+      },
+      {
+        "label": "netcup published price page",
+        "url": "https://www.netcup.com/en/server/vps"
+      },
+      {
+        "label": "BuyVM published price page",
+        "url": "https://buyvm.net/kvm-dedicated-server-slices/"
+      },
+      {
+        "label": "IONOS published price page",
+        "url": "https://www.ionos.com/servers/vps"
+      },
+      {
+        "label": "Hostwinds published price page",
+        "url": "https://www.hostwinds.com/vps/unmanaged-linux"
+      }
+    ]
   }
 ]
