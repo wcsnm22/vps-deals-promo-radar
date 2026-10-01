@@ -357,8 +357,15 @@ def head_block(meta: dict, extra_jsonld: list[dict] | None = None) -> str:
 
 
 def nav_block(site: dict, providers: list[dict]) -> str:
+    """顶部导航：把指南栏和对比页也放进站点级导航。
+
+    之前只列了首页、对比页和厂商页，14 个指南页在页面上彼此不指路（只能靠 sitemap），
+    指南入口只藏在页脚。少一条链接就少一条被抓到的路径。
+    """
     links = [f'<a href="{escape(home_url(site))}">Home</a>']
     links.append(f'<a href="{escape(compare_url(site))}">Compare all</a>')
+    links.append(f'<a href="{escape(guides_url(site))}">Guides</a>')
+    links.append(f'<a href="{escape(site["base_url"])}/downloads/unit-price.csv">Price table (CSV)</a>')
     for provider in providers:
         links.append(
             f'<a href="{escape(provider_page(site, provider["name"]))}">{escape(provider["name"])}</a>'
@@ -490,6 +497,25 @@ def build_index(site: dict, offers: list[dict], providers: list[dict], generated
         "og_type": "website",
         "og_image": site["og_image"],
     }
+    # 第一屏先给答案：最便宜的一档、每 GB 最便宜的一档，都是抓到的数字现算的。
+    with_ram = [o for o in priced if o.get("ram_gb")]
+    answer_bits = []
+    if cheapest:
+        answer_bits.append(
+            f"Lowest published monthly price right now: {money(cheapest['price'], cheapest.get('currency', 'USD'))} "
+            f"({cheapest['provider']} {cheapest['title']})."
+        )
+    if with_ram:
+        best = min(with_ram, key=lambda o: o["price"] / o["ram_gb"])
+        answer_bits.append(
+            f"Lowest published price per GB of RAM: {best['price'] / best['ram_gb']:.4f} "
+            f"{best.get('currency', '')} per GB ({best['provider']} {best['title']}, "
+            f"{money(best['price'], best.get('currency', 'USD'))} / {best['ram_gb']} GB)."
+        )
+    answer_bits.append(
+        f"{len(priced)} of {len(offers)} tracked plans publish a price; every row links to the provider page it "
+        f"was read from."
+    )
     return render(
         template("index.html"),
         {
@@ -500,6 +526,11 @@ def build_index(site: dict, offers: list[dict], providers: list[dict], generated
             "title": escape(title),
             "brand": escape(site["brand"]),
             "tagline": escape(site["tagline"]),
+            "answer": escape(" ".join(answer_bits)),
+            "chart": _chart_html(
+                "per-gb-cheapest.svg",
+                alt="Monthly price per GB of RAM for every tracked plan that publishes both numbers",
+            ),
             "generated_at": generated_at,
             "cards": "\n".join(cards),
             "rows": offer_rows(offers[:60], site, {}, True),
@@ -1005,8 +1036,47 @@ def _chart_html(*names: str, alt: str) -> str:
     return "".join(blocks)
 
 
+def related_guides_html(site: dict, guide: dict, guides: list[dict], limit: int = 6) -> str:
+    """同题材互链：本页 → 指南索引 → 今天那篇 + 同一缺口的前几篇 + 另外两个缺口的入口。
+
+    14 个指南页原来只靠 sitemap 串起来，页面上彼此不指路。这里把最近的几篇连起来，
+    让读者和爬虫都能顺着走。
+    """
+    others = [row for row in guides if row.get("slug") != guide.get("slug")]
+    same_gap = [row for row in others if row.get("gap") == guide.get("gap")][-3:]
+    by_date = sorted(others, key=lambda row: row.get("published", ""), reverse=True)[:2]
+    picks: list[dict] = []
+    for row in same_gap + by_date:
+        if row not in picks:
+            picks.append(row)
+    items = [
+        f'<li><a href="{escape(guide_page(site, row))}">{escape(row["title"])}</a></li>'
+        for row in picks[:limit]
+    ]
+    items.append(f'<li><a href="{escape(guides_url(site))}">All guides ({len(guides)})</a></li>')
+    items.append(
+        f'<li><a href="{escape(site["base_url"])}/downloads/unit-price.csv">Download the price table (CSV)</a></li>'
+    )
+    return '<h2>More on this site</h2><ul>' + "".join(items) + "</ul>"
+
+
+def updated_line(guide: dict, generated_at: str) -> str:
+    """人眼可见的更新时间。
+
+    对标的三家都把"什么时候更新的"写在正文里（lowendbox 同一页写了三个月份），
+    我们原来只在 HTML head 里有日期，读者看不到。这里照实写两个日期：这篇什么时候发的、
+    这些数字什么时候重新读的。
+    """
+    published = (guide.get("published") or generated_at)[:10]
+    return (
+        f'<p class="muted">Published {escape(published)} · prices last read from the providers '
+        f'{escape(generated_at)} (UTC).</p>'
+    )
+
+
 def build_guide(
-    site: dict, guide: dict, offers: list[dict], providers: list[dict], generated_at: str
+    site: dict, guide: dict, offers: list[dict], providers: list[dict], generated_at: str,
+    guides: list[dict] | None = None,
 ) -> str:
     # 每一篇只补一个缺口，正文在 data/guides.json 里给定（自动页由 guides.py 生成）。
     # 这里不再按 gap 现编内容，避免出现"同一份数据被渲染成两种说法"。
@@ -1032,7 +1102,9 @@ def build_guide(
         "headline": guide["title"],
         "description": guide["answer"],
         "url": guide_page(site, guide),
-        "datePublished": generated_at[:10],
+        # 自动页自己有发布日期：用它，别用构建时间——否则每重建一次"发布日"就变一次。
+        "datePublished": (guide.get("published") or generated_at)[:10],
+        "dateModified": generated_at[:10],
         "isPartOf": {"@type": "WebSite", "name": site["title"], "url": home_url(site)},
     }
     breadcrumb = {
@@ -1093,7 +1165,8 @@ def build_guide(
             "title": escape(title),
             "h1": escape(guide["title"]),
             "answer": f'<p class="lede">{escape(answer_from_data(guide, offers))}</p>' + chart_html,
-            "body": body + faq_html,
+            "body": body + faq_html + related_guides_html(site, guide, guides or []),
+            "updated": updated_line(guide, generated_at),
             "gap_note": escape(guide["gap_note"]),
             "sources": f'<h2>Sources</h2><ul>{sources}</ul>' if sources else "",
         },
@@ -1423,7 +1496,7 @@ def main() -> int:
     )
     written.append("guide.html")
     for guide in guides:
-        html = build_guide(site, guide, offers, providers, generated_at)
+        html = build_guide(site, guide, offers, providers, generated_at, guides)
         path = SITE_DIR / "guide" / f'{guide["slug"]}.html'
         path.write_text(html, encoding="utf-8")
         written.append(f"guide/{path.name}")
