@@ -24,6 +24,13 @@ DATA_PATH = ROOT / "data" / "offers.json"
 
 GAP_ORDER = ["csv", "unitprice", "steps"]
 
+# unitprice 页至少要能排出这么多档：只有一档的"排名"没有信息量，第一屏给不出有用的答案。
+# 触及这个下限的厂商不进 unitprice 的轮换池，但 csv / steps 照旧轮到它们。
+MIN_PER_GB_PLANS = 2
+
+# 同一个缺口最多往下试几个厂商：试到能给出可核对答案的那家为止。
+MAX_FOCUS_ATTEMPTS = 12
+
 # 每一步都来自厂商公开文档；这里只做顺序整理，不转述原文。
 STEP_BLUEPRINT = [
     ("Decide the resource floor from the workload, not the price",
@@ -96,6 +103,28 @@ def count_of(gap: str, counts: dict) -> tuple:
     return (counts[gap], GAP_ORDER.index(gap))
 
 
+def per_gb_providers(offers: list[dict], minimum: int = MIN_PER_GB_PLANS) -> list[str]:
+    """能算单价（公布价格 + 公布内存）的厂商，按名字排序。
+
+    只有这些厂商的 unitprice 页第一屏才有可核对的数字。厂商清单是轮换池，
+    不因为某个缺口用不上就改口径：csv / steps 仍然轮到所有厂商。
+    """
+    counts: dict[str, int] = {}
+    for offer in offers:
+        if offer.get("price") is not None and offer.get("ram_gb"):
+            counts[offer["provider"]] = counts.get(offer["provider"], 0) + 1
+    return sorted(name for name, count in counts.items() if count >= minimum)
+
+
+def focus_provider(gap: str, offers: list[dict], occurrence_index: int) -> str | None:
+    """今天这篇写哪家。unitprice 只在"能算出单价"的厂商里轮换，其余缺口按全量厂商轮换。"""
+    if gap == "unitprice":
+        pool = per_gb_providers(offers)
+    else:
+        pool = sorted({o["provider"] for o in offers})
+    return pool[occurrence_index % len(pool)] if pool else None
+
+
 def occurrence(guides: list[dict], gap: str) -> int:
     """这一类缺口已经写过几次。用来决定今天换哪个主题，避免每天同一句话。"""
     return sum(1 for g in guides if g.get("gap") == gap)
@@ -110,8 +139,7 @@ def build_entry(gap: str, offers: list[dict], stamp: str, index: int, occurrence
     counts = _guidance_counts(offers)
     priced = sorted((o for o in offers if o.get("price") is not None), key=lambda o: o["price"])
     with_ram_all = sorted(prices_with_ram(offers), key=lambda o: o["price"] / o["ram_gb"])
-    providers_in_data = sorted({o["provider"] for o in offers})
-    focus = providers_in_data[occurrence_index % len(providers_in_data)] if providers_in_data else None
+    focus = focus_provider(gap, offers, occurrence_index)
 
     focus_offers = [o for o in priced if o["provider"] == focus]
     # 必须在自家套餐里再排一次：with_ram_all 是全站排序，直接取第一个会把"全站最便宜"
@@ -259,8 +287,23 @@ def main() -> int:
 
     made = 0
     while limit == 0 or made < limit:
-        gap = next_gap(guides)
-        entry = build_entry(gap, offers, stamp, made + 1, occurrence(guides, gap))
+        # 一次运行内按轮换顺序往下试：同一个缺口先换厂商，厂商试完再换下一个缺口。
+        # 绝不生成"第一屏没有数字"的页——那种页会被 content_check 判不合格，
+        # 当天的循环就断了（2026-10-01 的 unitprice 页就是这么被拦下的）。
+        entry = None
+        for step in range(len(GAP_ORDER)):
+            gap = GAP_ORDER[(GAP_ORDER.index(next_gap(guides)) + step) % len(GAP_ORDER)]
+            for attempt in range(MAX_FOCUS_ATTEMPTS):
+                candidate = build_entry(
+                    gap, offers, stamp, made + 1, occurrence(guides, gap) + attempt
+                )
+                if candidate["answer"].strip() and any(ch.isdigit() for ch in candidate["answer"]):
+                    entry = candidate
+                    break
+            if entry:
+                break
+        if entry is None:
+            break  # 一个缺口都补不出来：让 daily.py 照实记这条，不写空页
         if entry["title"].lower() in _used_titles(guides):
             break
         guides.append(entry)

@@ -205,8 +205,73 @@ SPEC_LOOKAHEAD = 8
 RAM_RE = re.compile(r"(?<![0-9a-z])(\d{1,4})\s?gb\s*(?:ram|memory|ddr\d?|ecc)\b", re.I)
 RAM_RE_ALT = re.compile(r"\b(?:ram|memory|ddr\d?|ecc)\b[^0-9\n]{0,12}(?<![0-9a-z])(\d{1,4})\s?gb\b", re.I)
 # 只认真的 CPU 计数：不能把促销语 "with a 1-year term" 里的 1 当成 1 个核。
-VCPU_RE = re.compile(r"(?<![0-9a-z-])(\d{1,3})\s*(?:x\s*)?(?:vcpus?|vcores?|v-cores?)\b|\b(\d{1,3})\s+(?:cpu\s+)?cores?\b", re.I)
+# vcore 也写成 vCore / vCores（netcup 是这种写法），所以词干单独列出来。
+VCPU_RE = re.compile(
+    r"(?<![0-9a-z-])(\d{1,3})\s*(?:x\s*)?(?:vcpus?|vcores?|v-cores?)\b|\b(\d{1,3})\s+(?:cpu\s+)?cores?\b",
+    re.I,
+)
 DISK_RE = re.compile(r"(?<![0-9a-z])(\d{1,5})\s?(gb|tb)\s*(?:ssd|nvme|storage|disk|raid\d*)\b", re.I)
+
+# 有些站（netcup 实测）把每个规格拆成"值 + 标签"两个元素：
+#   <span class="font-bold">4 GB </span><span><div class="inline">RAM</div></span>
+# 渲染成文本后 "4 GB" 和 "RAM" 分属两行，上面的正则按同一行匹配就拿不到内存——
+# 于是页面会写成"这家不公布内存"，而它其实公布了。这里在 HTML 层把这层配对读出来。
+# 只在标签是页面自己印出来的规格词时才算，标签不认识就整条不写（宁缺毋滥）。
+_PAIR_LABELS = {
+    "ram": "ram_gb", "memory": "ram_gb",
+    "ssd": "disk_gb", "storage": "disk_gb", "nvme": "disk_gb", "disk": "disk_gb",
+}
+_PAIRED_SPEC_RE = re.compile(
+    r'<span[^>]*class="[^"]*font-bold[^"]*"[^>]*>([^<]{1,24})</span>'
+    r'\s*<span>\s*<div[^>]*class="[^"]*\binline\b[^"]*"[^>]*>([^<]{1,24})</div>',
+    re.I,
+)
+_CARD_TITLE_RE = re.compile(r"<h3\b[^>]*>([^<]{1,60})</h3>", re.I)
+
+
+def _amount_with_unit(text: str) -> int | None:
+    """把 "4 GB" / "1 TB" 读成 GB 数值；读不出返回 None。只认页面上写着的数字。"""
+    match = re.search(r"(\d{1,5})\s*(gb|tb)", text, re.I)
+    if not match:
+        return None
+    value = int(match.group(1))
+    return value * 1024 if match.group(2).lower() == "tb" else value
+
+
+def _paired_amount(text: str, kind: str) -> int | None:
+    """"4 GB" -> 内存/硬盘；"2 vCore" -> CPU 核数。"""
+    if kind == "ram_gb":
+        return _amount_with_unit(text)
+    if kind == "disk_gb":
+        return _amount_with_unit(text)
+    match = VCPU_RE.search(text)
+    if match:
+        return int(match.group(1) or match.group(2))
+    match = re.search(r"(\d{1,3})\s*v-?cores?", text, re.I)
+    return int(match.group(1)) if match else None
+
+
+def paired_specs_by_title(html: str) -> dict[str, dict]:
+    """按卡片标题汇总"值 + 标签"配对读出来的规格。
+
+    卡片边界用下一个 <h3> 切开，和页面上"一档一张卡片"的结构一致；
+    卡片里第一个规格标签就是这张卡自己的，跨卡不会串。
+    """
+    titles = [(m.start(), m.group(1).strip()) for m in _CARD_TITLE_RE.finditer(html)]
+    out: dict[str, dict] = {}
+    for position, (start, title) in enumerate(titles):
+        end = titles[position + 1][0] if position + 1 < len(titles) else start + 20000
+        specs: dict = {}
+        for value, label in _PAIRED_SPEC_RE.findall(html[start:end]):
+            kind = _PAIR_LABELS.get(label.strip().lower())
+            if not kind or kind in specs:
+                continue
+            amount = _paired_amount(value, kind)
+            if amount is not None:
+                specs[kind] = amount
+        if specs:
+            out.setdefault(title, specs)
+    return out
 
 
 def rendered_lines(html: str) -> list[str]:
@@ -494,13 +559,17 @@ def plan_title_line(line: str, config: dict) -> str:
     return candidate
 
 
-def plan_segment_offers(lines: list[str], config: dict) -> list[tuple[str, int, dict]]:
+def plan_segment_offers(lines: list[str], config: dict, paired_specs: dict[str, dict] | None = None) -> list[tuple[str, int, dict]]:
     """按套餐名切段，每段内部把价格和规格配成对。
 
     为什么必须切段：跨套餐做"最近价格"匹配时，两种布局都会互相抢
     （OVHcloud 的规格块离下一个套餐的价格更近；IONOS 的规格块离下一个套餐的价格也更近），
     只有先框定一个套餐的范围，规格才不会被邻档认领。
+
+    paired_specs：HTML 层"值 + 标签"配对读出来的规格，按卡片标题给。命中就把文本层
+    缺失的字段补上（netcup 的内存只在 HTML 配对里，渲染成文本后和标签分了行）。
     """
+    paired_specs = paired_specs or {}
     titles = [(index, plan_title_line(line, config)) for index, line in enumerate(lines)]
     titles = [(index, name) for index, name in titles if name]
     results: list[tuple[str, int, dict]] = []
@@ -520,7 +589,14 @@ def plan_segment_offers(lines: list[str], config: dict) -> list[tuple[str, int, 
             and (RAM_RE.search(line) or RAM_RE_ALT.search(line) or VCPU_RE.search(line) or DISK_RE.search(line))
             and not PRICE_RE.search(line)
         ]
-        if not prices or not specs:
+        if not prices:
+            continue
+        if not specs:
+            # 文本层一行规格都没有，但 HTML 配对里有（netcup）：直接把这档的配对规格挂上，
+            # 挂该段最靠前的那个套餐价——同一档的月费行本来就在这一段里。
+            given = paired_specs.get(name)
+            if given:
+                results.append((name, prices[0][0], dict(given)))
             continue
         # 贪心就近配对：先配距离最近的一对，配过的两边都不再参与。
         # 这样 "规格在价格上面"（netcup / BuyVM）和"规格在价格下面"（IONOS / OVHcloud）
@@ -646,9 +722,13 @@ def extract_page_offers(html: str, source_url: str, provider: dict, config: dict
         return extract_table_offers(html, source_url, provider, config)
     lines = rendered_lines(html)
     skip_lines = promo_pair_indices(lines)
+    # HTML 层"值 + 标签"配对（有些站的规格只有这层读得到），按卡片标题存。
+    paired_specs = paired_specs_by_title(html)
     # 规格归属按"套餐区块"算：先切段再配对，避免邻档互相抢规格。
     # 用价格行号做键，绝不用标题字符串做键（抓到的标题和区块标题不保证逐字相同）。
-    segment_specs = {index: specs for _name, index, specs in plan_segment_offers(lines, config)}
+    segment_specs = {
+        index: specs for _name, index, specs in plan_segment_offers(lines, config, paired_specs)
+    }
     anchor_list = anchors(html, source_url)
     lookback = int(config["site"].get("lookback_lines", 12))
     max_price = float(config["site"].get("max_price", 5000))
@@ -696,6 +776,10 @@ def extract_page_offers(html: str, source_url: str, provider: dict, config: dict
                 "source_url": source_url,
             }
             record.update(segment_specs.get(index, {}))
+            # 配对规格只补文本层没读到的字段：两边都能读到时以文本层为准，
+            # 避免把已经正确的规格改坏（配对规则只对"值+标签"布局的站生效）。
+            for kind, value in paired_specs.get(title, {}).items():
+                record.setdefault(kind, value)
             date_match = DATE_RE.search(" ".join(lines[max(0, index - 1) : index + 2]))
             if date_match:
                 record["valid_until"] = date_match.group(1)
