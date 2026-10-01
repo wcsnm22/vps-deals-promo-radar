@@ -22,6 +22,7 @@ from html import escape
 from pathlib import Path
 
 from scraper import load_config
+from guides import frequently_asked
 
 ROOT = Path(__file__).resolve().parent
 DATA_PATH = ROOT / "data" / "offers.json"
@@ -928,6 +929,21 @@ def build_guide_index(
     )
 
 
+def _bank_questions() -> list[str]:
+    """搜索补全里抓到的真人问句（data/keyword-bank.json），只取问句形态的。
+
+    文件不存在就是还没有词库：FAQ 的问题换成数据驱动的问法，答案口径不变。
+    """
+    path = ROOT / "data" / "keyword-bank.json"
+    if not path.exists():
+        return []
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return []
+    return [item["query"] for item in payload.get("queries", []) if item.get("question")][:8]
+
+
 def answer_from_data(guide: dict, offers: list[dict]) -> str:
     """第一屏的答案必须带可核对的数字，数字只能来自抓到的数据。
 
@@ -1013,17 +1029,37 @@ def build_guide(
         f' — read {escape(generated_at)}</li>'
         for item in guide.get("sources", [])
     )
+    # T4：一问一答。问题来自搜索补全里的真人问句，答案全部由今天抓到的数字现算。
+    faqs = frequently_asked(offers, _bank_questions())
+    faq_html = ""
+    extra_jsonld = [article, breadcrumb]
+    if faqs:
+        rows = "".join(
+            f'<h3>{escape(item["question"])}</h3><p>{escape(item["answer"])}</p>'
+            + (f'<p class="muted">asked as: {escape(item["asked_as"])}</p>' if item.get("asked_as") else "")
+            for item in faqs
+        )
+        faq_html = f'<h2>Questions this page answers</h2>{rows}'
+        extra_jsonld.append({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            "mainEntity": [
+                {"@type": "Question", "name": item["question"],
+                 "acceptedAnswer": {"@type": "Answer", "text": item["answer"]}}
+                for item in faqs
+            ],
+        })
     return render(
         template("guide.html"),
         {
             "lang": site["locale"],
-            "head": head_block(meta, [article, breadcrumb]),
+            "head": head_block(meta, extra_jsonld),
             "nav": nav_block(site, providers),
             "footer": footer_block(site, generated_at),
             "title": escape(title),
             "h1": escape(guide["title"]),
             "answer": f'<p class="lede">{escape(answer_from_data(guide, offers))}</p>',
-            "body": body,
+            "body": body + faq_html,
             "gap_note": escape(guide["gap_note"]),
             "sources": f'<h2>Sources</h2><ul>{sources}</ul>' if sources else "",
         },

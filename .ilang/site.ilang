@@ -52,7 +52,10 @@ TYPE:config PROJECT:vps-deals LANG:zh
   ipv4 address ipv6 address additional ip startup program for your cloud
   options compatible advantages of ddos protection iso 27001 kvm console see plans email 2.0
 
-::RULE{抓不到 price⇒这条不写 price 字段 也不写进结构化数据 不许拿估的填}
+:RULE{抓不到 price⇒这条不写 price 字段 也不写进结构化数据 不许拿估的填}
+# @KEYWORD 只填第 7 步群里给的那一个词；留空 = 还没定，keyword_bank.py 会照实跳过
+# 格式：::STATE{@KEYWORD, value:<第 7 步定下来的词>, note:只这一个 不许自己估}
+::STATE{@KEYWORD, value:, note:第 7 步定下来的那个词 只填一个}
 ::RULE{找不到可信产品名⇒这条不收录 宁缺毋滥 不许拿规格行或填充词冒充产品名}
 ::RULE{valid_until 已过⇒标记过期或下架 不许留着冒充有效}
 ::RULE{抓取前读 robots.txt⇒Disallow 的路径直接跳过 并写进抓取报告}

@@ -273,6 +273,100 @@ def per_gb_cell(offer: dict) -> str:
     return f"{price / ram:.4f} {currency}/GB"
 
 
+def _money(amount, currency: str) -> str:
+    if amount is None:
+        return "n/a"
+    if isinstance(amount, float) and amount != int(amount):
+        return f"{amount:.2f} {currency}".strip()
+    return f"{int(amount)} {currency}".strip()
+
+
+# 每个问题的答案都是"从抓到的数字现算"，算不出来就不给这一问。用来做 T4：
+# 把疑问句一句一句答出来，答案里的每个数都能在 data/offers.json 里复算。
+QUESTION_ANSWERS = [
+    (
+        "How much does a cheap VPS cost per month?",
+        lambda priced, with_ram: (
+            f"The lowest tracked monthly price is {_money(min(o['price'] for o in priced), min(priced, key=lambda o: o['price']).get('currency', ''))} "
+            f"({min(priced, key=lambda o: o['price'])['provider']} {min(priced, key=lambda o: o['price'])['title']}); "
+            f"the highest in the same list is {_money(max(o['price'] for o in priced), min(priced, key=lambda o: o['price']).get('currency', ''))}. "
+            f"{len(priced)} plans carry a published monthly price."
+        ),
+    ),
+    (
+        "Which plan is cheapest per GB of RAM?",
+        lambda priced, with_ram: _cheapest_per_gb_answer(with_ram),
+    ),
+    (
+        "Can I compare a price per GB of RAM at all?",
+        lambda priced, with_ram: (
+            f"Yes for {len(with_ram)} of {len(priced)} priced plans: those publish a RAM figure next to the price. "
+            + (f"The other {len(priced) - len(with_ram)} are left with an empty per-GB cell instead of a guess."
+               if len(with_ram) < len(priced)
+               else "Every one of them is rankable on this page.")
+            if priced else ""
+        ),
+    ),
+    (
+        "Which providers are tracked?",
+        lambda priced, with_ram: (
+            f"{len({o['provider'] for o in priced})} providers currently publish a price we can read: "
+            f"{', '.join(sorted({o['provider'] for o in priced}))}. A provider whose page we cannot read a price on "
+            f"is listed as unread rather than filled in."
+            if priced else ""
+        ),
+    ),
+    (
+        "How many plans publish both a price and a RAM figure?",
+        lambda priced, with_ram: (
+            f"{len(with_ram)} of {len(priced)} priced plans. That is the row count you can divide to get a price "
+            f"per GB of RAM; nothing outside that set is estimated."
+            if priced else ""
+        ),
+    ),
+]
+
+
+def _cheapest_per_gb_answer(with_ram: list[dict]) -> str:
+    """单价最便宜的那档。口径必须和页面上的表一致：价格和内存都是厂商自己公布的。"""
+    if not with_ram:
+        return ""
+    best = min(with_ram, key=lambda o: o["price"] / o["ram_gb"])
+    currency = best.get("currency", "")
+    return (
+        f"{best['provider']} {best['title']} at {best['price'] / best['ram_gb']:.4f} {currency}/GB "
+        f"({_money(best['price'], currency)} / {best['ram_gb']} GB), computed from published numbers only."
+    )
+
+
+def frequently_asked(offers: list[dict], questions: list[str] | None = None) -> list[dict]:
+    """T4：把疑问句一句一句答出来。答案只用抓到的数字，算不出来就不出这一问。
+
+    questions：搜索补全里抓到的真人问句（data/keyword-bank.json）。有就在答案前面标出来源，
+    没有也不影响——问题本身换成数据驱动的问法，答案口径完全一样，绝不编数字。
+    先按和页面同一套规则塌缩，保证 FAQ 里的"最便宜"和页面表格里的是同一档。
+    """
+    offers = collapse_offers(offers)
+    priced = [o for o in offers if o.get("price") is not None]
+    with_ram = [o for o in priced if o.get("ram_gb")]
+    if not priced:
+        return []
+    asked = [q.strip() for q in (questions or []) if isinstance(q, str) and q.strip()]
+    out: list[dict] = []
+    for question, builder in QUESTION_ANSWERS:
+        try:
+            answer = builder(priced, with_ram)
+        except (ValueError, KeyError, TypeError, ZeroDivisionError):
+            continue
+        if not answer or not any(ch.isdigit() for ch in answer):
+            continue
+        item = {"question": question, "answer": " ".join(answer.split())}
+        if asked and len(out) < len(asked):
+            item["asked_as"] = asked[len(out)]  # 同一问在补全里的原话，只用来标注，不改答案
+        out.append(item)
+    return out
+
+
 def main() -> int:
     limit = int(sys.argv[1]) if len(sys.argv) > 1 else 0
     guides = load(GUIDES_PATH)
