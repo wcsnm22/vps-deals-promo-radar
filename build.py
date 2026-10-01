@@ -23,6 +23,7 @@ from pathlib import Path
 
 from scraper import load_config
 from guides import frequently_asked
+import chart_assets
 
 ROOT = Path(__file__).resolve().parent
 DATA_PATH = ROOT / "data" / "offers.json"
@@ -589,7 +590,12 @@ def build_provider(site: dict, provider: dict, offers: list[dict], generated_at:
             for i, o in enumerate(ranked)
         )
         per_gb = (
-            '<div class="table-shell"><table><thead><tr><th>#</th><th>Plan</th><th>Published price</th>'
+            _chart_html(
+                f"per-gb-{slugify(name)}.svg",
+                f"monthly-vs-ram-{slugify(name)}.svg",
+                alt=f'Monthly price per GB of RAM at {name}, computed from published prices',
+            )
+            + '<div class="table-shell"><table><thead><tr><th>#</th><th>Plan</th><th>Published price</th>'
             '<th>RAM</th><th>Per GB</th></tr></thead><tbody>' + per_rows + "</tbody></table></div>"
             + f'<p class="muted">{len(ranked)} of {len(priced)} priced plans publish the RAM figure this '
               f'division needs. The rest are left out rather than estimated.</p>'
@@ -985,6 +991,20 @@ def answer_from_data(guide: dict, offers: list[dict]) -> str:
     return guide["answer"]
 
 
+def _chart_html(*names: str, alt: str) -> str:
+    """套图插进页面：文件不存在就什么都不插，绝不插一条坏链接。"""
+    blocks = []
+    for name in names:
+        if not (SITE_DIR / "assets" / name).exists():
+            continue
+        blocks.append(
+            f'<p><img src="/assets/{escape(name)}" alt="{escape(alt)}" '
+            f'width="760" height="auto" loading="lazy" decoding="async" '
+            f'style="max-width:100%;height:auto;border-radius:10px"></p>'
+        )
+    return "".join(blocks)
+
+
 def build_guide(
     site: dict, guide: dict, offers: list[dict], providers: list[dict], generated_at: str
 ) -> str:
@@ -1033,6 +1053,20 @@ def build_guide(
     faqs = frequently_asked(offers, _bank_questions())
     faq_html = ""
     extra_jsonld = [article, breadcrumb]
+    # T5 套图：单价页插"每 GB 最便宜"的图，主题厂商有专属图就一起插。
+    chart_html = ""
+    if guide.get("gap") == "unitprice":
+        # 标题形如 "Cheapest VPS per GB of RAM: Hostwinds - ..."，冒号后面就是主题厂商。
+        focus = guide.get("title", "").split(":", 1)[1].split("-")[0].strip() if ":" in guide.get("title", "") else ""
+        chart_html = _chart_html(
+            "per-gb-cheapest.svg",
+            f"per-gb-{slugify(focus)}.svg" if focus else "",
+            alt=f'Monthly price per GB of RAM, computed from published prices ({guide["title"]})',
+        )
+        chart_html = chart_html + _chart_html(
+            f"monthly-vs-ram-{slugify(focus)}.svg" if focus else "",
+            alt=f'What the monthly fee buys at {focus}',
+        )
     if faqs:
         rows = "".join(
             f'<h3>{escape(item["question"])}</h3><p>{escape(item["answer"])}</p>'
@@ -1058,7 +1092,7 @@ def build_guide(
             "footer": footer_block(site, generated_at),
             "title": escape(title),
             "h1": escape(guide["title"]),
-            "answer": f'<p class="lede">{escape(answer_from_data(guide, offers))}</p>',
+            "answer": f'<p class="lede">{escape(answer_from_data(guide, offers))}</p>' + chart_html,
             "body": body + faq_html,
             "gap_note": escape(guide["gap_note"]),
             "sources": f'<h2>Sources</h2><ul>{sources}</ul>' if sources else "",
@@ -1320,6 +1354,10 @@ def main() -> int:
 
     # 指南清单提前载入：about 页要引用当期篇数，页脚导航也要用
     guides = json.loads(GUIDES_PATH.read_text(encoding="utf-8")) if GUIDES_PATH.exists() else []
+
+    # T5 套图：把抓到的价格画成 SVG（纯文本、零依赖），文件名由数据决定。
+    chart_names = chart_assets.build_all(offers, SITE_DIR / "assets")
+    asset_paths += [f"/assets/{name}" for name in chart_names]
 
     written = []
     for name, html in {

@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 288" width="760" height="288" role="img" aria-label="IONOS: monthly price per GB of RAM">
+<rect width="760" height="288" fill="#0f172a" rx="10"/>
+<text x="24" y="42" fill="#e2e8f0" font-family="system-ui,sans-serif" font-size="20" font-weight="600">IONOS: monthly price per GB of RAM</text>
+<text x="24" y="64" fill="#94a3b8" font-family="system-ui,sans-serif" font-size="13">5 plans from IONOS publish both a price and a RAM figure. Computed, not quoted.</text>
+<text x="24" y="90" fill="#e2e8f0" font-family="system-ui,sans-serif" font-size="13">IONOS VPS XXL+</text>
+<rect x="324" y="78" width="188.0" height="18" fill="#38bdf8" rx="3"/>
+<text x="520.0" y="91" fill="#94a3b8" font-family="ui-monospace,monospace" font-size="12">0.8333 USD/GB</text>
+<text x="24" y="104" fill="#0f172a" font-family="system-ui,sans-serif" font-size="1">20 USD / 24 GB</text>
+<text x="24" y="124" fill="#e2e8f0" font-family="system-ui,sans-serif" font-size="13">IONOS VPS XL+</text>
+<rect x="324" y="112" width="197.4" height="18" fill="#22d3ee" rx="3"/>
+<text x="529.4" y="125" fill="#94a3b8" font-family="ui-monospace,monospace" font-size="12">0.8750 USD/GB</text>
+<text x="24" y="138" fill="#0f172a" font-family="system-ui,sans-serif" font-size="1">14 USD / 16 GB</text>
+<text x="24" y="158" fill="#e2e8f0" font-family="system-ui,sans-serif" font-size="13">IONOS VPS S+</text>
+<rect x="324" y="146" width="225.6" height="18" fill="#38bdf8" rx="3"/>
+<text x="557.6" y="159" fill="#94a3b8" font-family="ui-monospace,monospace" font-size="12">1.0000 USD/GB</text>
+<text x="24" y="172" fill="#0f172a" font-family="system-ui,sans-serif" font-size="1">2 USD / 2 GB</text>
+<text x="24" y="192" fill="#e2e8f0" font-family="system-ui,sans-serif" font-size="13">IONOS VPS L+</text>
+<rect x="324" y="180" width="225.6" height="18" fill="#22d3ee" rx="3"/>
+<text x="557.6" y="193" fill="#94a3b8" font-family="ui-monospace,monospace" font-size="12">1.0000 USD/GB</text>
+<text x="24" y="206" fill="#0f172a" font-family="system-ui,sans-serif" font-size="1">8 USD / 8 GB</text>
+<text x="24" y="226" fill="#e2e8f0" font-family="system-ui,sans-serif" font-size="13">IONOS VPS M+</text>
+<rect x="324" y="214" width="282.0" height="18" fill="#38bdf8" rx="3"/>
+<text x="614.0" y="227" fill="#94a3b8" font-family="ui-monospace,monospace" font-size="12">1.2500 USD/GB</text>
+<text x="24" y="240" fill="#0f172a" font-family="system-ui,sans-serif" font-size="1">5 USD / 4 GB</text>
+</svg>

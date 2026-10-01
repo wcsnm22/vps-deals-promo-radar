@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 288" width="760" height="288" role="img" aria-label="netcup: what the monthly fee buys">
+<rect width="760" height="288" fill="#0f172a" rx="10"/>
+<text x="24" y="42" fill="#e2e8f0" font-family="system-ui,sans-serif" font-size="20" font-weight="600">netcup: what the monthly fee buys</text>
+<text x="24" y="64" fill="#94a3b8" font-family="system-ui,sans-serif" font-size="13">Bar length is the published monthly price; the number beside it is the RAM it includes.</text>
+<text x="24" y="90" fill="#e2e8f0" font-family="system-ui,sans-serif" font-size="13">netcup VPS 8000 G12.5</text>
+<rect x="324" y="78" width="292.0" height="18" fill="#38bdf8" rx="3"/>
+<text x="624.0" y="91" fill="#94a3b8" font-family="ui-monospace,monospace" font-size="12">67.11 EUR = 64 GB RAM</text>
+<text x="24" y="124" fill="#e2e8f0" font-family="system-ui,sans-serif" font-size="13">netcup VPS 4000 G12.5</text>
+<rect x="324" y="112" width="197.4" height="18" fill="#38bdf8" rx="3"/>
+<text x="529.4" y="125" fill="#94a3b8" font-family="ui-monospace,monospace" font-size="12">45.36 EUR = 32 GB RAM</text>
+<text x="24" y="158" fill="#e2e8f0" font-family="system-ui,sans-serif" font-size="13">netcup VPS 2000 G12.5</text>
+<rect x="324" y="146" width="117.1" height="18" fill="#38bdf8" rx="3"/>
+<text x="449.1" y="159" fill="#94a3b8" font-family="ui-monospace,monospace" font-size="12">26.92 EUR = 16 GB RAM</text>
+<text x="24" y="192" fill="#e2e8f0" font-family="system-ui,sans-serif" font-size="13">netcup VPS 1000 G12.5</text>
+<rect x="324" y="180" width="63.1" height="18" fill="#38bdf8" rx="3"/>
+<text x="395.1" y="193" fill="#94a3b8" font-family="ui-monospace,monospace" font-size="12">14.50 EUR = 8 GB RAM</text>
+<text x="24" y="226" fill="#e2e8f0" font-family="system-ui,sans-serif" font-size="13">netcup VPS 500 G12.5</text>
+<rect x="324" y="214" width="35.9" height="18" fill="#38bdf8" rx="3"/>
+<text x="367.9" y="227" fill="#94a3b8" font-family="ui-monospace,monospace" font-size="12">8.26 EUR = 4 GB RAM</text>
+</svg>

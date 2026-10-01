@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 254" width="760" height="254" role="img" aria-label="OVHcloud: what the monthly fee buys">
+<rect width="760" height="254" fill="#0f172a" rx="10"/>
+<text x="24" y="42" fill="#e2e8f0" font-family="system-ui,sans-serif" font-size="20" font-weight="600">OVHcloud: what the monthly fee buys</text>
+<text x="24" y="64" fill="#94a3b8" font-family="system-ui,sans-serif" font-size="13">Bar length is the published monthly price; the number beside it is the RAM it includes.</text>
+<text x="24" y="90" fill="#e2e8f0" font-family="system-ui,sans-serif" font-size="13">OVHcloud VPS-4</text>
+<rect x="324" y="78" width="292.0" height="18" fill="#38bdf8" rx="3"/>
+<text x="624.0" y="91" fill="#94a3b8" font-family="ui-monospace,monospace" font-size="12">23.37 USD = 24 GB RAM</text>
+<text x="24" y="124" fill="#e2e8f0" font-family="system-ui,sans-serif" font-size="13">OVHcloud VPS-3</text>
+<rect x="324" y="112" width="153.9" height="18" fill="#38bdf8" rx="3"/>
+<text x="485.9" y="125" fill="#94a3b8" font-family="ui-monospace,monospace" font-size="12">12.32 USD = 12 GB RAM</text>
+<text x="24" y="158" fill="#e2e8f0" font-family="system-ui,sans-serif" font-size="13">OVHcloud VPS-2</text>
+<rect x="324" y="146" width="106.2" height="18" fill="#38bdf8" rx="3"/>
+<text x="438.2" y="159" fill="#94a3b8" font-family="ui-monospace,monospace" font-size="12">8.50 USD = 8 GB RAM</text>
+<text x="24" y="192" fill="#e2e8f0" font-family="system-ui,sans-serif" font-size="13">OVHcloud VPS-1</text>
+<rect x="324" y="180" width="56.7" height="18" fill="#38bdf8" rx="3"/>
+<text x="388.7" y="193" fill="#94a3b8" font-family="ui-monospace,monospace" font-size="12">4.54 USD = 4 GB RAM</text>
+</svg>
