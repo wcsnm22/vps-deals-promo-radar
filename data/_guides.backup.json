@@ -346,13 +346,13 @@
   },
   {
     "slug": "unitprice-2026-10-01-1",
-    "title": "Cheapest VPS per GB of RAM: Hostwinds - 2026-10-01 ranking from 10 computable plans",
+    "title": "Cheapest VPS per GB of RAM: netcup - 2026-10-01 ranking from 0 computable plans",
     "gap": "unitprice",
     "gap_note": "The benchmarked top pages list headline prices without breaking them down per unit. This entry divides only the numbers the provider itself published.",
-    "answer": "Hostwinds: cheapest RAM per unit is Unmanaged Linux VPS Hosting - 12 CPU / 64 GB RAM / 500 GB at 3.3592 USD per GB (214.99 USD / 64 GB), computed from the published price only.",
+    "answer": "netcup publishes no RAM figure next to its price, so no per-GB number can be computed for it.",
     "auto": true,
-    "published": "2026-10-01T04:52:22Z",
-    "body_html": "<h2>Hostwinds plans ranked by price per GB</h2><div class=\"table-shell\"><table><thead><tr><th>#</th><th>Plan</th><th>Published price</th><th>RAM (GB)</th><th>Price per GB</th></tr></thead><tbody><tr><td>1</td><td>Unmanaged Linux VPS Hosting - 12 CPU / 64 GB RAM / 500 GB</td><td class=\"price\">214.99 USD</td><td>64</td><td class=\"price\">3.3592 USD/GB</td></tr><tr><td>2</td><td>Unmanaged Linux VPS Hosting - 16 CPU / 96 GB RAM / 750 GB</td><td class=\"price\">328.99 USD</td><td>96</td><td class=\"price\">3.4270 USD/GB</td></tr><tr><td>3</td><td>Unmanaged Linux VPS Hosting - 8 CPU / 32 GB RAM / 400 GB</td><td class=\"price\">124.99 USD</td><td>32</td><td class=\"price\">3.9059 USD/GB</td></tr><tr><td>4</td><td>Unmanaged Linux VPS Hosting - 4 CPU / 12 GB RAM / 200 GB</td><td class=\"price\">49.99 USD</td><td>12</td><td class=\"price\">4.1658 USD/GB</td></tr><tr><td>5</td><td>Unmanaged Linux VPS Hosting - 2 CPU / 4 GB RAM / 75 GB</td><td class=\"price\">18.99 USD</td><td>4</td><td class=\"price\">4.7475 USD/GB</td></tr><tr><td>6</td><td>Unmanaged Linux VPS Hosting - 6 CPU / 16 GB RAM / 300 GB</td><td class=\"price\">76.99 USD</td><td>16</td><td class=\"price\">4.8119 USD/GB</td></tr><tr><td>7</td><td>Unmanaged Linux VPS Hosting - 2 CPU / 6 GB RAM / 100 GB</td><td class=\"price\">28.99 USD</td><td>6</td><td class=\"price\">4.8317 USD/GB</td></tr><tr><td>8</td><td>Unmanaged Linux VPS Hosting - 4 CPU / 8 GB RAM / 150 GB</td><td class=\"price\">38.99 USD</td><td>8</td><td class=\"price\">4.8738 USD/GB</td></tr><tr><td>9</td><td>Unmanaged Linux VPS Hosting - 1 CPU / 1 GB RAM / 30 GB</td><td class=\"price\">4.99 USD</td><td>1</td><td class=\"price\">4.9900 USD/GB</td></tr><tr><td>10</td><td>Unmanaged Linux VPS Hosting - 1 CPU / 2 GB RAM / 50 GB</td><td class=\"price\">9.99 USD</td><td>2</td><td class=\"price\">4.9950 USD/GB</td></tr></tbody></table></div><h2>How to recompute</h2><p>Every per-GB cell equals the published monthly price divided by the RAM figure printed beside it. Plans without a published RAM figure are excluded instead of estimated.</p>",
+    "published": "2026-10-01T01:00:25Z",
+    "body_html": "<h2>netcup plans ranked by price per GB</h2><p>No computable plan for this provider.</p><h2>How to recompute</h2><p>Every per-GB cell equals the published monthly price divided by the RAM figure printed beside it. Plans without a published RAM figure are excluded instead of estimated.</p>",
     "sources": [
       {
         "label": "OVHcloud published price page",
