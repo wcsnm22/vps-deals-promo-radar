@@ -375,5 +375,29 @@
         "url": "https://www.hostwinds.com/vps/unmanaged-linux"
       }
     ]
+  },
+  {
+    "slug": "steps-2026-10-02-1",
+    "title": "Cheap VPS setup and connection steps: netcup plan - numbered walkthrough, 2026-10-02",
+    "gap": "steps",
+    "gap_note": "Only one page across the benchmarked domains gives numbered steps, and it covers Windows installation alone. This entry keeps the purchase-to-login sequence in one place with the source beside each step.",
+    "answer": "Eight numbered steps from picking the plan to logging in. netcup currently tracks 5 priced plan(s), cheapest at 8.26 EUR (VPS 500 G12.5).",
+    "auto": true,
+    "published": "2026-10-02T01:00:25Z",
+    "body_html": "<h2>Ordered steps (checked against what netcup publishes today)</h2><ol><li><strong>Decide the resource floor from the workload, not the price</strong> Write down the smallest RAM figure that will run your stack. A single small web app or VPN fits in 1-2 GB; a database doing real work wants 4 GB or more.</li><li><strong>Compare plans on published numbers only</strong> Use the tracked price list and divide price by the RAM figure the provider published. If a plan publishes no RAM figure next to its price, the per-GB number is unknown - do not guess it.</li><li><strong>Check what the price excludes before you commit</strong> Backups, control panels, extra IPv4 addresses and Windows licences are commonly billed separately. Read the row underneath the plan card on the provider's own pricing page.</li><li><strong>Create the account and deploy the server</strong> In the provider's control panel choose the plan, the region closest to your users, and the operating system image. Linux images carry no extra licence fee on the low-cost plans; Windows normally adds one.</li><li><strong>Add your SSH key during deployment</strong> Paste your public key at deploy time. With key authentication you can turn password login off later instead of leaving a password exposed to the internet.</li><li><strong>Connect over SSH on Linux plans</strong> The provider issues the server address at deploy time; connect from a terminal with the username and key you configured. The out-of-band console in the panel is the fallback when SSH does not answer.</li><li><strong>Connect over RDP on Windows plans</strong> Reach a Windows VPS with Remote Desktop using the administrator credentials the provider issued. Where a bring-your-own-licence path is documented, activate your own retail or volume licence after installation.</li><li><strong>Update and harden before pointing traffic at it</strong> Apply operating-system updates, replace password login with keys where the OS supports it, open only the ports you need, and confirm you hold a backup or snapshot you can actually restore.</li></ol>",
+    "sources": [
+      {
+        "label": "RamNode - Installing Windows on Cloud VPS",
+        "url": "https://ramnode.com/support/documentation/cloud-vps/windows-install"
+      },
+      {
+        "label": "OVHcloud - VPS documentation entry point",
+        "url": "https://us.ovhcloud.com/vps/"
+      },
+      {
+        "label": "DigitalOcean - VPS hosting explained",
+        "url": "https://www.digitalocean.com/solutions/vps-hosting"
+      }
+    ]
   }
 ]
