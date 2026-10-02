@@ -97,6 +97,47 @@ def slugify(text: str) -> str:
     return slug or "item"
 
 
+# Google 对 Product 的必填字段是 name + offers，对 Offer 要 price。
+# 发一个"没有 offers 的 Product"或"没有 price 的 Offer"，Search Console 里就是硬错误
+# （2026-10-02 的 GSC 报的就是这一类）。构建时先自查一遍，宁可构建失败也不发出去。
+def audit_structured_data(site_dir: Path) -> list[str]:
+    """把 site/ 里每个页面上的 JSON-LD 块过一遍，返回发现的问题（空列表=通过）。"""
+    problems: list[str] = []
+
+    def walk(node, where: str) -> None:
+        if isinstance(node, list):
+            for item in node:
+                walk(item, where)
+            return
+        if not isinstance(node, dict):
+            return
+        kind = node.get("@type")
+        if kind == "Product":
+            offers = node.get("offers")
+            if not offers:
+                problems.append(f"{where}: Product 没有 offers（Google 必填字段）")
+            else:
+                walk(offers, where)
+        elif kind == "Offer" and node.get("price") is None:
+            problems.append(f"{where}: Offer 没有 price（Google 必填字段）")
+        elif kind == "AggregateOffer" and node.get("lowPrice") is None:
+            problems.append(f"{where}: AggregateOffer 没有 lowPrice（Google 必填字段）")
+        for value in node.values():
+            if isinstance(value, (dict, list)):
+                walk(value, where)
+
+    for page_path in sorted(site_dir.rglob("*.html")):
+        page_text = page_path.read_text(encoding="utf-8")
+        for match in re.finditer(r'<script type="application/ld\+json">(.*?)</script>', page_text, re.S):
+            try:
+                payload = json.loads(match.group(1))
+            except ValueError as exc:
+                problems.append(f"{page_path.name}: JSON-LD 不是合法 JSON（{exc}）")
+                continue
+            walk(payload, page_path.name)
+    return problems
+
+
 # Cloudflare Pages 会把 /x.html 308 跳到 /x，所以 canonical 和 sitemap 一律用干净 URL，
 # 文件本身仍然写成 .html —— 让被索引的地址就是最终地址，避免 canonical 指向一个跳转。
 def home_url(site: dict) -> str:
@@ -554,25 +595,43 @@ def build_provider(site: dict, provider: dict, offers: list[dict], generated_at:
         + (f"{len(priced)} of {len(offers)} plans publish a price; from {money(low, currency)}." if priced
            else "No price is published in machine-readable form on that page, so this page lists plan names only.")
     )
+    # 结构化数据只声明"这页是什么 + 列了哪些套餐"，不声明"我们在卖"。
+    # 2026-10-02 改：原来这里发 Product + AggregateOffer。两个问题：
+    #   1) 抓不到价格的厂商（DigitalOcean / Hetzner）会发出**没有 offers 的 Product**，
+    #      Google 的必填字段就是 name + offers，于是 Search Console 里是实打实的错误；
+    #   2) 有价格的厂商会被当成"商家信息"（merchant listing）来校验，而商家信息要求
+    #      priceValidUntil / 退货政策 / 运费政策——我们是比价站，这三样一概没有。
+    #      为了消警告去编一个 priceValidUntil 是编有效期，仓库的 BOUNDARY 不允许。
+    # 所以不再发 Product/Offer，改成 ItemList：我们确实在做的、也确实为真的那件事。
     graphs: list[dict] = [
         {
             "@context": "https://schema.org",
-            "@type": "Product",
-            "name": f"{name} VPS plans",
+            "@type": "WebPage",
+            "name": title,
             "url": provider_page(site, name),
-            "brand": {"@type": "Brand", "name": name},
+            "description": description,
         }
     ]
     if priced:
-        graphs[0]["offers"] = {
-            "@type": "AggregateOffer",
-            "priceCurrency": currency,
-            "lowPrice": low,
-            "highPrice": high,
-            "offerCount": len(priced),
-            "availability": "https://schema.org/InStock",
-            "url": provider_page(site, name),
-        }
+        graphs.append(
+            {
+                "@context": "https://schema.org",
+                "@type": "ItemList",
+                "name": f"{name} VPS plans tracked with a published price",
+                "itemListOrder": "https://schema.org/ItemListOrderAscending",
+                "numberOfItems": len(priced),
+                "itemListElement": [
+                    {
+                        "@type": "ListItem",
+                        "position": index + 1,
+                        "name": f"{name} {offer['title']}",
+                        "url": deal_page(site, offer),
+                        "description": f"Published price {money(offer['price'], offer.get('currency', currency))}",
+                    }
+                    for index, offer in enumerate(sorted(priced, key=lambda row: row["price"]))
+                ],
+            }
+        )
     graphs.append(
         {
             "@context": "https://schema.org",
@@ -684,20 +743,17 @@ def build_deal(site: dict, offer: dict, generated_at: str, variants: int = 1,
         + (f' listed at {price_text}' if price_text else ' (no published price found)')
         + f'. Read from {offer["source_url"]} on {offer["fetched_at"]}.'
     )
+    # 这一页记录"我们从厂商页面上读到的那个价格"，不是"我们在卖这个东西"。
+    # 原来发的是一个裸 Offer（不在 Product 里）：Google 不认这种形状，而且它把页面
+    # 拉进商家信息的校验口径，缺 priceValidUntil 就报错。我们抓不到有效期就不写有效期
+    # （数据集里 0 条有 valid_until），所以不再发 Offer，改成 WebPage + 这一档的规格。
     schema: dict = {
         "@context": "https://schema.org",
-        "@type": "Offer",
+        "@type": "WebPage",
         "name": f'{offer["provider"]} {offer["title"]}',
         "url": deal_page(site, offer),
-        "availability": "https://schema.org/InStock",
-        "seller": {"@type": "Organization", "name": offer["provider"]},
-        "priceSpecification": {"@type": "UnitPriceSpecification", "referenceQuantity": {"@type": "QuantitativeValue", "unitCode": "MON"}},
+        "description": description,
     }
-    if offer.get("price") is not None:
-        schema["price"] = offer["price"]
-        schema["priceCurrency"] = currency
-    if offer.get("valid_until"):
-        schema["priceValidUntil"] = offer["valid_until"]
     breadcrumb = {
         "@context": "https://schema.org",
         "@type": "BreadcrumbList",
@@ -1534,6 +1590,13 @@ def main() -> int:
         ),
         encoding="utf-8",
     )
+
+    # 结构化数据自查：Google 对 Product 的必填字段是 name + offers，对 Offer 要 price。
+    # 发一个"没有 offers 的 Product"或"没有 price 的 Offer"就是 Search Console 里的硬错误
+    # （2026-10-02 GSC 报的就是这一类）。这里在构建时直接拦下，宁可构建失败也不发出去。
+    problems = audit_structured_data(SITE_DIR)
+    if problems:
+        raise SystemExit("结构化数据自查未通过，已阻止构建：\n  " + "\n  ".join(problems[:10]))
 
     print(
         f"wrote {len(written)} pages + sitemap.xml({len(urls)} urls) + robots.txt + "
