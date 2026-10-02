@@ -61,6 +61,29 @@ def configured_measurement_id() -> str:
     return (match.group(1).strip() if match else "")
 
 
+def check_live_page(local_rel: str, online_path: str, label: str) -> tuple[bool, str]:
+    """线上某个页面必须带着本地这次构建的那段内容。
+
+    为什么要有这一步：sitemap 一致只说明"构建过"，不说明"这一页也上线了"。
+    2026-10-01 就踩过一次——模板被回退、只部署了指南页，首页还是旧版，
+    而 sitemap 核对照样通过。首页有没有带上这次构建的答案框，这里专门查一遍。
+    """
+    local_path = ROOT / local_rel
+    if not local_path.exists():
+        return True, f"[skip] 本地没有 {local_rel}，跳过 {label} 核对"
+    local = local_path.read_text(encoding="utf-8")
+    marker = 'class="answer"'
+    if marker not in local:
+        return True, f"[skip] 本次构建的 {local_rel} 里没有答案框，跳过 {label} 核对"
+    try:
+        live = fetch(BASE + online_path)
+    except Exception as exc:  # noqa: BLE001
+        return False, f"[fail] {label} 抓取失败：{type(exc).__name__}: {exc}"
+    if marker not in live:
+        return False, f"[fail] {label} 线上还是旧版：没有本次构建的答案框（{online_path}）"
+    return True, f"[ok]   {label} 线上带着本次构建的内容（{online_path}）"
+
+
 def check_tag(live_home: str, measurement_id: str) -> tuple[bool, str]:
     """线上首页必须真的带着配置里那个衡量 ID，否则统计会静默断掉。"""
     if not measurement_id:
@@ -104,6 +127,10 @@ def main() -> int:
                         return 1
                 except Exception as exc:  # noqa: BLE001
                     print(f"      [warn] 统计标签检查没能完成：{type(exc).__name__}: {exc}")
+                ok, message = check_live_page("site/index.html", "/", "首页")
+                print("      " + message)
+                if not ok:
+                    return 1
             return 0
         last = f"线上片段 {len(have)} 个，期望 {len(want)} 个；差集 {sorted(have ^ want)[:3]}"
         print(f"[{attempt}] 还不一致：{last}")
