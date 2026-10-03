@@ -399,5 +399,37 @@
         "url": "https://www.digitalocean.com/solutions/vps-hosting"
       }
     ]
+  },
+  {
+    "slug": "csv-2026-10-03-1",
+    "title": "Cheap VPS price table to download - BuyVM plans, 2026-10-03 snapshot",
+    "gap": "csv",
+    "gap_note": "None of the benchmarked top pages for this term serves a downloadable comparison file. This entry hands over the file and shows the rows for one provider at a time.",
+    "answer": "1 tracked BuyVM plans with a published price, 1 of them carry a per-GB figure; cheapest per GB is HIGH VOLUME VPS at 3.7500 USD/GB. The full 25-plan table is downloadable as CSV.",
+    "auto": true,
+    "published": "2026-10-03T01:00:25Z",
+    "body_html": "<h2>The file</h2><p><a class=\"cta\" href=\"/downloads/unit-price.csv\">Download unit-price.csv (25 plans, all providers)</a></p><h2>BuyVM plans in the table</h2><div class=\"table-shell\"><table><thead><tr><th>Plan</th><th>Published price</th><th>RAM (GB)</th><th>vCPU</th><th>Price per GB</th></tr></thead><tbody><tr><td>HIGH VOLUME VPS</td><td class=\"price\">30.0 USD</td><td>8</td><td>2</td><td class=\"price\">3.7500 USD/GB</td></tr></tbody></table></div><h2>Coverage</h2><p>25 of 25 tracked plans publish both a price and a RAM figure. The rest keep an empty per-GB cell rather than a guess.</p>",
+    "sources": [
+      {
+        "label": "OVHcloud published price page",
+        "url": "https://www.ovhcloud.com/en/vps/"
+      },
+      {
+        "label": "netcup published price page",
+        "url": "https://www.netcup.com/en/server/vps"
+      },
+      {
+        "label": "BuyVM published price page",
+        "url": "https://buyvm.net/kvm-dedicated-server-slices/"
+      },
+      {
+        "label": "IONOS published price page",
+        "url": "https://www.ionos.com/servers/vps"
+      },
+      {
+        "label": "Hostwinds published price page",
+        "url": "https://www.hostwinds.com/vps/unmanaged-linux"
+      }
+    ]
   }
 ]
