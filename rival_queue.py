@@ -56,7 +56,10 @@ NOISE_SEGMENTS = {
 }
 
 # 这些词只会修饰别人，不会单独当查询：词组以它们结尾就不当作一条查询。
-TAIL_MODIFIERS = {"cheap", "best", "top", "budget", "free", "unmetered", "affordable", "lowcost"}
+TAIL_MODIFIERS = {
+    "cheap", "best", "top", "budget", "free", "unmetered", "affordable", "lowcost",
+    "price", "pricing", "cost",
+}
 
 SEED_QUERIES = [
     "cheap vps", "cheap vps hosting", "cheap windows vps", "cheap linux vps",

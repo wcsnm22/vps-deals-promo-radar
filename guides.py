@@ -273,10 +273,20 @@ QUEUE_MIN_PLANS = 3
 
 # 每类词对应一个"要用哪些字段"的门槛：字段不够就不给这个词写页，宁可空着。
 QUEUE_BUILDERS = [
-    ("disk", ("storage", "disk", "ssd", "nvme", "backup")),
+    ("disk", ("storage", "disk")),
     ("ram", ("ram", "memory")),
     ("price", ("cheap", "best", "price", "pricing", "cost", "budget", "affordable")),
 ]
+
+# 这些词是**我们没有字段能证明的属性**：机房位置、操作系统、免费/不限量、盘的类型、是否托管…
+# 词组里带一个就不自动成页——照字面写就等于替厂商做我们没核过的承诺。（比如 `cheap vps europe`：
+# 我们能给出最低月费，但给不出"这台在欧洲"的证据。）
+QUEUE_BLOCKED_WORDS = {
+    "free", "unmetered", "windows", "linux", "ubuntu", "dedicated", "managed", "unmanaged",
+    "europe", "usa", "us", "uk", "netherlands", "germany", "france", "asia", "japan", "india",
+    "canada", "australia", "singapore", "brazil", "ssd", "nvme", "hdd", "backup", "ddos",
+    "gpu", "ipv4", "ipv6", "kvm", "panel", "cpanel", "trial", "lifetime",
+}
 
 
 def load_queue() -> list[dict]:
@@ -296,8 +306,10 @@ def _by_currency(rows: list[dict]) -> dict[str, list[dict]]:
 
 
 def queue_builder_for(phrase: str) -> str | None:
-    """这条词该用哪套数字来撑：磁盘单价 / 内存单价 / 月费本身。"""
+    """这条词该用哪套数字来撑：磁盘单价 / 内存单价 / 月费本身。撑不了就返回 None。"""
     words = set(phrase.split())
+    if words & QUEUE_BLOCKED_WORDS:
+        return None
     for name, triggers in QUEUE_BUILDERS:
         if words & set(triggers):
             return name
@@ -449,10 +461,26 @@ def queue_entry(offers: list[dict], guides: list[dict], stamp: str, index: int) 
     跳过清单是为了照实说清楚"哪些词我们没写、为什么"——对不出数据的不写，不改口径去凑。
     """
     used = _used_titles(guides)
+    # 队列文件里的 we_have_pages 只有在跑 rival_queue.py 时才刷新，而日更循环不跑它。
+    # 所以这里自己再判一次"这个词我们写过没有"，否则同一个词会一天一页地重复发。
+    covered = {g.get("queue_phrase") for g in guides if g.get("queue_phrase")}
+    covered |= {
+        g["slug"].removeprefix("queue-")
+        for g in guides
+        if g.get("slug", "").startswith("queue-")
+    }
     skipped: list[str] = []
     for row in load_queue():
         phrase = row.get("phrase") or ""
         if not phrase or row.get("we_have_pages"):
+            continue
+        if phrase in covered or slug_phrase(phrase) in covered:
+            continue
+        blocked = set(phrase.split()) & QUEUE_BLOCKED_WORDS
+        if blocked:
+            skipped.append(
+                f"{phrase}（词里带着我们没抓到的属性：{', '.join(sorted(blocked))}；照字面写字不住，留给人写）"
+            )
             continue
         if queue_builder_for(phrase) is None:
             skipped.append(f"{phrase}（没有能撑住它的公开数字，留给人写）")

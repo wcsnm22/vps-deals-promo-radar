@@ -1,5 +1,5 @@
 # 对手生长拆解：页面矩阵、词清单、选题队列
-_生成时间 2026-10-03T12:44:36Z（UTC）· 数据源 data/rival-matrix.json、data/rival-depth.json、data/rival-brands.json、data/rival-topic-queue.json_
+_生成时间 2026-10-03T13:49:14Z（UTC）· 数据源 data/rival-matrix.json、data/rival-depth.json、data/rival-brands.json、data/rival-topic-queue.json_
 
 这份报告只做三件事：看清对手的页面怎么铺、他们靠哪些词吃饭、把差距排成我明天写哪一篇。
 
@@ -26,7 +26,7 @@ Wayback 这次两个接口都返回 429（被限流），所以那一列照实�
 
 | 站点 | sitemap URL 数 | 最早一条 lastmod | 最新一条 lastmod | Wayback 最早快照 |
 |---|---|---|---|---|
-| 我们 vpsdealsradar.com | 56 个 HTML 文件 | — | — | — |
+| 我们 vpsdealsradar.com | 57 个 HTML 文件 | — | — | — |
 | lowendbox.com | 12572 | 2008-02-04 | 2026-10-03 | 没拿到（接口 429） |
 | vpsfilter.com | 2 | — | — | 没拿到（接口 429） |
 
@@ -185,51 +185,51 @@ lowendbox 的根级常青页（不在 `/blog/` 下，说明这是他们当门面
 
 ## 8. 变成选题队列（这就是明天要写的清单）
 
-共抽到词组 1628 条，按下面的规则筛出 54 条入队；
+共抽到词组 1477 条，按下面的规则筛出 49 条入队；
 排序口径：先看我们写没写过，再看公开补全里的名次，再看几家对手在做；没有任何第三方搜索量估算。
 
 | 优先级 | 词组 | 做这个词的对手 | 需求信号 | 我们写过没 | 动作 | 对手的样例地址 |
 |---|---|---|---|---|---|---|
-| 1 | vps storage | 1 家 / 14 个地址 | 补全第 1 位（vps storage） | 没有 | 补这一篇 | https://lowendbox.com/blog/advantagecom-60year-512mb-xen-vps-with-199gb-storage/ |
-| 2 | unmetered vps | 1 家 / 13 个地址 | 补全第 1 位（unmetered vps） | 没有 | 补这一篇 | https://lowendbox.com/blog/delimiter-usa-6-unmetered-vps/ |
-| 3 | best cheap | 1 家 / 11 个地址 | 补全第 1 位（best cheap vps） | 没有 | 补这一篇 | https://lowendbox.com/blog/the-best-cheap-vps-hosting-in-review-2020-edition/ |
-| 4 | best cheap vps | 1 家 / 5 个地址 | 补全第 1 位（best cheap vps） | 没有 | 补这一篇 | https://lowendbox.com/blog/the-best-cheap-vps-hosting-in-review-2020-edition/ |
-| 5 | free vps | 1 家 / 25 个地址 | 补全第 2 位（free vps with ipv4） | 没有 | 补这一篇 | https://lowendbox.com/blog/amazon-free-ec2-micro-instance-613mb-xen-vps-for-1-year/ |
-| 6 | best vps | 1 家 / 5 个地址 | 补全第 3 位（best vps for beginners） | 没有 | 补这一篇 | https://lowendbox.com/blog/2019-best-vps-provider-as-voted-by-the-low-end-talk-community/ |
-| 7 | server usa | 1 家 / 5 个地址 | 补全第 3 位（cheap dedicated server usa） | 没有 | 补这一篇 | https://lowendbox.com/blog/serverleased-6-99month-512mb-openvz-server-in-the-usa-and-the-netherlands/ |
-| 8 | dedicated server usa | 1 家 / 4 个地址 | 补全第 3 位（cheap dedicated server usa） | 没有 | 补这一篇 | https://lowendbox.com/blog/citywidehost-49month-quad-core-16gb-dedicated-server-in-phoenix-az-usa/ |
-| 9 | storage cheap | 1 家 / 2 个地址 | 补全第 3 位（vps storage cheap） | 没有 | 补这一篇 | https://lowendbox.com/blog/dedirock-launches-storage-wars-get-ultra-cheap-and-we-do-mean-ultra-cheap-pricing-on-huge-storage-boxes/ |
-| 10 | vps uk | 1 家 / 156 个地址 | 补全第 4 位（cheap windows vps uk） | 没有 | 补这一篇 | https://lowendbox.com/blog/hws-hosting-4-gbp-openvz-vps-in-uk/ |
-| 11 | windows vps uk | 1 家 / 1 个地址 | 补全第 4 位（cheap windows vps uk） | 没有 | 补这一篇 | https://lowendbox.com/blog/veeble-three-offers-including-7month-512mb-windows-vps-in-uk/ |
-| 12 | vps netherlands | 1 家 / 76 个地址 | 补全第 5 位（unmetered vps netherlands） | 没有 | 补这一篇 | https://lowendbox.com/blog/serverffs-5-35-64mb-openvz-vps-in-netherlands/ |
-| 13 | vps usa | 1 家 / 34 个地址 | 补全第 6 位（unmetered vps usa） | 没有 | 补这一篇 | https://lowendbox.com/blog/easevps-7-00month-1024mb-openvz-vps-in-kansas-city-and-jacksonville-usa-or-manchester-uk/ |
-| 14 | vps europe | 1 家 / 6 个地址 | 补全第 6 位（best cheap vps europe） | 没有 | 补这一篇 | https://lowendbox.com/blog/domvps-com-6-04month-256mb-openvz-vps-in-europe-usa/ |
-| 15 | dedicated server uk | 1 家 / 3 个地址 | 补全第 6 位（cheap dedicated server uk） | 没有 | 补这一篇 | https://lowendbox.com/blog/poundhost-25month-2gb-ram-320gb-hdd-dedicated-server-in-maidenhead-uk/ |
-| 16 | cheap vps europe | 1 家 / 2 个地址 | 补全第 6 位（best cheap vps europe） | 没有 | 补这一篇 | https://lowendbox.com/blog/eurovm-unlimited-bandwidth-cheap-vps-in-europe-for-e26-40-year-ddos-protection-and-ipv6-included/ |
-| 17 | unmetered vps usa | 1 家 / 2 个地址 | 补全第 6 位（unmetered vps usa） | 没有 | 补这一篇 | https://lowendbox.com/blog/vpscheap-net-unmetered-1000mbps-vps-from-15year-in-chicago-usa/ |
-| 18 | vps ipv4 | 1 家 / 2 个地址 | 补全第 6 位（vps ipv4 vs ipv6） | 没有 | 补这一篇 | https://lowendbox.com/tag/vps-change-ipv4-feature/ |
-| 19 | ipv6 vps | 1 家 / 10 个地址 | 补全第 7 位（ipv4 ipv6 vps） | 没有 | 补这一篇 | https://lowendbox.com/blog/fitvps-10quarter-128mb-openvz-ipv6-only-vps-in-bulgaria/ |
-| 20 | ipv4 ipv6 | 1 家 / 2 个地址 | 补全第 7 位（ipv4 ipv6 vps） | 没有 | 补这一篇 | https://lowendbox.com/blog/route48-org-free-ipv4-to-ipv6-tunnel-broker-service-plus-much-more/ |
-| 21 | server europe | 1 家 / 3 个地址 | 补全第 8 位（cheap dedicated server europe） | 没有 | 补这一篇 | https://lowendbox.com/blog/vmdeploy-fully-managed-ssd-cloud-server-in-europe-with-competitive-pricing-9-separate-kvm-plans/ |
-| 22 | dedicated server europe | 1 家 / 2 个地址 | 补全第 8 位（cheap dedicated server europe） | 没有 | 补这一篇 | https://lowendbox.com/blog/its-a-wait-is-this-a-typo-kind-of-deal-from-avahost-cheap-dedicated-server-in-europe/ |
-| 23 | best price | 1 家 / 1 个地址 | 补全第 9 位（vps best price） | 没有 | 补这一篇 | https://lowendbox.com/blog/black-friday-deal-servermania-e3-servers-from-45-mo-best-price-ever/ |
-| 24 | unmetered bandwidth | 1 家 / 42 个地址 | 补全第 10 位（vps unmetered bandwidth） | 没有 | 补这一篇 | https://lowendbox.com/blog/123com-4-256mb-openvz-vps-in-scranton-france-and-germany-with-unmetered-bandwidth/ |
-| 25 | vps unmetered | 1 家 / 20 个地址 | 补全第 10 位（vps unmetered bandwidth） | 没有 | 补这一篇 | https://lowendbox.com/blog/rethinkvps-5-95-128mb-openvz-vps-with-gbps-unmetered/ |
-| 26 | vps unmetered bandwidth | 1 家 / 12 个地址 | 补全第 10 位（vps unmetered bandwidth） | 没有 | 补这一篇 | https://lowendbox.com/blog/rawsrv-now-in-miami-2gb-vps-with-unmetered-bandwidth-for-9-50-mo/ |
-| 27 | hosting europe | 1 家 / 2 个地址 | 补全第 10 位（cheap vps hosting europe） | 没有 | 补这一篇 | https://lowendbox.com/blog/one-euro-hosting-myrootpw-has-shared-hosting-in-us-or-europe-for-1-e-first-year-10-e-year-after-that/ |
-| 28 | cheap vps | 1 家 / 290 个地址 | 补全第 1 位（cheap vps） | 有（17 页里出现） | 已有，检查够不够深 | https://lowendbox.com/blog/cheap-vps-llc-8-quarter-512mb-and-48-year-1gb-ovz-in-san-jose/ |
-| 29 | dedicated server | 1 家 / 151 个地址 | 补全第 1 位（cheap dedicated server） | 有（14 页里出现） | 已有，检查够不够深 | https://lowendbox.com/blog/olmnet-2995-refurbished-dedicated-server/ |
-| 30 | windows vps | 1 家 / 79 个地址 | 补全第 1 位（cheap windows vps） | 有（6 页里出现） | 已有，检查够不够深 | https://lowendbox.com/blog/yardvps-6-71-512mb-windows-vps-chinese-new-year-promo/ |
-| 31 | cheap dedicated | 1 家 / 66 个地址 | 补全第 1 位（cheap dedicated server） | 有（14 页里出现） | 已有，检查够不够深 | https://lowendbox.com/blog/dedicated-server-hosting-find-cheap-dedicated-servers-on-lowendbox/ |
-| 32 | vps hosting | 1 家 / 61 个地址 | 补全第 1 位（cheap vps hosting） | 有（23 页里出现） | 已有，检查够不够深 | https://lowendbox.com/blog/budget-vps-hosting-specials/ |
-| 33 | linux vps | 1 家 / 36 个地址 | 补全第 1 位（cheap linux vps） | 有（27 页里出现） | 已有，检查够不够深 | https://lowendbox.com/blog/alvotech-e19-50-512mb-linux-vserver-vps-in-germany/ |
-| 34 | cheap windows | 1 家 / 25 个地址 | 补全第 1 位（cheap windows vps） | 有（6 页里出现） | 已有，检查够不够深 | https://lowendbox.com/blog/cheap-windows-vps-5-25month-768mb-windows-kvm-and-more-in-the-usa/ |
-| 35 | cheap windows vps | 1 家 / 20 个地址 | 补全第 1 位（cheap windows vps） | 有（6 页里出现） | 已有，检查够不够深 | https://lowendbox.com/blog/cheap-windows-vps-5-25month-768mb-windows-kvm-and-more-in-the-usa/ |
-| 36 | coupon code | 1 家 / 16 个地址 | 补全第 1 位（vps coupon code hostinger） | 有（1 页里出现） | 已有，检查够不够深 | https://lowendbox.com/blog/serversgalore-1gb-kvm-sale-with-coupon-code-for-30-off-for-life/ |
-| 37 | cheap vps hosting | 1 家 / 8 个地址 | 补全第 1 位（cheap vps hosting） | 有（17 页里出现） | 已有，检查够不够深 | https://lowendbox.com/blog/the-best-cheap-vps-hosting-in-review-2020-edition/ |
-| 38 | cheap linux | 1 家 / 6 个地址 | 补全第 1 位（cheap linux vps） | 有（17 页里出现） | 已有，检查够不够深 | https://lowendbox.com/blog/cheap-linux-vps-for-just-1-month-only-at-lowendbox/ |
-| 39 | cheap linux vps | 1 家 / 5 个地址 | 补全第 1 位（cheap linux vps） | 有（17 页里出现） | 已有，检查够不够深 | https://lowendbox.com/blog/cheap-linux-vps-for-just-1-month-only-at-lowendbox/ |
-| 40 | code hosting | 1 家 / 2 个地址 | 补全第 1 位（vps coupon code hostinger） | 有（4 页里出现） | 已有，检查够不够深 | https://lowendbox.com/blog/defined-code-hosting-openvz-vps-starting-at-2year-in-the-netherlands-and-france/ |
+| 1 | unmetered vps | 1 家 / 13 个地址 | 补全第 1 位（unmetered vps） | 没有 | 补这一篇 | https://lowendbox.com/blog/delimiter-usa-6-unmetered-vps/ |
+| 2 | best cheap vps | 1 家 / 5 个地址 | 补全第 1 位（best cheap vps） | 没有 | 补这一篇 | https://lowendbox.com/blog/the-best-cheap-vps-hosting-in-review-2020-edition/ |
+| 3 | free vps | 1 家 / 25 个地址 | 补全第 2 位（free vps with ipv4） | 没有 | 补这一篇 | https://lowendbox.com/blog/amazon-free-ec2-micro-instance-613mb-xen-vps-for-1-year/ |
+| 4 | best vps | 1 家 / 5 个地址 | 补全第 3 位（best vps for beginners） | 没有 | 补这一篇 | https://lowendbox.com/blog/2019-best-vps-provider-as-voted-by-the-low-end-talk-community/ |
+| 5 | server usa | 1 家 / 5 个地址 | 补全第 3 位（cheap dedicated server usa） | 没有 | 补这一篇 | https://lowendbox.com/blog/serverleased-6-99month-512mb-openvz-server-in-the-usa-and-the-netherlands/ |
+| 6 | dedicated server usa | 1 家 / 4 个地址 | 补全第 3 位（cheap dedicated server usa） | 没有 | 补这一篇 | https://lowendbox.com/blog/citywidehost-49month-quad-core-16gb-dedicated-server-in-phoenix-az-usa/ |
+| 7 | vps uk | 1 家 / 156 个地址 | 补全第 4 位（cheap windows vps uk） | 没有 | 补这一篇 | https://lowendbox.com/blog/hws-hosting-4-gbp-openvz-vps-in-uk/ |
+| 8 | windows vps uk | 1 家 / 1 个地址 | 补全第 4 位（cheap windows vps uk） | 没有 | 补这一篇 | https://lowendbox.com/blog/veeble-three-offers-including-7month-512mb-windows-vps-in-uk/ |
+| 9 | vps netherlands | 1 家 / 76 个地址 | 补全第 5 位（unmetered vps netherlands） | 没有 | 补这一篇 | https://lowendbox.com/blog/serverffs-5-35-64mb-openvz-vps-in-netherlands/ |
+| 10 | vps usa | 1 家 / 34 个地址 | 补全第 6 位（unmetered vps usa） | 没有 | 补这一篇 | https://lowendbox.com/blog/easevps-7-00month-1024mb-openvz-vps-in-kansas-city-and-jacksonville-usa-or-manchester-uk/ |
+| 11 | vps europe | 1 家 / 6 个地址 | 补全第 6 位（best cheap vps europe） | 没有 | 补这一篇 | https://lowendbox.com/blog/domvps-com-6-04month-256mb-openvz-vps-in-europe-usa/ |
+| 12 | dedicated server uk | 1 家 / 3 个地址 | 补全第 6 位（cheap dedicated server uk） | 没有 | 补这一篇 | https://lowendbox.com/blog/poundhost-25month-2gb-ram-320gb-hdd-dedicated-server-in-maidenhead-uk/ |
+| 13 | cheap vps europe | 1 家 / 2 个地址 | 补全第 6 位（best cheap vps europe） | 没有 | 补这一篇 | https://lowendbox.com/blog/eurovm-unlimited-bandwidth-cheap-vps-in-europe-for-e26-40-year-ddos-protection-and-ipv6-included/ |
+| 14 | unmetered vps usa | 1 家 / 2 个地址 | 补全第 6 位（unmetered vps usa） | 没有 | 补这一篇 | https://lowendbox.com/blog/vpscheap-net-unmetered-1000mbps-vps-from-15year-in-chicago-usa/ |
+| 15 | vps ipv4 | 1 家 / 2 个地址 | 补全第 6 位（vps ipv4 vs ipv6） | 没有 | 补这一篇 | https://lowendbox.com/tag/vps-change-ipv4-feature/ |
+| 16 | ipv6 vps | 1 家 / 10 个地址 | 补全第 7 位（ipv4 ipv6 vps） | 没有 | 补这一篇 | https://lowendbox.com/blog/fitvps-10quarter-128mb-openvz-ipv6-only-vps-in-bulgaria/ |
+| 17 | ipv4 ipv6 | 1 家 / 2 个地址 | 补全第 7 位（ipv4 ipv6 vps） | 没有 | 补这一篇 | https://lowendbox.com/blog/route48-org-free-ipv4-to-ipv6-tunnel-broker-service-plus-much-more/ |
+| 18 | server europe | 1 家 / 3 个地址 | 补全第 8 位（cheap dedicated server europe） | 没有 | 补这一篇 | https://lowendbox.com/blog/vmdeploy-fully-managed-ssd-cloud-server-in-europe-with-competitive-pricing-9-separate-kvm-plans/ |
+| 19 | dedicated server europe | 1 家 / 2 个地址 | 补全第 8 位（cheap dedicated server europe） | 没有 | 补这一篇 | https://lowendbox.com/blog/its-a-wait-is-this-a-typo-kind-of-deal-from-avahost-cheap-dedicated-server-in-europe/ |
+| 20 | unmetered bandwidth | 1 家 / 42 个地址 | 补全第 10 位（vps unmetered bandwidth） | 没有 | 补这一篇 | https://lowendbox.com/blog/123com-4-256mb-openvz-vps-in-scranton-france-and-germany-with-unmetered-bandwidth/ |
+| 21 | vps unmetered bandwidth | 1 家 / 12 个地址 | 补全第 10 位（vps unmetered bandwidth） | 没有 | 补这一篇 | https://lowendbox.com/blog/rawsrv-now-in-miami-2gb-vps-with-unmetered-bandwidth-for-9-50-mo/ |
+| 22 | hosting europe | 1 家 / 2 个地址 | 补全第 10 位（cheap vps hosting europe） | 没有 | 补这一篇 | https://lowendbox.com/blog/one-euro-hosting-myrootpw-has-shared-hosting-in-us-or-europe-for-1-e-first-year-10-e-year-after-that/ |
+| 23 | cheap vps | 1 家 / 290 个地址 | 补全第 1 位（cheap vps） | 有（18 页里出现） | 已有，检查够不够深 | https://lowendbox.com/blog/cheap-vps-llc-8-quarter-512mb-and-48-year-1gb-ovz-in-san-jose/ |
+| 24 | dedicated server | 1 家 / 151 个地址 | 补全第 1 位（cheap dedicated server） | 有（15 页里出现） | 已有，检查够不够深 | https://lowendbox.com/blog/olmnet-2995-refurbished-dedicated-server/ |
+| 25 | windows vps | 1 家 / 79 个地址 | 补全第 1 位（cheap windows vps） | 有（6 页里出现） | 已有，检查够不够深 | https://lowendbox.com/blog/yardvps-6-71-512mb-windows-vps-chinese-new-year-promo/ |
+| 26 | cheap dedicated | 1 家 / 66 个地址 | 补全第 1 位（cheap dedicated server） | 有（15 页里出现） | 已有，检查够不够深 | https://lowendbox.com/blog/dedicated-server-hosting-find-cheap-dedicated-servers-on-lowendbox/ |
+| 27 | vps hosting | 1 家 / 61 个地址 | 补全第 1 位（cheap vps hosting） | 有（24 页里出现） | 已有，检查够不够深 | https://lowendbox.com/blog/budget-vps-hosting-specials/ |
+| 28 | linux vps | 1 家 / 36 个地址 | 补全第 1 位（cheap linux vps） | 有（28 页里出现） | 已有，检查够不够深 | https://lowendbox.com/blog/alvotech-e19-50-512mb-linux-vserver-vps-in-germany/ |
+| 29 | cheap windows | 1 家 / 25 个地址 | 补全第 1 位（cheap windows vps） | 有（6 页里出现） | 已有，检查够不够深 | https://lowendbox.com/blog/cheap-windows-vps-5-25month-768mb-windows-kvm-and-more-in-the-usa/ |
+| 30 | cheap windows vps | 1 家 / 20 个地址 | 补全第 1 位（cheap windows vps） | 有（6 页里出现） | 已有，检查够不够深 | https://lowendbox.com/blog/cheap-windows-vps-5-25month-768mb-windows-kvm-and-more-in-the-usa/ |
+| 31 | coupon code | 1 家 / 16 个地址 | 补全第 1 位（vps coupon code hostinger） | 有（1 页里出现） | 已有，检查够不够深 | https://lowendbox.com/blog/serversgalore-1gb-kvm-sale-with-coupon-code-for-30-off-for-life/ |
+| 32 | vps storage | 1 家 / 14 个地址 | 补全第 1 位（vps storage） | 有（18 页里出现） | 已有，检查够不够深 | https://lowendbox.com/blog/advantagecom-60year-512mb-xen-vps-with-199gb-storage/ |
+| 33 | cheap vps hosting | 1 家 / 8 个地址 | 补全第 1 位（cheap vps hosting） | 有（18 页里出现） | 已有，检查够不够深 | https://lowendbox.com/blog/the-best-cheap-vps-hosting-in-review-2020-edition/ |
+| 34 | cheap linux | 1 家 / 6 个地址 | 补全第 1 位（cheap linux vps） | 有（18 页里出现） | 已有，检查够不够深 | https://lowendbox.com/blog/cheap-linux-vps-for-just-1-month-only-at-lowendbox/ |
+| 35 | cheap linux vps | 1 家 / 5 个地址 | 补全第 1 位（cheap linux vps） | 有（18 页里出现） | 已有，检查够不够深 | https://lowendbox.com/blog/cheap-linux-vps-for-just-1-month-only-at-lowendbox/ |
+| 36 | code hosting | 1 家 / 2 个地址 | 补全第 1 位（vps coupon code hostinger） | 有（4 页里出现） | 已有，检查够不够深 | https://lowendbox.com/blog/defined-code-hosting-openvz-vps-starting-at-2year-in-the-netherlands-and-france/ |
+| 37 | server hosting | 1 家 / 4 个地址 | 补全第 2 位（cheap dedicated server hosting） | 有（24 页里出现） | 已有，检查够不够深 | https://lowendbox.com/blog/dedicated-server-hosting-find-cheap-dedicated-servers-on-lowendbox/ |
+| 38 | linux vps hosting | 1 家 / 3 个地址 | 补全第 2 位（cheap linux vps hosting） | 有（24 页里出现） | 已有，检查够不够深 | https://lowendbox.com/blog/cheap-linux-vps-hosting-on-lowendbox-find-the-best-deals-at-lowendbox/ |
+| 39 | windows vps hosting | 1 家 / 2 个地址 | 补全第 2 位（cheap windows vps hosting） | 有（6 页里出现） | 已有，检查够不够深 | https://lowendbox.com/blog/the-best-cheap-windows-vps-hosting-providers-in-2021/ |
+| 40 | dedicated server hosting | 1 家 / 1 个地址 | 补全第 2 位（cheap dedicated server hosting） | 有（15 页里出现） | 已有，检查够不够深 | https://lowendbox.com/blog/dedicated-server-hosting-find-cheap-dedicated-servers-on-lowendbox/ |
 
 ### 数据边界（这一节是这份报告的诚信部分）
 

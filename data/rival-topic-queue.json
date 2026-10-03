@@ -1,27 +1,13 @@
 {
-  "generated_at": "2026-10-03T12:44:59Z",
+  "generated_at": "2026-10-03T13:49:14Z",
   "how_sorted": "先看我们写没写过，再看公开补全里的名次，再看几家对手在做；没有任何第三方搜索量估算",
   "signals_fetched_at": "2026-10-03T12:09:27Z",
   "signals_source": "公开搜索补全接口（拿到的是真人查询原话与名次，不是搜索量估算）",
   "traffic_source": "没有 gsc-queries.csv（需要从 Search Console 导出）",
   "traffic_rows": 0,
   "top_gsc_queries": [],
-  "total_phrases_seen": 1503,
+  "total_phrases_seen": 1477,
   "queue": [
-    {
-      "phrase": "vps storage",
-      "words": 2,
-      "rival_domains": 1,
-      "rival_urls": 14,
-      "example_url": "https://lowendbox.com/blog/advantagecom-60year-512mb-xen-vps-with-199gb-storage/",
-      "signal_rank": 1,
-      "signal_query": "vps storage",
-      "signal_match": "完全一致",
-      "we_have_pages": 0,
-      "gsc": null,
-      "order": 1,
-      "action": "补这一篇"
-    },
     {
       "phrase": "unmetered vps",
       "words": 2,
@@ -33,7 +19,7 @@
       "signal_match": "完全一致",
       "we_have_pages": 0,
       "gsc": null,
-      "order": 2,
+      "order": 1,
       "action": "补这一篇"
     },
     {
@@ -47,7 +33,7 @@
       "signal_match": "完全一致",
       "we_have_pages": 0,
       "gsc": null,
-      "order": 3,
+      "order": 2,
       "action": "补这一篇"
     },
     {
@@ -61,7 +47,7 @@
       "signal_match": "包含该词组",
       "we_have_pages": 0,
       "gsc": null,
-      "order": 4,
+      "order": 3,
       "action": "补这一篇"
     },
     {
@@ -75,7 +61,7 @@
       "signal_match": "包含该词组",
       "we_have_pages": 0,
       "gsc": null,
-      "order": 5,
+      "order": 4,
       "action": "补这一篇"
     },
     {
@@ -89,7 +75,7 @@
       "signal_match": "包含该词组",
       "we_have_pages": 0,
       "gsc": null,
-      "order": 6,
+      "order": 5,
       "action": "补这一篇"
     },
     {
@@ -103,7 +89,7 @@
       "signal_match": "包含该词组",
       "we_have_pages": 0,
       "gsc": null,
-      "order": 7,
+      "order": 6,
       "action": "补这一篇"
     },
     {
@@ -117,7 +103,7 @@
       "signal_match": "包含该词组",
       "we_have_pages": 0,
       "gsc": null,
-      "order": 8,
+      "order": 7,
       "action": "补这一篇"
     },
     {
@@ -131,7 +117,7 @@
       "signal_match": "包含该词组",
       "we_have_pages": 0,
       "gsc": null,
-      "order": 9,
+      "order": 8,
       "action": "补这一篇"
     },
     {
@@ -145,7 +131,7 @@
       "signal_match": "包含该词组",
       "we_have_pages": 0,
       "gsc": null,
-      "order": 10,
+      "order": 9,
       "action": "补这一篇"
     },
     {
@@ -159,7 +145,7 @@
       "signal_match": "包含该词组",
       "we_have_pages": 0,
       "gsc": null,
-      "order": 11,
+      "order": 10,
       "action": "补这一篇"
     },
     {
@@ -173,7 +159,7 @@
       "signal_match": "包含该词组",
       "we_have_pages": 0,
       "gsc": null,
-      "order": 12,
+      "order": 11,
       "action": "补这一篇"
     },
     {
@@ -187,7 +173,7 @@
       "signal_match": "包含该词组",
       "we_have_pages": 0,
       "gsc": null,
-      "order": 13,
+      "order": 12,
       "action": "补这一篇"
     },
     {
@@ -201,7 +187,7 @@
       "signal_match": "包含该词组",
       "we_have_pages": 0,
       "gsc": null,
-      "order": 14,
+      "order": 13,
       "action": "补这一篇"
     },
     {
@@ -215,7 +201,7 @@
       "signal_match": "完全一致",
       "we_have_pages": 0,
       "gsc": null,
-      "order": 15,
+      "order": 14,
       "action": "补这一篇"
     },
     {
@@ -229,7 +215,7 @@
       "signal_match": "包含该词组",
       "we_have_pages": 0,
       "gsc": null,
-      "order": 16,
+      "order": 15,
       "action": "补这一篇"
     },
     {
@@ -243,7 +229,7 @@
       "signal_match": "包含该词组",
       "we_have_pages": 0,
       "gsc": null,
-      "order": 17,
+      "order": 16,
       "action": "补这一篇"
     },
     {
@@ -257,7 +243,7 @@
       "signal_match": "包含该词组",
       "we_have_pages": 0,
       "gsc": null,
-      "order": 18,
+      "order": 17,
       "action": "补这一篇"
     },
     {
@@ -271,7 +257,7 @@
       "signal_match": "包含该词组",
       "we_have_pages": 0,
       "gsc": null,
-      "order": 19,
+      "order": 18,
       "action": "补这一篇"
     },
     {
@@ -285,21 +271,7 @@
       "signal_match": "包含该词组",
       "we_have_pages": 0,
       "gsc": null,
-      "order": 20,
-      "action": "补这一篇"
-    },
-    {
-      "phrase": "best price",
-      "words": 2,
-      "rival_domains": 1,
-      "rival_urls": 1,
-      "example_url": "https://lowendbox.com/blog/black-friday-deal-servermania-e3-servers-from-45-mo-best-price-ever/",
-      "signal_rank": 9,
-      "signal_query": "vps best price",
-      "signal_match": "包含该词组",
-      "we_have_pages": 0,
-      "gsc": null,
-      "order": 21,
+      "order": 19,
       "action": "补这一篇"
     },
     {
@@ -313,7 +285,7 @@
       "signal_match": "包含该词组",
       "we_have_pages": 0,
       "gsc": null,
-      "order": 22,
+      "order": 20,
       "action": "补这一篇"
     },
     {
@@ -327,7 +299,7 @@
       "signal_match": "完全一致",
       "we_have_pages": 0,
       "gsc": null,
-      "order": 23,
+      "order": 21,
       "action": "补这一篇"
     },
     {
@@ -341,7 +313,7 @@
       "signal_match": "包含该词组",
       "we_have_pages": 0,
       "gsc": null,
-      "order": 24,
+      "order": 22,
       "action": "补这一篇"
     },
     {
@@ -353,9 +325,9 @@
       "signal_rank": 1,
       "signal_query": "cheap vps",
       "signal_match": "完全一致",
-      "we_have_pages": 17,
+      "we_have_pages": 18,
       "gsc": null,
-      "order": 25,
+      "order": 23,
       "action": "已有，检查够不够深"
     },
     {
@@ -367,9 +339,9 @@
       "signal_rank": 1,
       "signal_query": "cheap dedicated server",
       "signal_match": "包含该词组",
-      "we_have_pages": 14,
+      "we_have_pages": 15,
       "gsc": null,
-      "order": 26,
+      "order": 24,
       "action": "已有，检查够不够深"
     },
     {
@@ -383,7 +355,7 @@
       "signal_match": "包含该词组",
       "we_have_pages": 6,
       "gsc": null,
-      "order": 27,
+      "order": 25,
       "action": "已有，检查够不够深"
     },
     {
@@ -395,9 +367,9 @@
       "signal_rank": 1,
       "signal_query": "cheap dedicated server",
       "signal_match": "包含该词组",
-      "we_have_pages": 14,
+      "we_have_pages": 15,
       "gsc": null,
-      "order": 28,
+      "order": 26,
       "action": "已有，检查够不够深"
     },
     {
@@ -409,9 +381,9 @@
       "signal_rank": 1,
       "signal_query": "cheap vps hosting",
       "signal_match": "包含该词组",
-      "we_have_pages": 23,
+      "we_have_pages": 24,
       "gsc": null,
-      "order": 29,
+      "order": 27,
       "action": "已有，检查够不够深"
     },
     {
@@ -423,9 +395,9 @@
       "signal_rank": 1,
       "signal_query": "cheap linux vps",
       "signal_match": "包含该词组",
-      "we_have_pages": 27,
+      "we_have_pages": 28,
       "gsc": null,
-      "order": 30,
+      "order": 28,
       "action": "已有，检查够不够深"
     },
     {
@@ -439,7 +411,7 @@
       "signal_match": "包含该词组",
       "we_have_pages": 6,
       "gsc": null,
-      "order": 31,
+      "order": 29,
       "action": "已有，检查够不够深"
     },
     {
@@ -453,7 +425,7 @@
       "signal_match": "完全一致",
       "we_have_pages": 6,
       "gsc": null,
-      "order": 32,
+      "order": 30,
       "action": "已有，检查够不够深"
     },
     {
@@ -467,7 +439,21 @@
       "signal_match": "包含该词组",
       "we_have_pages": 1,
       "gsc": null,
-      "order": 33,
+      "order": 31,
+      "action": "已有，检查够不够深"
+    },
+    {
+      "phrase": "vps storage",
+      "words": 2,
+      "rival_domains": 1,
+      "rival_urls": 14,
+      "example_url": "https://lowendbox.com/blog/advantagecom-60year-512mb-xen-vps-with-199gb-storage/",
+      "signal_rank": 1,
+      "signal_query": "vps storage",
+      "signal_match": "完全一致",
+      "we_have_pages": 18,
+      "gsc": null,
+      "order": 32,
       "action": "已有，检查够不够深"
     },
     {
@@ -479,9 +465,9 @@
       "signal_rank": 1,
       "signal_query": "cheap vps hosting",
       "signal_match": "完全一致",
-      "we_have_pages": 17,
+      "we_have_pages": 18,
       "gsc": null,
-      "order": 34,
+      "order": 33,
       "action": "已有，检查够不够深"
     },
     {
@@ -493,9 +479,9 @@
       "signal_rank": 1,
       "signal_query": "cheap linux vps",
       "signal_match": "包含该词组",
-      "we_have_pages": 17,
+      "we_have_pages": 18,
       "gsc": null,
-      "order": 35,
+      "order": 34,
       "action": "已有，检查够不够深"
     },
     {
@@ -507,9 +493,9 @@
       "signal_rank": 1,
       "signal_query": "cheap linux vps",
       "signal_match": "完全一致",
-      "we_have_pages": 17,
+      "we_have_pages": 18,
       "gsc": null,
-      "order": 36,
+      "order": 35,
       "action": "已有，检查够不够深"
     },
     {
@@ -523,7 +509,7 @@
       "signal_match": "包含该词组",
       "we_have_pages": 4,
       "gsc": null,
-      "order": 37,
+      "order": 36,
       "action": "已有，检查够不够深"
     },
     {
@@ -535,9 +521,9 @@
       "signal_rank": 2,
       "signal_query": "cheap dedicated server hosting",
       "signal_match": "包含该词组",
-      "we_have_pages": 23,
+      "we_have_pages": 24,
       "gsc": null,
-      "order": 38,
+      "order": 37,
       "action": "已有，检查够不够深"
     },
     {
@@ -549,9 +535,9 @@
       "signal_rank": 2,
       "signal_query": "cheap linux vps hosting",
       "signal_match": "包含该词组",
-      "we_have_pages": 23,
+      "we_have_pages": 24,
       "gsc": null,
-      "order": 39,
+      "order": 38,
       "action": "已有，检查够不够深"
     },
     {
@@ -565,7 +551,7 @@
       "signal_match": "包含该词组",
       "we_have_pages": 6,
       "gsc": null,
-      "order": 40,
+      "order": 39,
       "action": "已有，检查够不够深"
     },
     {
@@ -577,9 +563,9 @@
       "signal_rank": 2,
       "signal_query": "cheap dedicated server hosting",
       "signal_match": "包含该词组",
-      "we_have_pages": 14,
+      "we_have_pages": 15,
       "gsc": null,
-      "order": 41,
+      "order": 40,
       "action": "已有，检查够不够深"
     },
     {
@@ -593,7 +579,7 @@
       "signal_match": "完全一致",
       "we_have_pages": 1,
       "gsc": null,
-      "order": 42,
+      "order": 41,
       "action": "已有，检查够不够深"
     },
     {
@@ -607,7 +593,7 @@
       "signal_match": "包含该词组",
       "we_have_pages": 6,
       "gsc": null,
-      "order": 43,
+      "order": 42,
       "action": "已有，检查够不够深"
     },
     {
@@ -621,7 +607,7 @@
       "signal_match": "完全一致",
       "we_have_pages": 6,
       "gsc": null,
-      "order": 44,
+      "order": 43,
       "action": "已有，检查够不够深"
     },
     {
@@ -633,9 +619,9 @@
       "signal_rank": 6,
       "signal_query": "cheap vps providers",
       "signal_match": "包含该词组",
-      "we_have_pages": 56,
+      "we_have_pages": 57,
       "gsc": null,
-      "order": 45,
+      "order": 44,
       "action": "已有，检查够不够深"
     },
     {
@@ -647,9 +633,9 @@
       "signal_rank": 6,
       "signal_query": "cheap linux server",
       "signal_match": "包含该词组",
-      "we_have_pages": 26,
+      "we_have_pages": 27,
       "gsc": null,
-      "order": 46,
+      "order": 45,
       "action": "已有，检查够不够深"
     },
     {
@@ -661,9 +647,9 @@
       "signal_rank": 6,
       "signal_query": "cheap vps providers",
       "signal_match": "完全一致",
-      "we_have_pages": 17,
+      "we_have_pages": 18,
       "gsc": null,
-      "order": 47,
+      "order": 46,
       "action": "已有，检查够不够深"
     },
     {
@@ -675,9 +661,9 @@
       "signal_rank": 9,
       "signal_query": "interserver vps coupon code",
       "signal_match": "包含该词组",
-      "we_have_pages": 26,
+      "we_have_pages": 27,
       "gsc": null,
-      "order": 48,
+      "order": 47,
       "action": "已有，检查够不够深"
     },
     {
@@ -689,9 +675,9 @@
       "signal_rank": 10,
       "signal_query": "cheap vps linux",
       "signal_match": "包含该词组",
-      "we_have_pages": 27,
+      "we_have_pages": 28,
       "gsc": null,
-      "order": 49,
+      "order": 48,
       "action": "已有，检查够不够深"
     },
     {
@@ -703,9 +689,9 @@
       "signal_rank": 10,
       "signal_query": "cheap vps linux",
       "signal_match": "完全一致",
-      "we_have_pages": 17,
+      "we_have_pages": 18,
       "gsc": null,
-      "order": 50,
+      "order": 49,
       "action": "已有，检查够不够深"
     }
   ]
