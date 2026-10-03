@@ -1,0 +1,149 @@
+{
+  "generated_at": "2026-10-03T12:24:46Z",
+  "method": "把双方页面去标签后切成 5-gram，算我们每页与对手每页的重合率；对手原文不落盘",
+  "our_pages_checked": 56,
+  "our_content_pages_checked": 55,
+  "rival_pages_checked": 8,
+  "worst_any": {
+    "rival_url": "https://vpsfilter.com/legal.php",
+    "rival_grams": 528,
+    "worst_any": {
+      "our_page": "/404.html",
+      "shared": 6,
+      "ratio": 3.7037
+    },
+    "worst_content": {
+      "our_page": "/about.html",
+      "shared": 6,
+      "ratio": 0.9524
+    }
+  },
+  "worst_content": {
+    "rival_url": "https://vpsfilter.com/legal.php",
+    "rival_grams": 528,
+    "worst_any": {
+      "our_page": "/404.html",
+      "shared": 6,
+      "ratio": 3.7037
+    },
+    "worst_content": {
+      "our_page": "/about.html",
+      "shared": 6,
+      "ratio": 0.9524
+    }
+  },
+  "results": [
+    {
+      "rival_url": "https://lowendbox.com/blog/my-books-were-used-to-train-ai-how-should-i-feel-about-that/",
+      "rival_grams": 2061,
+      "worst_any": {
+        "our_page": "",
+        "shared": 0,
+        "ratio": 0.0
+      },
+      "worst_content": {
+        "our_page": "",
+        "shared": 0,
+        "ratio": 0.0
+      }
+    },
+    {
+      "rival_url": "https://lowendbox.com/blog/own-a-domain-roll-your-own-dynamic-dns-with-the-porkbun-api/",
+      "rival_grams": 1260,
+      "worst_any": {
+        "our_page": "",
+        "shared": 0,
+        "ratio": 0.0
+      },
+      "worst_content": {
+        "our_page": "",
+        "shared": 0,
+        "ratio": 0.0
+      }
+    },
+    {
+      "rival_url": "https://lowendbox.com/blog/serverways-490-100mb-openvz-vps/",
+      "rival_grams": 772,
+      "worst_any": {
+        "our_page": "",
+        "shared": 0,
+        "ratio": 0.0
+      },
+      "worst_content": {
+        "our_page": "",
+        "shared": 0,
+        "ratio": 0.0
+      }
+    },
+    {
+      "rival_url": "https://lowendbox.com/tag/netherlandsvps/",
+      "rival_grams": 447,
+      "worst_any": {
+        "our_page": "",
+        "shared": 0,
+        "ratio": 0.0
+      },
+      "worst_content": {
+        "our_page": "",
+        "shared": 0,
+        "ratio": 0.0
+      }
+    },
+    {
+      "rival_url": "https://lowendbox.com/tag/netherlands/",
+      "rival_grams": 2097,
+      "worst_any": {
+        "our_page": "",
+        "shared": 0,
+        "ratio": 0.0
+      },
+      "worst_content": {
+        "our_page": "",
+        "shared": 0,
+        "ratio": 0.0
+      }
+    },
+    {
+      "rival_url": "https://lowendbox.com/tag/dodgy/",
+      "rival_grams": 449,
+      "worst_any": {
+        "our_page": "",
+        "shared": 0,
+        "ratio": 0.0
+      },
+      "worst_content": {
+        "our_page": "",
+        "shared": 0,
+        "ratio": 0.0
+      }
+    },
+    {
+      "rival_url": "https://vpsfilter.com/",
+      "rival_grams": 750,
+      "worst_any": {
+        "our_page": "",
+        "shared": 0,
+        "ratio": 0.0
+      },
+      "worst_content": {
+        "our_page": "",
+        "shared": 0,
+        "ratio": 0.0
+      }
+    },
+    {
+      "rival_url": "https://vpsfilter.com/legal.php",
+      "rival_grams": 528,
+      "worst_any": {
+        "our_page": "/404.html",
+        "shared": 6,
+        "ratio": 3.7037
+      },
+      "worst_content": {
+        "our_page": "/about.html",
+        "shared": 6,
+        "ratio": 0.9524
+      }
+    }
+  ]
+}

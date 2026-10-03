@@ -1,0 +1,73 @@
+{
+  "generated_at": "2026-10-03T12:23:58Z",
+  "domains": {
+    "lowendbox.com": {
+      "brand_url_counts": {
+        "openvz": 1475,
+        "kvm": 695,
+        "xen": 384,
+        "racknerd": 183,
+        "cpanel": 104,
+        "ryzen": 59,
+        "quickweb": 33,
+        "quadranet": 32,
+        "vmware": 31,
+        "buyvm": 25,
+        "dedipath": 22,
+        "hetzner": 22,
+        "ramnode": 20,
+        "amazon": 19,
+        "bhost": 18,
+        "hosthatch": 16,
+        "intel": 16,
+        "oracle": 16,
+        "vultr": 15,
+        "digitalocean": 13,
+        "epyc": 13,
+        "serverhub": 12,
+        "alphavps": 12,
+        "virmach": 12,
+        "interserver": 12,
+        "cloudflare": 12,
+        "proxmox": 11,
+        "ovh": 11,
+        "prometeus": 10,
+        "linode": 9
+      },
+      "brands_mentioned": 58,
+      "root_level_pages": [
+        "https://lowendbox.com/best-cheap-amd-ryzen-vps-hosting/",
+        "https://lowendbox.com/best-cheap-nvme-storage-vps-hosting/",
+        "https://lowendbox.com/best-cheap-vps-hosting-updated-2020/",
+        "https://lowendbox.com/best-cheap-windows-vps-hosting/",
+        "https://lowendbox.com/cheap-gpu-list-nvidia-gpus-for-ai-training-llm-models-and-more/",
+        "https://lowendbox.com/comment-subscriptions/",
+        "https://lowendbox.com/community-deals-on-cheap-vpn-cheap-vps-and-cheap-everything/",
+        "https://lowendbox.com/hosting-offers-archive/",
+        "https://lowendbox.com/irc-rules/",
+        "https://lowendbox.com/openvz-xen-and-kvm-the-differences-the-advantages-a-comparison/",
+        "https://lowendbox.com/racknerd-halloween-giveaway-secret-code/",
+        "https://lowendbox.com/racknerd-winter-giveaway-secret-code/",
+        "https://lowendbox.com/serverhub-giveaway-secret-code/",
+        "https://lowendbox.com/submit-a-tip/",
+        "https://lowendbox.com/submit-an-offer/",
+        "https://lowendbox.com/subscribe/",
+        "https://lowendbox.com/total-spam-count-as-of-april-3-2026/",
+        "https://lowendbox.com/virtual-private-server-frequently-asked-questions-vps-faq/"
+      ],
+      "root_level_count": 18
+    },
+    "vpsfilter.com": {
+      "brand_url_counts": {},
+      "brands_mentioned": 0,
+      "root_level_pages": [
+        "https://vpsfilter.com/legal.php"
+      ],
+      "root_level_count": 1
+    },
+    "www.pcmag.com": {
+      "skipped": true,
+      "reason": "robots.txt 返回 403：这家明确拒绝自动访问，整站跳过"
+    }
+  }
+}

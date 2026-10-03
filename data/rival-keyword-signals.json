@@ -1,0 +1,1021 @@
+{
+  "fetched_at": "2026-10-03T12:09:27Z",
+  "source": "公开搜索补全接口（拿到的是真人查询原话与名次，不是搜索量估算）",
+  "seeds": [
+    "cheap vps",
+    "cheap vps hosting",
+    "cheap windows vps",
+    "cheap linux vps",
+    "best cheap vps",
+    "vps under $5",
+    "vps with ipv4",
+    "unmetered vps",
+    "vps storage",
+    "vps for beginners",
+    "vps comparison",
+    "vps coupon",
+    "cheap dedicated server",
+    "vps vs shared hosting",
+    "how much does a vps cost"
+  ],
+  "signals": [
+    {
+      "query": "cheap vps",
+      "best_rank": 1,
+      "seeds": [
+        "cheap vps"
+      ]
+    },
+    {
+      "query": "cheap vps hosting",
+      "best_rank": 1,
+      "seeds": [
+        "cheap vps",
+        "cheap vps hosting"
+      ]
+    },
+    {
+      "query": "cheap windows vps",
+      "best_rank": 1,
+      "seeds": [
+        "cheap windows vps"
+      ]
+    },
+    {
+      "query": "cheap linux vps",
+      "best_rank": 1,
+      "seeds": [
+        "cheap linux vps"
+      ]
+    },
+    {
+      "query": "best cheap vps",
+      "best_rank": 1,
+      "seeds": [
+        "best cheap vps"
+      ]
+    },
+    {
+      "query": "vps under $5",
+      "best_rank": 1,
+      "seeds": [
+        "vps under $5"
+      ]
+    },
+    {
+      "query": "vps with ipv4",
+      "best_rank": 1,
+      "seeds": [
+        "vps with ipv4"
+      ]
+    },
+    {
+      "query": "unmetered vps",
+      "best_rank": 1,
+      "seeds": [
+        "unmetered vps"
+      ]
+    },
+    {
+      "query": "vps storage",
+      "best_rank": 1,
+      "seeds": [
+        "vps storage"
+      ]
+    },
+    {
+      "query": "vps for beginners",
+      "best_rank": 1,
+      "seeds": [
+        "vps for beginners"
+      ]
+    },
+    {
+      "query": "vps comparison",
+      "best_rank": 1,
+      "seeds": [
+        "vps comparison"
+      ]
+    },
+    {
+      "query": "vps coupon code hostinger",
+      "best_rank": 1,
+      "seeds": [
+        "vps coupon"
+      ]
+    },
+    {
+      "query": "cheap dedicated server",
+      "best_rank": 1,
+      "seeds": [
+        "cheap dedicated server"
+      ]
+    },
+    {
+      "query": "vps vs shared hosting",
+      "best_rank": 1,
+      "seeds": [
+        "vps vs shared hosting"
+      ]
+    },
+    {
+      "query": "how much does a vps cost",
+      "best_rank": 1,
+      "seeds": [
+        "how much does a vps cost"
+      ]
+    },
+    {
+      "query": "cheap vps hosting reddit",
+      "best_rank": 2,
+      "seeds": [
+        "cheap vps",
+        "cheap vps hosting"
+      ]
+    },
+    {
+      "query": "cheap windows vps hosting",
+      "best_rank": 2,
+      "seeds": [
+        "cheap windows vps"
+      ]
+    },
+    {
+      "query": "cheap linux vps hosting",
+      "best_rank": 2,
+      "seeds": [
+        "cheap linux vps"
+      ]
+    },
+    {
+      "query": "best cheap vps hosting",
+      "best_rank": 2,
+      "seeds": [
+        "best cheap vps"
+      ]
+    },
+    {
+      "query": "vps under 500",
+      "best_rank": 2,
+      "seeds": [
+        "vps under $5"
+      ]
+    },
+    {
+      "query": "free vps with ipv4",
+      "best_rank": 2,
+      "seeds": [
+        "vps with ipv4"
+      ]
+    },
+    {
+      "query": "unmetered vps hosting",
+      "best_rank": 2,
+      "seeds": [
+        "unmetered vps"
+      ]
+    },
+    {
+      "query": "vps storage server",
+      "best_rank": 2,
+      "seeds": [
+        "vps storage"
+      ]
+    },
+    {
+      "query": "vps tutorial for beginners",
+      "best_rank": 2,
+      "seeds": [
+        "vps for beginners"
+      ]
+    },
+    {
+      "query": "vps comparison 2026",
+      "best_rank": 2,
+      "seeds": [
+        "vps comparison"
+      ]
+    },
+    {
+      "query": "vps coupon code",
+      "best_rank": 2,
+      "seeds": [
+        "vps coupon"
+      ]
+    },
+    {
+      "query": "cheap dedicated server hosting",
+      "best_rank": 2,
+      "seeds": [
+        "cheap dedicated server"
+      ]
+    },
+    {
+      "query": "vps vs shared hosting reddit",
+      "best_rank": 2,
+      "seeds": [
+        "vps vs shared hosting"
+      ]
+    },
+    {
+      "query": "how much does a vps cost per month",
+      "best_rank": 2,
+      "seeds": [
+        "how much does a vps cost"
+      ]
+    },
+    {
+      "query": "cheap vps server",
+      "best_rank": 3,
+      "seeds": [
+        "cheap vps"
+      ]
+    },
+    {
+      "query": "cheap vps hosting usa",
+      "best_rank": 3,
+      "seeds": [
+        "cheap vps hosting"
+      ]
+    },
+    {
+      "query": "cheap windows vps server india",
+      "best_rank": 3,
+      "seeds": [
+        "cheap windows vps"
+      ]
+    },
+    {
+      "query": "cheap linux vps india",
+      "best_rank": 3,
+      "seeds": [
+        "cheap linux vps"
+      ]
+    },
+    {
+      "query": "best cheap vps reddit",
+      "best_rank": 3,
+      "seeds": [
+        "best cheap vps"
+      ]
+    },
+    {
+      "query": "vps for 5$",
+      "best_rank": 3,
+      "seeds": [
+        "vps under $5"
+      ]
+    },
+    {
+      "query": "cheapest vps with ipv4",
+      "best_rank": 3,
+      "seeds": [
+        "vps with ipv4"
+      ]
+    },
+    {
+      "query": "unmetered vps singapore",
+      "best_rank": 3,
+      "seeds": [
+        "unmetered vps"
+      ]
+    },
+    {
+      "query": "vps storage cheap",
+      "best_rank": 3,
+      "seeds": [
+        "vps storage"
+      ]
+    },
+    {
+      "query": "best vps for beginners",
+      "best_rank": 3,
+      "seeds": [
+        "vps for beginners"
+      ]
+    },
+    {
+      "query": "vps comparison 2025",
+      "best_rank": 3,
+      "seeds": [
+        "vps comparison"
+      ]
+    },
+    {
+      "query": "vps coupon",
+      "best_rank": 3,
+      "seeds": [
+        "vps coupon"
+      ]
+    },
+    {
+      "query": "cheap dedicated server usa",
+      "best_rank": 3,
+      "seeds": [
+        "cheap dedicated server"
+      ]
+    },
+    {
+      "query": "vps vs shared hosting namecheap",
+      "best_rank": 3,
+      "seeds": [
+        "vps vs shared hosting"
+      ]
+    },
+    {
+      "query": "how much would a vps cost",
+      "best_rank": 3,
+      "seeds": [
+        "how much does a vps cost"
+      ]
+    },
+    {
+      "query": "cheap vps reddit",
+      "best_rank": 4,
+      "seeds": [
+        "cheap vps"
+      ]
+    },
+    {
+      "query": "cheap vps hosting unlimited bandwidth",
+      "best_rank": 4,
+      "seeds": [
+        "cheap vps hosting"
+      ]
+    },
+    {
+      "query": "cheap windows vps uk",
+      "best_rank": 4,
+      "seeds": [
+        "cheap windows vps"
+      ]
+    },
+    {
+      "query": "cheap linux vps hosting india",
+      "best_rank": 4,
+      "seeds": [
+        "cheap linux vps"
+      ]
+    },
+    {
+      "query": "best cheap vps provider",
+      "best_rank": 4,
+      "seeds": [
+        "best cheap vps"
+      ]
+    },
+    {
+      "query": "vps for 5 dollars",
+      "best_rank": 4,
+      "seeds": [
+        "vps under $5"
+      ]
+    },
+    {
+      "query": "cheap vps with ipv4",
+      "best_rank": 4,
+      "seeds": [
+        "vps with ipv4"
+      ]
+    },
+    {
+      "query": "unmetered vps reddit",
+      "best_rank": 4,
+      "seeds": [
+        "unmetered vps"
+      ]
+    },
+    {
+      "query": "vps storage 2tb",
+      "best_rank": 4,
+      "seeds": [
+        "vps storage"
+      ]
+    },
+    {
+      "query": "vps what is it used for",
+      "best_rank": 4,
+      "seeds": [
+        "vps for beginners"
+      ]
+    },
+    {
+      "query": "vps comparison reddit",
+      "best_rank": 4,
+      "seeds": [
+        "vps comparison"
+      ]
+    },
+    {
+      "query": "vps coupon hostinger",
+      "best_rank": 4,
+      "seeds": [
+        "vps coupon"
+      ]
+    },
+    {
+      "query": "cheap dedicated server palworld",
+      "best_rank": 4,
+      "seeds": [
+        "cheap dedicated server"
+      ]
+    },
+    {
+      "query": "vps vs shared hosting speed",
+      "best_rank": 4,
+      "seeds": [
+        "vps vs shared hosting"
+      ]
+    },
+    {
+      "query": "how much does a cheap vps cost",
+      "best_rank": 4,
+      "seeds": [
+        "how much does a vps cost"
+      ]
+    },
+    {
+      "query": "cheap vps windows",
+      "best_rank": 5,
+      "seeds": [
+        "cheap vps"
+      ]
+    },
+    {
+      "query": "cheap vps hosting india",
+      "best_rank": 5,
+      "seeds": [
+        "cheap vps hosting"
+      ]
+    },
+    {
+      "query": "cheap windows vps server",
+      "best_rank": 5,
+      "seeds": [
+        "cheap windows vps"
+      ]
+    },
+    {
+      "query": "cheapest linux vps",
+      "best_rank": 5,
+      "seeds": [
+        "cheap linux vps"
+      ]
+    },
+    {
+      "query": "best cheap vps india",
+      "best_rank": 5,
+      "seeds": [
+        "best cheap vps"
+      ]
+    },
+    {
+      "query": "cheap vps under $5",
+      "best_rank": 5,
+      "seeds": [
+        "vps under $5"
+      ]
+    },
+    {
+      "query": "vps with public ipv4",
+      "best_rank": 5,
+      "seeds": [
+        "vps with ipv4"
+      ]
+    },
+    {
+      "query": "vps examples",
+      "best_rank": 5,
+      "seeds": [
+        "vps with ipv4",
+        "vps for beginners"
+      ]
+    },
+    {
+      "query": "unmetered vps netherlands",
+      "best_rank": 5,
+      "seeds": [
+        "unmetered vps"
+      ]
+    },
+    {
+      "query": "vps storage hdd",
+      "best_rank": 5,
+      "seeds": [
+        "vps storage"
+      ]
+    },
+    {
+      "query": "vps comparison site",
+      "best_rank": 5,
+      "seeds": [
+        "vps comparison"
+      ]
+    },
+    {
+      "query": "hostinger vps coupon code 2026",
+      "best_rank": 5,
+      "seeds": [
+        "vps coupon"
+      ]
+    },
+    {
+      "query": "cheap dedicated server india",
+      "best_rank": 5,
+      "seeds": [
+        "cheap dedicated server"
+      ]
+    },
+    {
+      "query": "vps vs web hosting",
+      "best_rank": 5,
+      "seeds": [
+        "vps vs shared hosting"
+      ]
+    },
+    {
+      "query": "how much does hostinger vps cost",
+      "best_rank": 5,
+      "seeds": [
+        "how much does a vps cost"
+      ]
+    },
+    {
+      "query": "cheap vps providers",
+      "best_rank": 6,
+      "seeds": [
+        "cheap vps"
+      ]
+    },
+    {
+      "query": "cheap vps hosting in nigeria",
+      "best_rank": 6,
+      "seeds": [
+        "cheap vps hosting"
+      ]
+    },
+    {
+      "query": "cheap windows vps reddit",
+      "best_rank": 6,
+      "seeds": [
+        "cheap windows vps"
+      ]
+    },
+    {
+      "query": "cheap linux server",
+      "best_rank": 6,
+      "seeds": [
+        "cheap linux vps"
+      ]
+    },
+    {
+      "query": "best cheap vps europe",
+      "best_rank": 6,
+      "seeds": [
+        "best cheap vps"
+      ]
+    },
+    {
+      "query": "vps low cost",
+      "best_rank": 6,
+      "seeds": [
+        "vps under $5"
+      ]
+    },
+    {
+      "query": "vps ipv4 vs ipv6",
+      "best_rank": 6,
+      "seeds": [
+        "vps with ipv4"
+      ]
+    },
+    {
+      "query": "unmetered vps usa",
+      "best_rank": 6,
+      "seeds": [
+        "unmetered vps"
+      ]
+    },
+    {
+      "query": "vps storage indonesia",
+      "best_rank": 6,
+      "seeds": [
+        "vps storage"
+      ]
+    },
+    {
+      "query": "is a vps worth it",
+      "best_rank": 6,
+      "seeds": [
+        "vps for beginners"
+      ]
+    },
+    {
+      "query": "vps comparison price",
+      "best_rank": 6,
+      "seeds": [
+        "vps comparison"
+      ]
+    },
+    {
+      "query": "contabo vps coupon code",
+      "best_rank": 6,
+      "seeds": [
+        "vps coupon"
+      ]
+    },
+    {
+      "query": "cheap dedicated server uk",
+      "best_rank": 6,
+      "seeds": [
+        "cheap dedicated server"
+      ]
+    },
+    {
+      "query": "vps or shared hosting",
+      "best_rank": 6,
+      "seeds": [
+        "vps vs shared hosting"
+      ]
+    },
+    {
+      "query": "how much does aws vps cost",
+      "best_rank": 6,
+      "seeds": [
+        "how much does a vps cost"
+      ]
+    },
+    {
+      "query": "cheap vps usa",
+      "best_rank": 7,
+      "seeds": [
+        "cheap vps"
+      ]
+    },
+    {
+      "query": "cheap vps hosting australia",
+      "best_rank": 7,
+      "seeds": [
+        "cheap vps hosting"
+      ]
+    },
+    {
+      "query": "cheap windows vps singapore",
+      "best_rank": 7,
+      "seeds": [
+        "cheap windows vps"
+      ]
+    },
+    {
+      "query": "cheap linux server hosting",
+      "best_rank": 7,
+      "seeds": [
+        "cheap linux vps"
+      ]
+    },
+    {
+      "query": "best cheap vps 2026",
+      "best_rank": 7,
+      "seeds": [
+        "best cheap vps"
+      ]
+    },
+    {
+      "query": "lowest cost vps",
+      "best_rank": 7,
+      "seeds": [
+        "vps under $5"
+      ]
+    },
+    {
+      "query": "ipv4 ipv6 vps",
+      "best_rank": 7,
+      "seeds": [
+        "vps with ipv4"
+      ]
+    },
+    {
+      "query": "unmetered vps cheap",
+      "best_rank": 7,
+      "seeds": [
+        "unmetered vps"
+      ]
+    },
+    {
+      "query": "vps storage box",
+      "best_rank": 7,
+      "seeds": [
+        "vps storage"
+      ]
+    },
+    {
+      "query": "vps for personal use",
+      "best_rank": 7,
+      "seeds": [
+        "vps for beginners"
+      ]
+    },
+    {
+      "query": "vps comparison tool",
+      "best_rank": 7,
+      "seeds": [
+        "vps comparison"
+      ]
+    },
+    {
+      "query": "hostinger vps coupon code 2025",
+      "best_rank": 7,
+      "seeds": [
+        "vps coupon"
+      ]
+    },
+    {
+      "query": "cheap dedicated server australia",
+      "best_rank": 7,
+      "seeds": [
+        "cheap dedicated server"
+      ]
+    },
+    {
+      "query": "vps vs web hosting reddit",
+      "best_rank": 7,
+      "seeds": [
+        "vps vs shared hosting"
+      ]
+    },
+    {
+      "query": "how much does amazon vps cost",
+      "best_rank": 7,
+      "seeds": [
+        "how much does a vps cost"
+      ]
+    },
+    {
+      "query": "cheap vps options",
+      "best_rank": 8,
+      "seeds": [
+        "cheap vps"
+      ]
+    },
+    {
+      "query": "cheap vps hosting bangladesh",
+      "best_rank": 8,
+      "seeds": [
+        "cheap vps hosting"
+      ]
+    },
+    {
+      "query": "cheapest windows vps",
+      "best_rank": 8,
+      "seeds": [
+        "cheap windows vps"
+      ]
+    },
+    {
+      "query": "cheapest linux vps hosting",
+      "best_rank": 8,
+      "seeds": [
+        "cheap linux vps"
+      ]
+    },
+    {
+      "query": "best cheap vps hosting in india",
+      "best_rank": 8,
+      "seeds": [
+        "best cheap vps"
+      ]
+    },
+    {
+      "query": "cheapest vps in the world",
+      "best_rank": 8,
+      "seeds": [
+        "vps under $5"
+      ]
+    },
+    {
+      "query": "vps ipv4 优先",
+      "best_rank": 8,
+      "seeds": [
+        "vps with ipv4"
+      ]
+    },
+    {
+      "query": "vps server unmetered",
+      "best_rank": 8,
+      "seeds": [
+        "unmetered vps"
+      ]
+    },
+    {
+      "query": "vps storage 1tb",
+      "best_rank": 8,
+      "seeds": [
+        "vps storage"
+      ]
+    },
+    {
+      "query": "vps requirements",
+      "best_rank": 8,
+      "seeds": [
+        "vps for beginners"
+      ]
+    },
+    {
+      "query": "vps comparison list",
+      "best_rank": 8,
+      "seeds": [
+        "vps comparison"
+      ]
+    },
+    {
+      "query": "contabo vps coupon",
+      "best_rank": 8,
+      "seeds": [
+        "vps coupon"
+      ]
+    },
+    {
+      "query": "cheap dedicated server europe",
+      "best_rank": 8,
+      "seeds": [
+        "cheap dedicated server"
+      ]
+    },
+    {
+      "query": "vps vs shared server",
+      "best_rank": 8,
+      "seeds": [
+        "vps vs shared hosting"
+      ]
+    },
+    {
+      "query": "how much does mt5 vps cost",
+      "best_rank": 8,
+      "seeds": [
+        "how much does a vps cost"
+      ]
+    },
+    {
+      "query": "cheap vps hosting philippines",
+      "best_rank": 9,
+      "seeds": [
+        "cheap vps hosting"
+      ]
+    },
+    {
+      "query": "cheapest windows vps hosting",
+      "best_rank": 9,
+      "seeds": [
+        "cheap windows vps"
+      ]
+    },
+    {
+      "query": "best cheap vps hosting reddit",
+      "best_rank": 9,
+      "seeds": [
+        "best cheap vps"
+      ]
+    },
+    {
+      "query": "vps best price",
+      "best_rank": 9,
+      "seeds": [
+        "vps under $5"
+      ]
+    },
+    {
+      "query": "vps ip address free",
+      "best_rank": 9,
+      "seeds": [
+        "vps with ipv4"
+      ]
+    },
+    {
+      "query": "unmetered vps meaning",
+      "best_rank": 9,
+      "seeds": [
+        "unmetered vps"
+      ]
+    },
+    {
+      "query": "vps storage unlimited bandwidth",
+      "best_rank": 9,
+      "seeds": [
+        "vps storage"
+      ]
+    },
+    {
+      "query": "vps comparison europe",
+      "best_rank": 9,
+      "seeds": [
+        "vps comparison"
+      ]
+    },
+    {
+      "query": "interserver vps coupon code",
+      "best_rank": 9,
+      "seeds": [
+        "vps coupon"
+      ]
+    },
+    {
+      "query": "cheap dedicated server reddit",
+      "best_rank": 9,
+      "seeds": [
+        "cheap dedicated server"
+      ]
+    },
+    {
+      "query": "vps or web hosting",
+      "best_rank": 9,
+      "seeds": [
+        "vps vs shared hosting"
+      ]
+    },
+    {
+      "query": "how much does google vps cost",
+      "best_rank": 9,
+      "seeds": [
+        "how much does a vps cost"
+      ]
+    },
+    {
+      "query": "cheap vps linux",
+      "best_rank": 10,
+      "seeds": [
+        "cheap vps"
+      ]
+    },
+    {
+      "query": "cheap vps hosting europe",
+      "best_rank": 10,
+      "seeds": [
+        "cheap vps hosting"
+      ]
+    },
+    {
+      "query": "cheapest windows vps in india",
+      "best_rank": 10,
+      "seeds": [
+        "cheap windows vps"
+      ]
+    },
+    {
+      "query": "cheap good vps",
+      "best_rank": 10,
+      "seeds": [
+        "best cheap vps"
+      ]
+    },
+    {
+      "query": "vps unmetered bandwidth",
+      "best_rank": 10,
+      "seeds": [
+        "unmetered vps"
+      ]
+    },
+    {
+      "query": "vps storage ssd",
+      "best_rank": 10,
+      "seeds": [
+        "vps storage"
+      ]
+    },
+    {
+      "query": "vps comparison chart",
+      "best_rank": 10,
+      "seeds": [
+        "vps comparison"
+      ]
+    },
+    {
+      "query": "vps hosting coupon code",
+      "best_rank": 10,
+      "seeds": [
+        "vps coupon"
+      ]
+    },
+    {
+      "query": "cheap dedicated server lowendtalk",
+      "best_rank": 10,
+      "seeds": [
+        "cheap dedicated server"
+      ]
+    },
+    {
+      "query": "hostinger vps vs shared hosting",
+      "best_rank": 10,
+      "seeds": [
+        "vps vs shared hosting"
+      ]
+    },
+    {
+      "query": "how much do costco vps make",
+      "best_rank": 10,
+      "seeds": [
+        "how much does a vps cost"
+      ]
+    }
+  ],
+  "failures": []
+}

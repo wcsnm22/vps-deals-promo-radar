@@ -117,3 +117,31 @@ Search Console 里那条旧的富媒体结果条目在重新抓取后会消失�
 - **GSC / GA4 的数字**：这台机器上没有任何 GSC / GA4 凭据，`report.py` 只接受 API 凭据或粘贴进来的数字，两条都没有时它照实退出 2。所以这一期的三个数只能等操作者从后台复制进来，脚本不会猜。
 - **`@KEYWORD` 的值**：配置里留了空位，没有填。没填之前 `keyword_bank.py` 会照实跳过，指南页的问答改用数据驱动的问法（口径不变）。
 
+## 7. 对标复盘与选题队列（STEP:10 `rival_growth_teardown`，2026-10-03）
+
+命令要三件交付物：① 页面矩阵分类表 ② 带流量的词清单 ③ 排好序的选题队列。三件都在
+`docs/rival-growth-teardown.md` 和 `data/rival-*.json` 里，能指到原始记录。
+
+| 交付物 | 在哪 | 数字来源 |
+|---|---|---|
+| ① 页面矩阵分类表 | `docs/rival-growth-teardown.md` 第 3 节 + `data/rival-matrix.json` + `data/rival-depth.json` | 对手自己公开的 sitemap 与页面结构（标题层级、正文词数、表格/列表数），只存指标不存正文 |
+| ② 带流量的词清单 | 报告第 2 节；有 GSC 导出时用真数字，没有时照实写"没拿到" | `data/rival-keyword-signals.json`（公开搜索补全的真人查询原话）或 `data/gsc-queries.csv`（操作者从后台导出） |
+| ③ 选题队列 | 报告第 8 节 + `data/rival-topic-queue.json` | 三信号排序：我们写没写过 → 补全里排第几（或有流量数据时用后台展示次数）→ 几家对手在做 |
+
+| 这一轮的规矩 | 落点 |
+|---|---|
+| 不照抄对手原文 | `rival_teardown.py::overlap_check()` 把双方页面切 5-gram 算重合率，对手正文只在内存参与计算、**一字原文都不落盘**。实测：对手 8 页 × 我们 55 个内容页，**内容页最高重合 0.9524%**（6 个 5-gram，出现在 `/about.html`），全站最高 3.7037% 来自只有导航页脚的 `/404.html`。可复跑：`python rival_teardown.py overlap` |
+| 不把第三方估算当准数 | 队列排序里没有任何 Ahrefs/Semrush/AITDK 的数字；代码里写成 `::BOUNDARY{never:把 AITDK / sitedata 这类估算当判据|scope:permanent}` |
+| 有流量的词只认自家后台 | `rival_queue.py::load_gsc_queries()` 读 `data/gsc-queries.csv`（GSC → 效果 → 查询 → 导出 CSV），拿到就把排序第一判据换成真实展示次数；拿不到就照实说没有 |
+| 对手拒绝就别碰 | `www.pcmag.com` 的 robots.txt 返回 403 → 整站跳过，一个页面都没抓；`vpsfilter.com` robots.txt 404（无文件）且 sitemap 只有 2 条地址、首页是 JS 空壳（我们不执行站外脚本），所以它只有"页面数"这一个结论 |
+
+仓库体积也顺手治了：12,572 条 URL 的原始清单不再塞进 `data/rival-matrix.json`（原来 1.99 MB），
+改存 `data/rival-urls.json.gz`（261 KB），矩阵文件降到 30.8 KB，队列脚本只读这份缓存、不重复抓别人的 sitemap。
+
+### 7.1 从这次对标里得到的两条硬结论
+- **对手的门面是根级常青榜单页**：lowendbox 12,572 条地址里 `/blog/` 的按时间优惠单页占 6314 条，
+  真正撑门面的是少数根级榜单页（`/best-cheap-vps-hosting-updated-2020/` 这类）。我们 25 个 `/deal/*` 页
+  相当于他们的优惠单页，缺的是根级榜单页——这是选题队列之外的结构性缺口。
+- **三个对手都没做多语言**：lowendbox 那 6042 个"标签归档页"是 `/tag/io/`、`/tag/me/` 这类域名后缀标签，
+  不是语言版本。所以多语言这一条不列为任务（没有可抄的动作）。
+
