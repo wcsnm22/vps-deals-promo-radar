@@ -145,3 +145,27 @@ Search Console 里那条旧的富媒体结果条目在重新抓取后会消失�
 - **三个对手都没做多语言**：lowendbox 那 6042 个"标签归档页"是 `/tag/io/`、`/tag/me/` 这类域名后缀标签，
   不是语言版本。所以多语言这一条不列为任务（没有可抄的动作）。
 
+### 7.2 选题队列接进日更循环（2026-10-03，操作者选的口径：只发"有数据能撑住"的词）
+
+操作者的决定是**先只对"有数据能撑住"的词自动发**，不为了凑词写没有证据的页。落在 `guides.py`：
+
+| 判据 | 实现 | 为什么 |
+|---|---|---|
+| 哪条词能自动成页 | `queue_builder_for(phrase)` 按词里出现的关键字分三类：`disk`（storage/disk/ssd/nvme/backup）、`ram`（ram/memory）、`price`（cheap/best/price/pricing/cost/budget/affordable） | 这三类正好对应我们抓得到的字段：`disk_gb`、`ram_gb`、`price` |
+| 字段够不够 | `build_queue_entry()` 要求该类字段的行数 ≥ `QUEUE_MIN_PLANS = 3`，不够返回 `None` | 只有 1-2 行的"排名"没有信息量，也算不出答案 |
+| 数据撑不住的词怎么办 | `queue_entry()` 把它们收进 `skipped` 清单，`main()` 打印 `[note] skipped this run: …`，**原样留在队列里等人工** | 例如 `free vps`、`windows vps uk`、`vps uk`、`unmetered vps`、`server usa`：抓不到"免费/系统/机房位置/不限量"的任何证据，不写 |
+| 循环不能断 | 队列里没有可写的词时退回原来的 `csv → unitprice → steps` 轮换（`main()` 里的 `if entry is None` 分支） | 命令要求"每天至少一篇"，队列只是优先项，不是唯一来源 |
+| 写出来的页怎么标 | `gap = "queue"`、`queue_phrase = <词>`、`slug = queue-<词>-<日期>-<序号>`，来源在页尾 "What this page is filling" 里写明 | 每个数字都能指回 `data/offers.json`，那一段话里也写明"没有抄任何对手页面" |
+
+**踩到并修掉的口径错误**：第一版把"每 TB 最低价"在**不同货币之间**比，写出
+`lowest price per TB is 27.7778 USD/TB`——而我把 EUR 行当成美元直接排序了。这违反站点"按货币分组、不做汇率换算"的
+口径（`chart_assets.py` 与 CSV 都是这么做的）。改成：先按行数选主货币组（`_by_currency()` + 行数最多者，并列取字母序），
+**最低价只在同一货币内比**，其余货币各自报出自己的领头行。现在这句话是
+`in the USD group the lowest price per TB is 27.7778 USD/TB (…) The EUR group (no exchange rate is applied) is led by 67.11 EUR / 1.024 = 65.5371 EUR/TB (netcup VPS 8000 G12.5).`
+
+**第一篇队列页（线上已发）**：`/guide/queue-vps-storage-2026-10-03-1`
+（`vps storage`，来自队列第一条；25 档公布了磁盘容量的套餐，USD 组 20 档 + EUR 组 5 档，
+两段表格各自按"每 TB 价格"升序）。`content_check.py` 结果 `17/17 篇通过`。
+其余 23 条"我们没有写过"的词里，能自动撑住的还有 `best cheap vps` / `best vps`（price 类），
+其余留在队列里。
+

@@ -1,9 +1,10 @@
 # ILANG
 # TYPE:module ROLE:guide-generator PROJECT:vps-deals
-# ::RULE{每一篇只补 GAP 三样中的一样⇒gap 字段只能是 csv|unitprice|steps}
+# ::RULE{每一篇只补 GAP 三样中的一样⇒gap 字段只能是 csv|unitprice|steps|queue}
 # ::RULE{第一屏必须是答案⇒answer 一行里给出结论数字 且能被同一页的表格复算出来}
 # ::RULE{数字只来自 data/offers.json 或页面写明的公开文档⇒这里不许出现任何估的数}
 # ::RULE{不抄对标站原文⇒这里的句子由本文件生成 表格由抓到的字段拼出}
+# ::RULE{对标队列里没有公开数字能撑住的词⇒不写 留给人写 不改口径去凑}
 # ::BOUNDARY{never:编价格 编规格 编排名|scope:file}
 """按日历从 data/guides.json 的队列里取下一篇，补一个缺口。
 
@@ -14,6 +15,7 @@
 from __future__ import annotations
 
 import json
+import re
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -263,6 +265,209 @@ def prices_with_ram(offers: list[dict]) -> list[dict]:
     return [o for o in offers if o.get("price") is not None and o.get("ram_gb")]
 
 
+# ---- 对标得来的选题队列（rival_queue.py 产出）----------------------------
+# 用户的决定：队列里"有数据能撑住"的词才自动成页，撑不住的留给人写。
+# 撑住 = 当天抓到的公开数字足以在第一屏给出一个可复算的答案。
+QUEUE_PATH = ROOT / "data" / "rival-topic-queue.json"
+QUEUE_MIN_PLANS = 3
+
+# 每类词对应一个"要用哪些字段"的门槛：字段不够就不给这个词写页，宁可空着。
+QUEUE_BUILDERS = [
+    ("disk", ("storage", "disk", "ssd", "nvme", "backup")),
+    ("ram", ("ram", "memory")),
+    ("price", ("cheap", "best", "price", "pricing", "cost", "budget", "affordable")),
+]
+
+
+def load_queue() -> list[dict]:
+    """读选题队列（只读，不重算）。没有文件就当作没有队列。"""
+    if not QUEUE_PATH.exists():
+        return []
+    payload = json.loads(QUEUE_PATH.read_text(encoding="utf-8"))
+    return payload.get("queue") or []
+
+
+def _by_currency(rows: list[dict]) -> dict[str, list[dict]]:
+    """按货币分组：不同货币的单价不做汇率换算（与站点图表同一口径）。"""
+    groups: dict[str, list[dict]] = {}
+    for row in rows:
+        groups.setdefault(row.get("currency") or "USD", []).append(row)
+    return groups
+
+
+def queue_builder_for(phrase: str) -> str | None:
+    """这条词该用哪套数字来撑：磁盘单价 / 内存单价 / 月费本身。"""
+    words = set(phrase.split())
+    for name, triggers in QUEUE_BUILDERS:
+        if words & set(triggers):
+            return name
+    return None
+
+
+def build_queue_entry(phrase: str, offers: list[dict], stamp: str, index: int, queue_row: dict) -> dict | None:
+    """把队列里的一条词变成一页——**只有数据能撑住才返回**，否则返回 None。
+
+    撑不住的原样留在队列里等人工（比如 `free vps`：我们抓不到任何"免费"的证据）。
+    """
+    kind = queue_builder_for(phrase)
+    if kind is None:
+        return None
+    priced = [o for o in offers if o.get("price") is not None]
+    if kind == "disk":
+        rows = [o for o in priced if o.get("disk_gb")]
+    elif kind == "ram":
+        rows = [o for o in priced if o.get("ram_gb")]
+    else:
+        rows = priced
+    if len(rows) < QUEUE_MIN_PLANS:
+        return None
+
+    if kind == "disk":
+        ranked = sorted(rows, key=lambda o: o["price"] / o["disk_gb"])
+        unit, total = "TB", lambda o: o["disk_gb"] / 1000
+        per_unit = lambda o: o["price"] / (o["disk_gb"] / 1000)
+        label, field = "disk", "disk_gb"
+        title = f"Cheapest VPS disk per TB: {phrase} - ranked from {len(ranked)} plans that publish a disk size ({stamp[:10]})"
+    elif kind == "ram":
+        ranked = sorted(rows, key=lambda o: o["price"] / o["ram_gb"])
+        unit, total = "GB", lambda o: o["ram_gb"]
+        per_unit = lambda o: o["price"] / o["ram_gb"]
+        label, field = "RAM", "ram_gb"
+        title = f"Cheapest VPS RAM per GB: {phrase} - ranked from {len(ranked)} plans that publish a RAM figure ({stamp[:10]})"
+    else:
+        ranked = sorted(rows, key=lambda o: o["price"])
+        unit, total = "month", lambda o: 1
+        per_unit = lambda o: o["price"]
+        label, field = "monthly price", None
+        title = f"Cheapest tracked VPS plans: {phrase} - every price recomputable from the provider page ({stamp[:10]})"
+
+    # 不同货币的单价不做汇率换算（与站点图表、CSV 同一口径），所以"最低"只能在**同一货币内**比：
+    # 先按行数选出主货币组（并列时取字母序第一个），其余货币各报一条自己的最低价。
+    groups = _by_currency(rows)
+    primary = sorted(groups, key=lambda cur: (-len(groups[cur]), cur))[0]
+    ranked = sorted(groups[primary], key=lambda o: per_unit(o))
+    best = ranked[0]
+    other_best = [
+        (cur, min(sorted(groups[cur], key=lambda o: per_unit(o)), key=lambda o: per_unit(o)))
+        for cur in sorted(groups)
+        if cur != primary
+    ]
+    others_text = "".join(
+        f" The {cur} group (no exchange rate is applied) is led by {o['price']} {cur} / "
+        f"{total(o):g} = {per_unit(o):.4f} {cur}/{unit} ({o['provider']} {o['title']})."
+        for cur, o in other_best
+    )
+
+    providers = len({o["provider"] for o in ranked})
+    if kind == "disk":
+        answer = (
+            f"{phrase}: in the {primary} group the lowest price per TB is {per_unit(best):.4f} {primary}/TB "
+            f"({best['price']} {primary} / {total(best):g} TB of disk), {best['provider']} {best['title']}."
+            + others_text
+            + f" {len(ranked)} of the {len(priced)} tracked plans that publish a price also publish a disk size, "
+            f"so those are the only rows ranked here — the rest get no row instead of an estimate. "
+            f"Across {providers} provider(s)."
+        )
+    elif kind == "ram":
+        answer = (
+            f"{phrase}: in the {primary} group the lowest price per GB of RAM is {per_unit(best):.4f} {primary}/GB "
+            f"({best['price']} {primary} / {total(best):g} GB), {best['provider']} {best['title']}."
+            + others_text
+            + f" {len(ranked)} of the {len(priced)} tracked plans that publish a price also publish a RAM figure, "
+            f"so those are the only rows ranked here — the rest get no row instead of an estimate. "
+            f"Across {providers} provider(s)."
+        )
+    else:
+        answer = (
+            f"{phrase}: in the {primary} group the lowest published monthly price is {best['price']} {primary} "
+            f"({best['provider']} {best['title']})." + others_text
+            + f" All {len(ranked)} tracked plans in that group are ranked here, across {providers} provider(s); "
+            f"nothing outside those published numbers is quoted."
+        )
+
+    body: list[str] = []
+    for currency in [primary] + [c for c in sorted(groups) if c != primary]:
+        group = sorted(groups[currency], key=lambda o: per_unit(o))[:12]
+        cells = "".join(
+            "<tr>"
+            f"<td>{i + 1}</td><td>{o['title']}</td>"
+            f"<td class=\"price\">{o['price']} {o.get('currency','')}</td>"
+            f"<td>{total(o):g}</td>"
+            f"<td class=\"price\">{per_unit(o):.4f} {o.get('currency','')}/{unit}</td>"
+            "</tr>"
+            for i, o in enumerate(group)
+        )
+        body.append(
+            f"<h2>{currency} rows, cheapest per {unit} first</h2>"
+            f'<div class="table-shell"><table><thead><tr><th>#</th><th>Plan</th>'
+            f'<th>Published price</th><th>{label if field else "Billing"}'
+            f'{" (" + unit + ")" if field else ""}</th>'
+            f'<th>Price per {unit}</th></tr></thead><tbody>{cells}</tbody></table></div>'
+        )
+    body.append(
+        "<h2>How to recompute every cell</h2>"
+        "<p>Each unit price is the published monthly price divided by the figure the provider printed beside it"
+        " (1 TB = 1000 GB). Currencies are grouped and never converted at an exchange rate we cannot verify."
+        " A plan that publishes no figure gets no row instead of an estimate.</p>"
+    )
+
+    sources = []
+    seen: set[str] = set()
+    for offer in offers:
+        url = offer.get("source_url")
+        if url and url not in seen:
+            seen.add(url)
+            sources.append({"label": f'{offer["provider"]} published price page', "url": url})
+
+    return {
+        "slug": f"queue-{slug_phrase(phrase)}-{stamp[:10]}-{index}",
+        "title": title,
+        "gap": "queue",
+        "queue_phrase": phrase,
+        "gap_note": (
+            f"Topic taken from the benchmark queue: {queue_row.get('rival_domains', 0)} benchmarked domain(s) use "
+            f"this phrase in {queue_row.get('rival_urls', 0)} of their own URLs, and it appears in public search "
+            f"suggestions. This page is written from our own tracked prices — no page of theirs was copied, and "
+            f"nothing that could not be recomputed from a provider page is stated."
+        ),
+        "answer": answer,
+        "auto": True,
+        "published": stamp,
+        "body_html": "".join(body),
+        "sources": sources[:6],
+    }
+
+
+def slug_phrase(phrase: str) -> str:
+    slug = re.sub(r"[^a-z0-9]+", "-", phrase.lower()).strip("-")
+    return slug or "topic"
+
+
+def queue_entry(offers: list[dict], guides: list[dict], stamp: str, index: int) -> tuple[dict | None, list[str]]:
+    """按队列顺序找今天能写的一条。返回 (页面, 跳过原因清单)。
+
+    跳过清单是为了照实说清楚"哪些词我们没写、为什么"——对不出数据的不写，不改口径去凑。
+    """
+    used = _used_titles(guides)
+    skipped: list[str] = []
+    for row in load_queue():
+        phrase = row.get("phrase") or ""
+        if not phrase or row.get("we_have_pages"):
+            continue
+        if queue_builder_for(phrase) is None:
+            skipped.append(f"{phrase}（没有能撑住它的公开数字，留给人写）")
+            continue
+        candidate = build_queue_entry(phrase, offers, stamp, index, row)
+        if candidate is None:
+            skipped.append(f"{phrase}（今天抓到的字段不够排一张表，不猜）")
+            continue
+        if candidate["title"].lower() in used:
+            skipped.append(f"{phrase}（标题已用过）")
+            continue
+        return candidate, skipped
+    return None, skipped
+
+
 def per_gb_cell(offer: dict) -> str:
     """单价单元格：只有价格和内存都写在页面上时才算，缺一个就如实写 '-'。"""
     price = offer.get("price")
@@ -380,22 +585,32 @@ def main() -> int:
         return 0
 
     made = 0
+    source = ""
     while limit == 0 or made < limit:
+        # 先看对标队列：队列里"有数据撑得住"的词优先成页（用户 2026-10-03 的决定）。
+        # 撑不住的词不写，退回原来的缺口轮换，保证"一天至少一篇"不断。
+        entry, skipped = queue_entry(offers, guides, stamp, made + 1)
+        if entry is not None:
+            source = f'queue phrase "{entry["queue_phrase"]}"'
+            if skipped:
+                print(f"[note] skipped this run: {'; '.join(skipped[:5])}")
         # 一次运行内按轮换顺序往下试：同一个缺口先换厂商，厂商试完再换下一个缺口。
         # 绝不生成"第一屏没有数字"的页——那种页会被 content_check 判不合格，
         # 当天的循环就断了（2026-10-01 的 unitprice 页就是这么被拦下的）。
-        entry = None
-        for step in range(len(GAP_ORDER)):
-            gap = GAP_ORDER[(GAP_ORDER.index(next_gap(guides)) + step) % len(GAP_ORDER)]
-            for attempt in range(MAX_FOCUS_ATTEMPTS):
-                candidate = build_entry(
-                    gap, offers, stamp, made + 1, occurrence(guides, gap) + attempt
-                )
-                if candidate["answer"].strip() and any(ch.isdigit() for ch in candidate["answer"]):
-                    entry = candidate
+        if entry is None:
+            for step in range(len(GAP_ORDER)):
+                gap = GAP_ORDER[(GAP_ORDER.index(next_gap(guides)) + step) % len(GAP_ORDER)]
+                for attempt in range(MAX_FOCUS_ATTEMPTS):
+                    candidate = build_entry(
+                        gap, offers, stamp, made + 1, occurrence(guides, gap) + attempt
+                    )
+                    if candidate["answer"].strip() and any(ch.isdigit() for ch in candidate["answer"]):
+                        entry = candidate
+                        break
+                if entry:
                     break
-            if entry:
-                break
+            if entry is not None:
+                source = f"rotation gap={entry['gap']}"
         if entry is None:
             break  # 一个缺口都补不出来：让 daily.py 照实记这条，不写空页
         if entry["title"].lower() in _used_titles(guides):
@@ -406,7 +621,7 @@ def main() -> int:
             break  # 一天一篇：默认只补一篇
     if made:
         GUIDES_PATH.write_text(json.dumps(guides, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    print(f"[ok]   added {made} guide(s) for {today}; total {len(guides)}")
+    print(f"[ok]   added {made} guide(s) for {today}; total {len(guides)}; source: {source or 'none'}")
     return 0
 
 
