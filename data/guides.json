@@ -464,5 +464,38 @@
         "url": "https://www.hostwinds.com/vps/unmanaged-linux"
       }
     ]
+  },
+  {
+    "slug": "queue-best-cheap-vps-2026-10-04-1",
+    "title": "Cheapest tracked VPS plans: best cheap vps - every price recomputable from the provider page (2026-10-04)",
+    "gap": "queue",
+    "queue_phrase": "best cheap vps",
+    "gap_note": "Topic taken from the benchmark queue: 1 benchmarked domain(s) use this phrase in 5 of their own URLs, and it appears in public search suggestions. This page is written from our own tracked prices — no page of theirs was copied, and nothing that could not be recomputed from a provider page is stated.",
+    "answer": "best cheap vps: in the USD group the lowest published monthly price is 2.0 USD (IONOS VPS S+). The EUR group (no exchange rate is applied) is led by 8.26 EUR / 1 = 8.2600 EUR/month (netcup VPS 500 G12.5). All 20 tracked plans in that group are ranked here, across 4 provider(s); nothing outside those published numbers is quoted.",
+    "auto": true,
+    "published": "2026-10-04T01:00:24Z",
+    "body_html": "<h2>USD rows, cheapest per month first</h2><div class=\"table-shell\"><table><thead><tr><th>#</th><th>Plan</th><th>Published price</th><th>Billing</th><th>Price per month</th></tr></thead><tbody><tr><td>1</td><td>VPS S+</td><td class=\"price\">2.0 USD</td><td>1</td><td class=\"price\">2.0000 USD/month</td></tr><tr><td>2</td><td>VPS-1</td><td class=\"price\">4.54 USD</td><td>1</td><td class=\"price\">4.5400 USD/month</td></tr><tr><td>3</td><td>Unmanaged Linux VPS Hosting - 1 CPU / 1 GB RAM / 30 GB</td><td class=\"price\">4.99 USD</td><td>1</td><td class=\"price\">4.9900 USD/month</td></tr><tr><td>4</td><td>VPS M+</td><td class=\"price\">5.0 USD</td><td>1</td><td class=\"price\">5.0000 USD/month</td></tr><tr><td>5</td><td>VPS L+</td><td class=\"price\">8.0 USD</td><td>1</td><td class=\"price\">8.0000 USD/month</td></tr><tr><td>6</td><td>VPS-2</td><td class=\"price\">8.5 USD</td><td>1</td><td class=\"price\">8.5000 USD/month</td></tr><tr><td>7</td><td>Unmanaged Linux VPS Hosting - 1 CPU / 2 GB RAM / 50 GB</td><td class=\"price\">9.99 USD</td><td>1</td><td class=\"price\">9.9900 USD/month</td></tr><tr><td>8</td><td>VPS-3</td><td class=\"price\">12.32 USD</td><td>1</td><td class=\"price\">12.3200 USD/month</td></tr><tr><td>9</td><td>VPS XL+</td><td class=\"price\">14.0 USD</td><td>1</td><td class=\"price\">14.0000 USD/month</td></tr><tr><td>10</td><td>Unmanaged Linux VPS Hosting - 2 CPU / 4 GB RAM / 75 GB</td><td class=\"price\">18.99 USD</td><td>1</td><td class=\"price\">18.9900 USD/month</td></tr><tr><td>11</td><td>VPS XXL+</td><td class=\"price\">20.0 USD</td><td>1</td><td class=\"price\">20.0000 USD/month</td></tr><tr><td>12</td><td>VPS-4</td><td class=\"price\">23.37 USD</td><td>1</td><td class=\"price\">23.3700 USD/month</td></tr></tbody></table></div><h2>EUR rows, cheapest per month first</h2><div class=\"table-shell\"><table><thead><tr><th>#</th><th>Plan</th><th>Published price</th><th>Billing</th><th>Price per month</th></tr></thead><tbody><tr><td>1</td><td>VPS 500 G12.5</td><td class=\"price\">8.26 EUR</td><td>1</td><td class=\"price\">8.2600 EUR/month</td></tr><tr><td>2</td><td>VPS 1000 G12.5</td><td class=\"price\">14.5 EUR</td><td>1</td><td class=\"price\">14.5000 EUR/month</td></tr><tr><td>3</td><td>VPS 2000 G12.5</td><td class=\"price\">26.92 EUR</td><td>1</td><td class=\"price\">26.9200 EUR/month</td></tr><tr><td>4</td><td>VPS 4000 G12.5</td><td class=\"price\">45.36 EUR</td><td>1</td><td class=\"price\">45.3600 EUR/month</td></tr><tr><td>5</td><td>VPS 8000 G12.5</td><td class=\"price\">67.11 EUR</td><td>1</td><td class=\"price\">67.1100 EUR/month</td></tr></tbody></table></div><h2>How to recompute every cell</h2><p>Each unit price is the published monthly price divided by the figure the provider printed beside it (1 TB = 1000 GB). Currencies are grouped and never converted at an exchange rate we cannot verify. A plan that publishes no figure gets no row instead of an estimate.</p>",
+    "sources": [
+      {
+        "label": "OVHcloud published price page",
+        "url": "https://www.ovhcloud.com/en/vps/"
+      },
+      {
+        "label": "netcup published price page",
+        "url": "https://www.netcup.com/en/server/vps"
+      },
+      {
+        "label": "BuyVM published price page",
+        "url": "https://buyvm.net/kvm-dedicated-server-slices/"
+      },
+      {
+        "label": "IONOS published price page",
+        "url": "https://www.ionos.com/servers/vps"
+      },
+      {
+        "label": "Hostwinds published price page",
+        "url": "https://www.hostwinds.com/vps/unmanaged-linux"
+      }
+    ]
   }
 ]
