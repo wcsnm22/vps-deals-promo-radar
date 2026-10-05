@@ -180,9 +180,17 @@ def template(name: str) -> str:
 # （这页排了几行）不在此列——那本来就是这一页自己的事实，不会随时间漂。
 def live_counts(offers: list[dict]) -> dict[str, int]:
     priced = [o for o in offers if o.get("price") is not None]
+    with_disk = [o for o in priced if o.get("disk_gb")]
+    with_ram = [o for o in priced if o.get("ram_gb")]
     return {
         "priced_count": len(priced),
-        "with_ram_count": sum(1 for o in priced if o.get("ram_gb")),
+        "with_ram_count": len(with_ram),
+        "with_disk_count": len(with_disk),
+        "provider_count": len({o["provider"] for o in priced}),
+        # 按字段分开数：disk 页说的 "Across N providers" 是**公布了盘的那批**横跨几家，
+        # 不是全站几家；这两个数字不一样（只有 netcup 报欧元，很容易把 5 家数成 4 家）。
+        "disk_provider_count": len({o["provider"] for o in with_disk}),
+        "ram_provider_count": len({o["provider"] for o in with_ram}),
     }
 
 
@@ -1031,9 +1039,12 @@ def build_guide_index(
     )
     cards = []
     for guide in guides:
+        # 索引页印的是每一篇的标题和答案，两者都可能带全站口径的占位符，一并展开。
+        card_title = expand_live_tokens(guide.get("title", ""), offers)
+        card_answer = expand_live_tokens(guide.get("answer", ""), offers)
         cards.append(
-            f'<div class="card"><h3><a href="{escape(guide_page(site, guide))}">{escape(guide["title"])}</a></h3>'
-            f'<p class="muted">{escape(guide["answer"])}</p>'
+            f'<div class="card"><h3><a href="{escape(guide_page(site, guide))}">{escape(card_title)}</a></h3>'
+            f'<p class="muted">{escape(card_answer)}</p>'
             f'<p class="muted">gap filled: {escape(guide["gap"])}</p></div>'
         )
     offer_count = len([o for o in offers if o.get("price")])
@@ -1133,11 +1144,14 @@ def _chart_html(*names: str, alt: str) -> str:
     return "".join(blocks)
 
 
-def related_guides_html(site: dict, guide: dict, guides: list[dict], limit: int = 6) -> str:
+def related_guides_html(site: dict, guide: dict, guides: list[dict], offers: list[dict], limit: int = 6) -> str:
     """同题材互链：本页 → 指南索引 → 今天那篇 + 同一缺口的前几篇 + 另外两个缺口的入口。
 
     14 个指南页原来只靠 sitemap 串起来，页面上彼此不指路。这里把最近的几篇连起来，
     让读者和爬虫都能顺着走。
+
+    这里印的是**别的页的标题**，那些标题里也可能带全站口径的占位符，所以要一起展开，
+    否则页面上会露出 "ranked from {{with_disk_count}} plans" 这种没填的模板。
     """
     others = [row for row in guides if row.get("slug") != guide.get("slug")]
     same_gap = [row for row in others if row.get("gap") == guide.get("gap")][-3:]
@@ -1147,7 +1161,8 @@ def related_guides_html(site: dict, guide: dict, guides: list[dict], limit: int 
         if row not in picks:
             picks.append(row)
     items = [
-        f'<li><a href="{escape(guide_page(site, row))}">{escape(row["title"])}</a></li>'
+        f'<li><a href="{escape(guide_page(site, row))}">'
+        f'{escape(expand_live_tokens(row.get("title", ""), offers))}</a></li>'
         for row in picks[:limit]
     ]
     items.append(f'<li><a href="{escape(guides_url(site))}">All guides ({len(guides)})</a></li>')
@@ -1256,12 +1271,15 @@ def build_guide(
     # 否则页面上的表格行数和同一页 FAQ / CSV / 页脚日期会各说各话。
     body = expand_live_tokens(guide.get("body_html", ""), offers)
     answer = expand_live_tokens(guide.get("answer", ""), offers)
+    # 标题里也可能带全站口径的行数（queue 页的 "ranked from N plans..."），同样是抓取那一刻
+    # 冻住的，一样要按今天重填，否则标题和正文行数会对不上。
+    guide_title = expand_live_tokens(guide.get("title", ""), offers)
     if re.search(r'href="[^"]*(/deal/|source_url)', body):
         raise SystemExit(f'guide {guide["slug"]} must not link to per-offer pages; bodies stay data-free')
     if not body:
         raise SystemExit(f'guide {guide["slug"]} has no body_html; refusing to publish an empty page')
 
-    title = f'{guide["title"]} — {site["title"]}'
+    title = f'{guide_title} — {site["title"]}'
     meta = {
         "canonical": guide_page(site, guide),
         "locale": site["locale"],
@@ -1274,7 +1292,7 @@ def build_guide(
     article = {
         "@context": "https://schema.org",
         "@type": "TechArticle",
-        "headline": guide["title"],
+        "headline": guide_title,
         "description": answer,
         "url": guide_page(site, guide),
         # 自动页自己有发布日期：用它，别用构建时间——否则每重建一次"发布日"就变一次。
@@ -1288,7 +1306,7 @@ def build_guide(
         "itemListElement": [
             {"@type": "ListItem", "position": 1, "name": site["title"], "item": home_url(site)},
             {"@type": "ListItem", "position": 2, "name": "Guides", "item": guides_url(site)},
-            {"@type": "ListItem", "position": 3, "name": guide["title"], "item": guide_page(site, guide)},
+            {"@type": "ListItem", "position": 3, "name": guide_title, "item": guide_page(site, guide)},
         ],
     }
     sources = "".join(
@@ -1316,7 +1334,7 @@ def build_guide(
         chart_html = _chart_html(
             "per-gb-cheapest.svg",
             f"per-gb-{slugify(focus)}.svg" if focus else "",
-            alt=f'Monthly price per GB of RAM, computed from published prices ({guide["title"]})',
+            alt=f'Monthly price per GB of RAM, computed from published prices ({guide_title})',
         )
         chart_html = chart_html + _chart_html(
             f"monthly-vs-ram-{slugify(focus)}.svg" if focus else "",
@@ -1347,9 +1365,9 @@ def build_guide(
             "nav": nav_block(site, providers),
             "footer": footer_block(site, generated_at),
             "title": escape(title),
-            "h1": escape(guide["title"]),
+            "h1": escape(guide_title),
             "answer": f'<p class="lede">{escape(answer_from_data(guide, offers, answer))}</p>' + chart_html,
-            "body": body + faq_html + related_guides_html(site, guide, guides or []),
+            "body": body + faq_html + related_guides_html(site, guide, guides or [], offers),
             "updated": updated_line(guide, generated_at),
             "gap_note": escape(guide["gap_note"]),
             "sources": f'<h2>Sources</h2><ul>{sources}</ul>' if sources else "",

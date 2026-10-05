@@ -260,6 +260,9 @@ def prices_with_ram(offers: list[dict]) -> list[dict]:
 QUEUE_PATH = ROOT / "data" / "rival-topic-queue.json"
 QUEUE_MIN_PLANS = 3
 
+# 每个货币组在页面上最多印多少行；多出来的写一行说明指向 CSV，不许不吭声地丢掉。
+TRUNCATE_ROWS = 12
+
 # 每类词对应一个"要用哪些字段"的门槛：字段不够就不给这个词写页，宁可空着。
 QUEUE_BUILDERS = [
     ("disk", ("storage", "disk")),
@@ -328,19 +331,25 @@ def build_queue_entry(phrase: str, offers: list[dict], stamp: str, index: int, q
         unit, total = "TB", lambda o: o["disk_gb"] / 1000
         per_unit = lambda o: o["price"] / (o["disk_gb"] / 1000)
         label, field = "disk", "disk_gb"
-        title = f"Cheapest VPS disk per TB: {phrase} - ranked from {len(ranked)} plans that publish a disk size ({stamp[:10]})"
+        # 标题里的行数是**全站口径**（有多少个套餐公布了盘），会随抓取变，所以也留占位符。
+        title = f"Cheapest VPS disk per TB: {phrase} - ranked from {{{{with_disk_count}}}} plans that publish a disk size ({stamp[:10]})"
     elif kind == "ram":
         ranked = sorted(rows, key=lambda o: o["price"] / o["ram_gb"])
         unit, total = "GB", lambda o: o["ram_gb"]
         per_unit = lambda o: o["price"] / o["ram_gb"]
         label, field = "RAM", "ram_gb"
-        title = f"Cheapest VPS RAM per GB: {phrase} - ranked from {len(ranked)} plans that publish a RAM figure ({stamp[:10]})"
+        title = f"Cheapest VPS RAM per GB: {phrase} - ranked from {{{{with_ram_count}}}} plans that publish a RAM figure ({stamp[:10]})"
     else:
         ranked = sorted(rows, key=lambda o: o["price"])
         unit, total = "month", lambda o: 1
         per_unit = lambda o: o["price"]
         label, field = "monthly price", None
         title = f"Cheapest tracked VPS plans: {phrase} - every price recomputable from the provider page ({stamp[:10]})"
+
+    # 这一页总共排了多少行（所有货币加起来）。标题里的 "ranked from N" 和答案里的
+    # "N of M tracked plans..." 说的必须是同一个 N，就是它——下面 ranked 会被换成主货币组，
+    # 拿换过之后的长度去写这两处，就会把"这家货币组有多少行"错说成"全站有多少行公布了该字段"。
+    pool_count = len(ranked)
 
     # 不同货币的单价不做汇率换算（与站点图表、CSV 同一口径），所以"最低"只能在**同一货币内**比：
     # 先按行数选出主货币组（并列时取字母序第一个），其余货币各报一条自己的最低价。
@@ -359,36 +368,38 @@ def build_queue_entry(phrase: str, offers: list[dict], stamp: str, index: int, q
         for cur, o in other_best
     )
 
-    providers = len({o["provider"] for o in ranked})
+    # 厂商数按**整批行**算，不按主货币组：这句紧跟在 "N of the M tracked plans" 后面，
+    # 说的是这批行横跨几家；拿主货币组去数会把只发欧元的 netcup 漏掉（4 家 vs 实际 5 家）。
     if kind == "disk":
         answer = (
             f"{phrase}: in the {primary} group the lowest price per TB is {per_unit(best):.4f} {primary}/TB "
             f"({best['price']} {primary} / {total(best):g} TB of disk), {best['provider']} {best['title']}."
             + others_text
-            + f" {len(ranked)} of the {{{{priced_count}}}} tracked plans that publish a price also publish a disk size, "
-            f"so those are the only rows ranked here — the rest get no row instead of an estimate. "
-            f"Across {providers} provider(s)."
+            + f" {pool_count} of the {{{{priced_count}}}} tracked plans that publish a price also publish a disk size, "
+            f"so those are the only rows eligible for the ranking — the rest get no row instead of an estimate. "
+            f"Across {{{{disk_provider_count}}}} provider(s)."
         )
     elif kind == "ram":
         answer = (
             f"{phrase}: in the {primary} group the lowest price per GB of RAM is {per_unit(best):.4f} {primary}/GB "
             f"({best['price']} {primary} / {total(best):g} GB), {best['provider']} {best['title']}."
             + others_text
-            + f" {len(ranked)} of the {{{{priced_count}}}} tracked plans that publish a price also publish a RAM figure, "
-            f"so those are the only rows ranked here — the rest get no row instead of an estimate. "
-            f"Across {providers} provider(s)."
+            + f" {pool_count} of the {{{{priced_count}}}} tracked plans that publish a price also publish a RAM figure, "
+            f"so those are the only rows eligible for the ranking — the rest get no row instead of an estimate. "
+            f"Across {{{{ram_provider_count}}}} provider(s)."
         )
     else:
         answer = (
             f"{phrase}: in the {primary} group the lowest published monthly price is {best['price']} {primary} "
             f"({best['provider']} {best['title']})." + others_text
-            + f" All {len(ranked)} tracked plans in that group are ranked here, across {providers} provider(s); "
-            f"nothing outside those published numbers is quoted."
+            + f" All {pool_count} tracked plans that publish a price are in the ranking, "
+            f"across {{{{provider_count}}}} provider(s); nothing outside those published numbers is quoted."
         )
 
     body: list[str] = []
     for currency in [primary] + [c for c in sorted(groups) if c != primary]:
-        group = sorted(groups[currency], key=lambda o: per_unit(o))[:12]
+        full_group = sorted(groups[currency], key=lambda o: per_unit(o))
+        group = full_group[:TRUNCATE_ROWS]
         cells = "".join(
             "<tr>"
             f"<td>{i + 1}</td><td>{o['title']}</td>"
@@ -398,12 +409,21 @@ def build_queue_entry(phrase: str, offers: list[dict], stamp: str, index: int, q
             "</tr>"
             for i, o in enumerate(group)
         )
+        # 表格只印前 TRUNCATE_ROWS 行。被截掉的时候必须照实说，否则上面那句
+        # "那些就是这里排的全部行" 就成了假话——读者数一行数就发现对不上。
+        truncated = (
+            f'<p class="muted">Showing the cheapest {len(group)} of {len(full_group)} '
+            f'{currency} rows. The remaining {len(full_group) - len(group)} are in the '
+            f'<a href="/downloads/unit-price.csv">downloadable price table</a>.</p>'
+            if len(full_group) > len(group) else ""
+        )
         body.append(
             f"<h2>{currency} rows, cheapest per {unit} first</h2>"
             f'<div class="table-shell"><table><thead><tr><th>#</th><th>Plan</th>'
             f'<th>Published price</th><th>{label if field else "Billing"}'
             f'{" (" + unit + ")" if field else ""}</th>'
             f'<th>Price per {unit}</th></tr></thead><tbody>{cells}</tbody></table></div>'
+            f"{truncated}"
         )
     body.append(
         "<h2>How to recompute every cell</h2>"
