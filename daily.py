@@ -10,10 +10,16 @@
 """
 from __future__ import annotations
 
+import os
 import subprocess
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
+
+# 子进程的 stdout 被管道接住时，Python 默认按系统编码写字节（Windows 是 GBK），
+# 父进程按 UTF-8 解码就得到替换字符，日志里的中文会变成读不懂的乱码。
+# 统一让子进程写 UTF-8，和下面 run() 的 encoding="utf-8" 对上。
+os.environ["PYTHONIOENCODING"] = "utf-8"
 
 ROOT = Path(__file__).resolve().parent
 LOG_DIR = ROOT / "data"
@@ -182,9 +188,13 @@ def main() -> int:
         import json
 
         handle.write(json.dumps(record, ensure_ascii=False) + "\n")
-    print(json.dumps(record, ensure_ascii=False))
+    # 日志文件永远写 UTF-8；这一行只是给人看的回显，遇到终端编码装不下的字符
+    # （Windows 控制台是 GBK）不该把整次成功的运行变成退出码 1。
+    try:
+        print(json.dumps(record, ensure_ascii=False))
+    except UnicodeEncodeError:
+        print(json.dumps(record, ensure_ascii=True))
     return 0 if record["status"] == "ok" else 1
-
 
 if __name__ == "__main__":
     raise SystemExit(main())
