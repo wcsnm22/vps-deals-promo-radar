@@ -78,16 +78,6 @@ def collapse_offers(offers: list[dict]) -> list[dict]:
     return list(best.values())
 
 
-def _guidance_counts(offers: list[dict]) -> dict:
-    priced = [o for o in offers if o.get("price") is not None]
-    with_ram = [o for o in priced if o.get("ram_gb")]
-    return {
-        "priced": len(priced),
-        "with_ram": len(with_ram),
-        "providers": len({o["provider"] for o in priced}),
-    }
-
-
 def _used_titles(guides: list[dict]) -> set[str]:
     return {g["title"].lower() for g in guides}
 
@@ -138,7 +128,6 @@ def build_entry(gap: str, offers: list[dict], stamp: str, index: int, occurrence
     每天换一个主题（按厂商轮换），这样同一种缺口在不同日子给出的**数字和表格都不一样**，
     而不是把同一句话复制十遍。主题来自我们自己的抓取数据，不是编的。
     """
-    counts = _guidance_counts(offers)
     priced = sorted((o for o in offers if o.get("price") is not None), key=lambda o: o["price"])
     with_ram_all = sorted(prices_with_ram(offers), key=lambda o: o["price"] / o["ram_gb"])
     focus = focus_provider(gap, offers, occurrence_index)
@@ -161,7 +150,7 @@ def build_entry(gap: str, offers: list[dict], stamp: str, index: int, occurrence
                 f"{len(focus_ranked)} of them carry a per-GB figure"
                 + (f"; cheapest per GB is {best['title']} at {best['price'] / best['ram_gb']:.4f} "
                    f"{best.get('currency','')}/GB." if best else ".")
-                + f" The full {counts['priced']}-plan table is downloadable as CSV."
+                + " The full {{priced_count}}-plan table is downloadable as CSV."
             )
             rows = "".join(
                 "<tr>"
@@ -175,12 +164,12 @@ def build_entry(gap: str, offers: list[dict], stamp: str, index: int, occurrence
             section = [
                 ("The file",
                  f'<p><a class="cta" href="/downloads/unit-price.csv">Download unit-price.csv '
-                 f'({counts["priced"]} plans, all providers)</a></p>'),
+                 f'({{{{priced_count}}}} plans, all providers)</a></p>'),
                 (f"{focus} plans in the table",
                  f'<div class="table-shell"><table><thead><tr><th>Plan</th><th>Published price</th>'
                  f'<th>RAM (GB)</th><th>vCPU</th><th>Price per GB</th></tr></thead><tbody>{rows}</tbody></table></div>'),
                 ("Coverage",
-                 f"<p>{counts['with_ram']} of {counts['priced']} tracked plans publish both a price and a RAM figure. "
+                 "<p>{{with_ram_count}} of {{priced_count}} tracked plans publish both a price and a RAM figure. "
                  f"The rest keep an empty per-GB cell rather than a guess.</p>"),
             ]
         else:
@@ -376,7 +365,7 @@ def build_queue_entry(phrase: str, offers: list[dict], stamp: str, index: int, q
             f"{phrase}: in the {primary} group the lowest price per TB is {per_unit(best):.4f} {primary}/TB "
             f"({best['price']} {primary} / {total(best):g} TB of disk), {best['provider']} {best['title']}."
             + others_text
-            + f" {len(ranked)} of the {len(priced)} tracked plans that publish a price also publish a disk size, "
+            + f" {len(ranked)} of the {{{{priced_count}}}} tracked plans that publish a price also publish a disk size, "
             f"so those are the only rows ranked here — the rest get no row instead of an estimate. "
             f"Across {providers} provider(s)."
         )
@@ -385,7 +374,7 @@ def build_queue_entry(phrase: str, offers: list[dict], stamp: str, index: int, q
             f"{phrase}: in the {primary} group the lowest price per GB of RAM is {per_unit(best):.4f} {primary}/GB "
             f"({best['price']} {primary} / {total(best):g} GB), {best['provider']} {best['title']}."
             + others_text
-            + f" {len(ranked)} of the {len(priced)} tracked plans that publish a price also publish a RAM figure, "
+            + f" {len(ranked)} of the {{{{priced_count}}}} tracked plans that publish a price also publish a RAM figure, "
             f"so those are the only rows ranked here — the rest get no row instead of an estimate. "
             f"Across {providers} provider(s)."
         )
@@ -516,51 +505,82 @@ def _money(amount, currency: str) -> str:
 
 # 每个问题的答案都是"从抓到的数字现算"，算不出来就不给这一问。用来做 T4：
 # 把疑问句一句一句答出来，答案里的每个数都能在 data/offers.json 里复算。
+#
+# where：这一页的表格排的是哪一批行，写成一个能接在句子里的状语（"among IONOS plans" /
+# "among the tracked plans" / 'in the "vps storage" shortlist'）。FAQ 是长在页面上的，
+# 答的就只能是**本页表格里那批行**，所以每页的答案必须带上本页的范围。
+# 加这个参数的原因：原来每页都拿全站 offers 算同一段五问五答，19 个指南页的 FAQ 一字不差，
+# 页面之间互相判成重复。这里不新增任何数字来源，只是把口径收回到页面自己排的那批行。
+def _monthly_cost_answer(priced: list[dict], where: str) -> str:
+    lo = min(priced, key=lambda o: o["price"])
+    currency = lo.get("currency", "")
+    return (
+        f"The lowest monthly price {where} is {_money(lo['price'], currency)} "
+        f"({lo['provider']} {lo['title']}); "
+        f"the highest in the same list is {_money(max(o['price'] for o in priced), currency)}. "
+        f"{len(priced)} plans carry a published monthly price."
+    )
+
+
+def _providers_answer(priced: list[dict], where: str) -> str:
+    names = sorted({o["provider"] for o in priced})
+    if len(names) == 1:
+        # 这一页只有一家，厂商名和范围都说一遍会啰嗦，所以括号里带范围——但必须带，
+        # 否则同一家隔几天再来一次时，这一问会一字不差。
+        return (
+            f"{names[0]} is the only provider ranked here ({where}): {len(priced)} of its plans carry a price "
+            f"published on its own page, and every row names the source page it was read from."
+        )
+    return (
+        f"{where[:1].upper()}{where[1:]}, {len(names)} providers publish a price we can read: {', '.join(names)}. "
+        f"A provider whose page we cannot read a price on is listed as unread rather than filled in."
+    )
+
+
+def _rankable_answer(priced: list[dict], with_ram: list[dict], where: str) -> str:
+    tail = (
+        f"The other {len(priced) - len(with_ram)} are left with an empty per-GB cell instead of a guess."
+        if len(with_ram) < len(priced)
+        else "Every one of them is rankable on this page."
+    )
+    return (
+        f"{len(with_ram)} of {len(priced)} priced plans {where} publish a RAM figure next to the price, "
+        f"so the division is possible for those. {tail}"
+    )
+
+
+def _both_numbers_answer(priced: list[dict], with_ram: list[dict], where: str) -> str:
+    return (
+        f"{len(with_ram)} of {len(priced)} priced plans {where} publish both a price and a RAM figure. "
+        f"That is the row count you can divide to get a price per GB of RAM; nothing outside that set is estimated."
+    )
+
+
 QUESTION_ANSWERS = [
     (
         "How much does a cheap VPS cost per month?",
-        lambda priced, with_ram: (
-            f"The lowest tracked monthly price is {_money(min(o['price'] for o in priced), min(priced, key=lambda o: o['price']).get('currency', ''))} "
-            f"({min(priced, key=lambda o: o['price'])['provider']} {min(priced, key=lambda o: o['price'])['title']}); "
-            f"the highest in the same list is {_money(max(o['price'] for o in priced), min(priced, key=lambda o: o['price']).get('currency', ''))}. "
-            f"{len(priced)} plans carry a published monthly price."
-        ),
+        lambda priced, with_ram, where: _monthly_cost_answer(priced, where),
     ),
     (
         "Which plan is cheapest per GB of RAM?",
-        lambda priced, with_ram: _cheapest_per_gb_answer(with_ram),
+        lambda priced, with_ram, where: _cheapest_per_gb_answer(with_ram, where),
     ),
     (
         "Can I compare a price per GB of RAM at all?",
-        lambda priced, with_ram: (
-            f"Yes for {len(with_ram)} of {len(priced)} priced plans: those publish a RAM figure next to the price. "
-            + (f"The other {len(priced) - len(with_ram)} are left with an empty per-GB cell instead of a guess."
-               if len(with_ram) < len(priced)
-               else "Every one of them is rankable on this page.")
-            if priced else ""
-        ),
+        _rankable_answer,
     ),
     (
         "Which providers are tracked?",
-        lambda priced, with_ram: (
-            f"{len({o['provider'] for o in priced})} providers currently publish a price we can read: "
-            f"{', '.join(sorted({o['provider'] for o in priced}))}. A provider whose page we cannot read a price on "
-            f"is listed as unread rather than filled in."
-            if priced else ""
-        ),
+        lambda priced, with_ram, where: _providers_answer(priced, where),
     ),
     (
         "How many plans publish both a price and a RAM figure?",
-        lambda priced, with_ram: (
-            f"{len(with_ram)} of {len(priced)} priced plans. That is the row count you can divide to get a price "
-            f"per GB of RAM; nothing outside that set is estimated."
-            if priced else ""
-        ),
+        _both_numbers_answer,
     ),
 ]
 
 
-def _cheapest_per_gb_answer(with_ram: list[dict]) -> str:
+def _cheapest_per_gb_answer(with_ram: list[dict], where: str) -> str:
     """单价最便宜的那档。口径必须和页面上的表一致：价格和内存都是厂商自己公布的。"""
     if not with_ram:
         return ""
@@ -568,27 +588,32 @@ def _cheapest_per_gb_answer(with_ram: list[dict]) -> str:
     currency = best.get("currency", "")
     return (
         f"{best['provider']} {best['title']} at {best['price'] / best['ram_gb']:.4f} {currency}/GB "
-        f"({_money(best['price'], currency)} / {best['ram_gb']} GB), computed from published numbers only."
+        f"({_money(best['price'], currency)} / {best['ram_gb']} GB) {where}, computed from published numbers only."
     )
 
 
-def frequently_asked(offers: list[dict], questions: list[str] | None = None) -> list[dict]:
+def frequently_asked(offers: list[dict], questions: list[str] | None = None, where: str = "") -> list[dict]:
     """T4：把疑问句一句一句答出来。答案只用抓到的数字，算不出来就不出这一问。
 
     questions：搜索补全里抓到的真人问句（data/keyword-bank.json）。有就在答案前面标出来源，
     没有也不影响——问题本身换成数据驱动的问法，答案口径完全一样，绝不编数字。
     先按和页面同一套规则塌缩，保证 FAQ 里的"最便宜"和页面表格里的是同一档。
+
+    offers 传哪一批，这段 FAQ 就只答那一批；where 是这批行在这页上的范围说明
+    （"among IONOS plans"、"in the downloadable comparison table"），写进答案里。
+    传全站又不给 where 就会得到一段和别的页一字不差的答案——这正是之前 19 个指南页被判重复的原因。
     """
     offers = collapse_offers(offers)
     priced = [o for o in offers if o.get("price") is not None]
     with_ram = [o for o in priced if o.get("ram_gb")]
     if not priced:
         return []
+    where = (where or "").strip() or "among the tracked plans"
     asked = [q.strip() for q in (questions or []) if isinstance(q, str) and q.strip()]
     out: list[dict] = []
     for question, builder in QUESTION_ANSWERS:
         try:
-            answer = builder(priced, with_ram)
+            answer = builder(priced, with_ram, where)
         except (ValueError, KeyError, TypeError, ZeroDivisionError):
             continue
         if not answer or not any(ch.isdigit() for ch in answer):

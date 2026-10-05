@@ -171,6 +171,41 @@ def template(name: str) -> str:
     return re.sub(r"\s*<style>.*?</style>", "", html, flags=re.S)
 
 
+# 自动页的正文是 guides.py 生成那一刻写死进 data/guides.json 的，里面凡是**全站口径**的
+# 数字（"25 个套餐"、"20 of 25 tracked plans"）都跟着那一刻冻住了；而同一页上的 FAQ、
+# 页脚那句 "prices last read from the providers" 和 /downloads/unit-price.csv 每次构建
+# 重算。两边一旦不同步，同一页就说两套话：2026-10-05 线上 /guide/csv-2026-09-24-1 的正文
+# 写 "20 of 25 tracked plans"，同页 FAQ 写 "25 of 25 priced plans"，CSV 也是 25 行。
+# 所以这些数字在 guides.py 里只留占位符，构建时用当天的抓取结果填。按行数算的
+# （这页排了几行）不在此列——那本来就是这一页自己的事实，不会随时间漂。
+def live_counts(offers: list[dict]) -> dict[str, int]:
+    priced = [o for o in offers if o.get("price") is not None]
+    return {
+        "priced_count": len(priced),
+        "with_ram_count": sum(1 for o in priced if o.get("ram_gb")),
+    }
+
+
+def expand_live_tokens(text: str, offers: list[dict]) -> str:
+    """把全站口径的占位符换成今天抓到的数字。
+
+    换不掉的占位符直接报错，绝不发出去：render() 对没见过的 key 是替换成空串的，
+    漏一个就会印出 "The full -plan table" 这种缺数字的句子。
+    """
+    if "{{" not in text:
+        return text
+    values = {key: str(value) for key, value in live_counts(offers).items()}
+    expanded = re.sub(
+        r"\{\{\s*([a-z_]+)\s*\}\}",
+        lambda match: values.get(match.group(1), match.group(0)),
+        text,
+    )
+    leftover = sorted(set(re.findall(r"\{\{\s*([a-z_]+)\s*\}\}", expanded)))
+    if leftover:
+        raise SystemExit("unknown live token(s) in guide text: " + ", ".join(leftover))
+    return expanded
+
+
 def money(price: float | None, currency: str) -> str:
     if price is None:
         return ""
@@ -711,6 +746,7 @@ def build_provider(site: dict, provider: dict, offers: list[dict], generated_at:
         template("provider.html"),
         {
             "lang": site["locale"],
+            "brand": escape(site["brand"]),
             "head": head_block(meta, graphs),
             "nav": nav_block(site, [provider]),
             "footer": footer_block(site, generated_at),
@@ -865,6 +901,7 @@ def build_deal(site: dict, offer: dict, generated_at: str, variants: int = 1,
         template("deal.html"),
         {
             "lang": site["locale"],
+            "brand": escape(site["brand"]),
             "head": head_block(meta, [schema, breadcrumb]),
             "nav": nav_block(site, []),
             "footer": footer_block(site, generated_at),
@@ -922,6 +959,7 @@ def build_compare(site: dict, offers: list[dict], providers: list[dict], generat
         template("compare.html"),
         {
             "lang": site["locale"],
+            "brand": escape(site["brand"]),
             "head": head_block(meta, [item_list]),
             "nav": nav_block(site, providers),
             "footer": footer_block(site, generated_at),
@@ -1004,6 +1042,7 @@ def build_guide_index(
         template("guide.html"),
         {
             "lang": site["locale"],
+            "brand": escape(site["brand"]),
             "head": head_block(meta, [_webpage_graph(site, "/guide", title, description)]),
             "nav": nav_block(site, providers),
             "footer": footer_block(site, generated_at),
@@ -1037,15 +1076,17 @@ def _bank_questions() -> list[str]:
     return [item["query"] for item in payload.get("queries", []) if item.get("question")][:8]
 
 
-def answer_from_data(guide: dict, offers: list[dict]) -> str:
+def answer_from_data(guide: dict, offers: list[dict], expanded: str | None = None) -> str:
     """第一屏的答案必须带可核对的数字，数字只能来自抓到的数据。
 
     ::RULE{lede 里出现的每个数都能在 offers.json 或 CSV 里复算出来}
     自动页（guides.py 生成）自己带着按主题算好的答案，直接用；
     手写页没有当日主题，这里按缺口类型给一个汇总口径的答案。
+    expanded：已经用当天的数字替换过占位符的答案（见 expand_live_tokens），
+    不传就退回 guides.json 里存的那份——那份里可能还留着占位符，正常路径不会走到。
     """
-    if guide.get("auto") and guide.get("answer"):
-        return guide["answer"]
+    if guide.get("auto") and (expanded or guide.get("answer")):
+        return expanded if expanded is not None else guide["answer"]
     priced = [o for o in offers if o.get("price") is not None]
     with_ram = [o for o in priced if o.get("ram_gb")]
     ranked = sorted(with_ram, key=lambda o: o["price"] / o["ram_gb"])
@@ -1130,13 +1171,91 @@ def updated_line(guide: dict, generated_at: str) -> str:
     )
 
 
+def guide_focus(guide: dict, offers: list[dict]) -> str | None:
+    """这篇指南的正文只排哪一家；排全站就返回 None。
+
+    没在 guides.json 里加字段，而是从标题里认出厂商名：自动生成的标题把主题厂商写在标题里
+    （csv 页是 "- <厂商> plans"、unitprice 页是 ": <厂商> -"、steps 页是 "steps: <厂商> plan"），
+    手写页和 queue 页标题里没有厂商名。这样不用改数据文件，老页面也照样认得出。
+
+    口径原则：FAQ 只答本页表格里那批行，认不出厂商的页面才用全站口径。
+    """
+    names = {o["provider"] for o in offers}
+    title = guide.get("title", "")
+    hits = [name for name in names if name in title]
+    return hits[0] if len(hits) == 1 else None
+
+
+# queue 页的标题形状固定（guides.py 的 build_queue_entry 生成），冒号后面是队列里的词，
+# 标题本身说明了这一页排的是哪一批行：按磁盘单价排 / 按内存单价排 / 按月费排。
+_QUEUE_TITLE_FIELDS = (
+    ("Cheapest VPS disk per TB:", "disk_gb"),
+    ("Cheapest VPS RAM per GB:", "ram_gb"),
+    ("Cheapest tracked VPS plans:", None),
+)
+
+
+def guide_scope_offers(guide: dict, offers: list[dict]) -> list[dict]:
+    """这一页正文真正排的那批行——FAQ 就答这批，不答全站。
+
+    两种页面各有各的口径：厂商页只排一家（标题里有厂商名），queue 页按标题里写的那个维度
+    筛过一遍（只排公布了硬盘/内存的那批）。都不是的（手写常青页）才用全站口径——
+    那几页本来就横着看全站数据，答全站才是对的。这里只做筛选，不新增任何数字来源。
+    """
+    title = guide.get("title", "")
+    for prefix, field in _QUEUE_TITLE_FIELDS:
+        if title.startswith(prefix):
+            if field is None:
+                return [o for o in offers if o.get("price") is not None]
+            return [o for o in offers if o.get("price") is not None and o.get(field)]
+    focus = guide_focus(guide, offers)
+    if focus:
+        return [o for o in offers if o["provider"] == focus]
+    return offers
+
+
+# 手写常青页横着看全站数据（三页同行集），给各自一句范围说法，答案才不会一字不差。
+_HANDWRITTEN_SCOPE = {
+    "vps-comparison-table-csv": "in the downloadable comparison table",
+    "how-to-buy-and-connect-a-cheap-vps": "across the plans these steps cover",
+    "how-vps-pricing-works": "across the plans used in this explainer",
+}
+
+
+def guide_scope_phrase(guide: dict, offers: list[dict]) -> str:
+    """这一页的范围，写成一个能接在句子任何位置的状语，写进 FAQ 答案里。
+
+    必须能区分同类的两页，否则两页的 FAQ 又会一字不差：
+      - queue 页只按维度筛行，两页"按月费排"的 queue 页行集是一样的 → 带上队列里那个词；
+      - 自动页按厂商轮换，同一家会隔几天再轮到一次（IONOS 的 csv 页来过两次、
+        Hostwinds 的单价页来过两次），行集也一样 → 带上这一页自己的发布日期。
+        说"这一页"而不是"这一天的价格"：页面上排的就是这一页的表，价格是构建时抓的，
+        不该暗示数字取自那一天。
+    """
+    title = guide.get("title", "")
+    for prefix, _ in _QUEUE_TITLE_FIELDS:
+        if title.startswith(prefix):
+            term = title[len(prefix):].split(" - ", 1)[0].strip()
+            return f'in the "{term}" shortlist' if term else "in this shortlist"
+    focus = guide_focus(guide, offers)
+    if not focus:
+        return _HANDWRITTEN_SCOPE.get(guide.get("slug", ""), "among the tracked plans")
+    snapshot = (guide.get("published") or "")[:10]
+    if guide.get("auto") and snapshot:
+        return f"on the {snapshot} {focus} page"
+    return f"on the {focus} plan list"
+
+
 def build_guide(
     site: dict, guide: dict, offers: list[dict], providers: list[dict], generated_at: str,
     guides: list[dict] | None = None,
 ) -> str:
     # 每一篇只补一个缺口，正文在 data/guides.json 里给定（自动页由 guides.py 生成）。
     # 这里不再按 gap 现编内容，避免出现"同一份数据被渲染成两种说法"。
-    body = guide.get("body_html", "")
+    # 正文里全站口径的数字是占位符，按**今天**的抓取结果填（见 live_counts），
+    # 否则页面上的表格行数和同一页 FAQ / CSV / 页脚日期会各说各话。
+    body = expand_live_tokens(guide.get("body_html", ""), offers)
+    answer = expand_live_tokens(guide.get("answer", ""), offers)
     if re.search(r'href="[^"]*(/deal/|source_url)', body):
         raise SystemExit(f'guide {guide["slug"]} must not link to per-offer pages; bodies stay data-free')
     if not body:
@@ -1147,7 +1266,7 @@ def build_guide(
         "canonical": guide_page(site, guide),
         "locale": site["locale"],
         "title": title,
-        "description": guide["answer"],
+        "description": answer,
         "brand": site["brand"],
         "og_type": "article",
         "og_image": site["og_image"],
@@ -1156,7 +1275,7 @@ def build_guide(
         "@context": "https://schema.org",
         "@type": "TechArticle",
         "headline": guide["title"],
-        "description": guide["answer"],
+        "description": answer,
         "url": guide_page(site, guide),
         # 自动页自己有发布日期：用它，别用构建时间——否则每重建一次"发布日"就变一次。
         "datePublished": (guide.get("published") or generated_at)[:10],
@@ -1178,7 +1297,15 @@ def build_guide(
         for item in guide.get("sources", [])
     )
     # T4：一问一答。问题来自搜索补全里的真人问句，答案全部由今天抓到的数字现算。
-    faqs = frequently_asked(offers, _bank_questions())
+    # FAQ 只答**这一页表格里排的那批行**（见 guide_scope_offers / guide_scope_phrase）：
+    # 厂商页只答那一家，queue 页只答标题里那个维度筛出来的那批。
+    # 原来这里传的是全站 offers，于是 19 个指南页的 5 问 5 答一字不差，
+    # 可见文本和 FAQPage 两份都一样，页面之间互相判成重复。
+    faqs = frequently_asked(
+        guide_scope_offers(guide, offers),
+        _bank_questions(),
+        guide_scope_phrase(guide, offers),
+    )
     faq_html = ""
     extra_jsonld = [article, breadcrumb]
     # T5 套图：单价页插"每 GB 最便宜"的图，主题厂商有专属图就一起插。
@@ -1215,12 +1342,13 @@ def build_guide(
         template("guide.html"),
         {
             "lang": site["locale"],
+            "brand": escape(site["brand"]),
             "head": head_block(meta, extra_jsonld),
             "nav": nav_block(site, providers),
             "footer": footer_block(site, generated_at),
             "title": escape(title),
             "h1": escape(guide["title"]),
-            "answer": f'<p class="lede">{escape(answer_from_data(guide, offers))}</p>' + chart_html,
+            "answer": f'<p class="lede">{escape(answer_from_data(guide, offers, answer))}</p>' + chart_html,
             "body": body + faq_html + related_guides_html(site, guide, guides or []),
             "updated": updated_line(guide, generated_at),
             "gap_note": escape(guide["gap_note"]),
