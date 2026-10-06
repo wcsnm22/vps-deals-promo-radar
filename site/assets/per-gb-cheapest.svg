@@ -1,53 +1,55 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 526" width="760" height="526" role="img" aria-label="Cheapest RAM per GB by currency">
-<rect width="760" height="526" fill="#0f172a" rx="10"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 570" width="760" height="570" role="img" aria-label="Cheapest RAM per GB by currency">
+<rect width="760" height="570" fill="#0f172a" rx="10"/>
 <text x="24" y="42" fill="#e2e8f0" font-family="system-ui,sans-serif" font-size="20" font-weight="600">Cheapest RAM per GB by currency</text>
 <text x="24" y="64" fill="#94a3b8" font-family="system-ui,sans-serif" font-size="13">Each row is one provider's published monthly price divided by the RAM it printed beside it. Groups are ordered by their own cheapest row and never converted between currencies; a plan without a published RAM figure is not drawn.</text>
-<text x="24" y="90" fill="#e2e8f0" font-family="system-ui,sans-serif" font-size="13">IONOS VPS XXL+</text>
-<rect x="324" y="78" width="62.7" height="18" fill="#38bdf8" rx="3"/>
-<text x="394.7" y="91" fill="#94a3b8" font-family="ui-monospace,monospace" font-size="12">0.8333 USD/GB</text>
-<text x="24" y="104" fill="#0f172a" font-family="system-ui,sans-serif" font-size="1">20 USD / 24 GB</text>
-<text x="24" y="124" fill="#e2e8f0" font-family="system-ui,sans-serif" font-size="13">IONOS VPS XL+</text>
-<rect x="324" y="112" width="65.8" height="18" fill="#22d3ee" rx="3"/>
-<text x="397.8" y="125" fill="#94a3b8" font-family="ui-monospace,monospace" font-size="12">0.8750 USD/GB</text>
-<text x="24" y="138" fill="#0f172a" font-family="system-ui,sans-serif" font-size="1">14 USD / 16 GB</text>
-<text x="24" y="158" fill="#e2e8f0" font-family="system-ui,sans-serif" font-size="13">OVHcloud VPS-4</text>
-<rect x="324" y="146" width="73.2" height="18" fill="#38bdf8" rx="3"/>
-<text x="405.2" y="159" fill="#94a3b8" font-family="ui-monospace,monospace" font-size="12">0.9738 USD/GB</text>
-<text x="24" y="172" fill="#0f172a" font-family="system-ui,sans-serif" font-size="1">23.37 USD / 24 GB</text>
-<text x="24" y="192" fill="#e2e8f0" font-family="system-ui,sans-serif" font-size="13">IONOS VPS S+</text>
-<rect x="324" y="180" width="75.2" height="18" fill="#22d3ee" rx="3"/>
-<text x="407.2" y="193" fill="#94a3b8" font-family="ui-monospace,monospace" font-size="12">1.0000 USD/GB</text>
-<text x="24" y="206" fill="#0f172a" font-family="system-ui,sans-serif" font-size="1">2 USD / 2 GB</text>
-<text x="24" y="226" fill="#e2e8f0" font-family="system-ui,sans-serif" font-size="13">IONOS VPS L+</text>
-<rect x="324" y="214" width="75.2" height="18" fill="#38bdf8" rx="3"/>
-<text x="407.2" y="227" fill="#94a3b8" font-family="ui-monospace,monospace" font-size="12">1.0000 USD/GB</text>
-<text x="24" y="240" fill="#0f172a" font-family="system-ui,sans-serif" font-size="1">8 USD / 8 GB</text>
-<text x="24" y="260" fill="#e2e8f0" font-family="system-ui,sans-serif" font-size="13">OVHcloud VPS-3</text>
-<rect x="324" y="248" width="77.2" height="18" fill="#22d3ee" rx="3"/>
-<text x="409.2" y="261" fill="#94a3b8" font-family="ui-monospace,monospace" font-size="12">1.0267 USD/GB</text>
-<text x="24" y="274" fill="#0f172a" font-family="system-ui,sans-serif" font-size="1">12.32 USD / 12 GB</text>
-<text x="24" y="294" fill="#e2e8f0" font-family="system-ui,sans-serif" font-size="13">OVHcloud VPS-2</text>
-<rect x="324" y="282" width="79.9" height="18" fill="#38bdf8" rx="3"/>
-<text x="411.9" y="295" fill="#94a3b8" font-family="ui-monospace,monospace" font-size="12">1.0625 USD/GB</text>
-<text x="24" y="308" fill="#0f172a" font-family="system-ui,sans-serif" font-size="1">8.50 USD / 8 GB</text>
-<text x="24" y="328" fill="#e2e8f0" font-family="system-ui,sans-serif" font-size="13">OVHcloud VPS-1</text>
-<rect x="324" y="316" width="85.4" height="18" fill="#22d3ee" rx="3"/>
-<text x="417.4" y="329" fill="#94a3b8" font-family="ui-monospace,monospace" font-size="12">1.1350 USD/GB</text>
-<text x="24" y="342" fill="#0f172a" font-family="system-ui,sans-serif" font-size="1">4.54 USD / 4 GB</text>
-<text x="24" y="362" fill="#e2e8f0" font-family="system-ui,sans-serif" font-size="13">IONOS VPS M+</text>
-<rect x="324" y="350" width="94.0" height="18" fill="#38bdf8" rx="3"/>
-<text x="426.0" y="363" fill="#94a3b8" font-family="ui-monospace,monospace" font-size="12">1.2500 USD/GB</text>
-<text x="24" y="376" fill="#0f172a" font-family="system-ui,sans-serif" font-size="1">5 USD / 4 GB</text>
-<text x="24" y="396" fill="#e2e8f0" font-family="system-ui,sans-serif" font-size="13">Hostwinds Unmanaged Linux VPS Hosting -...</text>
-<rect x="324" y="384" width="252.6" height="18" fill="#22d3ee" rx="3"/>
-<text x="584.6" y="397" fill="#94a3b8" font-family="ui-monospace,monospace" font-size="12">3.3592 USD/GB</text>
-<text x="24" y="410" fill="#0f172a" font-family="system-ui,sans-serif" font-size="1">214.99 USD / 64 GB</text>
-<text x="24" y="430" fill="#e2e8f0" font-family="system-ui,sans-serif" font-size="13">Hostwinds Unmanaged Linux VPS Hosting -...</text>
-<rect x="324" y="418" width="257.7" height="18" fill="#38bdf8" rx="3"/>
-<text x="589.7" y="431" fill="#94a3b8" font-family="ui-monospace,monospace" font-size="12">3.4270 USD/GB</text>
-<text x="24" y="444" fill="#0f172a" font-family="system-ui,sans-serif" font-size="1">328.99 USD / 96 GB</text>
-<text x="24" y="464" fill="#e2e8f0" font-family="system-ui,sans-serif" font-size="13">BuyVM HIGH VOLUME VPS</text>
-<rect x="324" y="452" width="282.0" height="18" fill="#22d3ee" rx="3"/>
-<text x="614.0" y="465" fill="#94a3b8" font-family="ui-monospace,monospace" font-size="12">3.7500 USD/GB</text>
-<text x="24" y="478" fill="#0f172a" font-family="system-ui,sans-serif" font-size="1">30 USD / 8 GB</text>
+<text x="24" y="88" fill="#94a3b8" font-family="system-ui,sans-serif" font-size="12" font-weight="600">USD rows</text>
+<text x="24" y="114" fill="#e2e8f0" font-family="system-ui,sans-serif" font-size="13">IONOS VPS XXL+</text>
+<rect x="324" y="102" width="139.7" height="18" fill="#38bdf8" rx="3"/>
+<text x="471.7" y="115" fill="#94a3b8" font-family="ui-monospace,monospace" font-size="12">0.8333 USD/GB</text>
+<text x="24" y="128" fill="#0f172a" font-family="system-ui,sans-serif" font-size="1">20 USD / 24 GB</text>
+<text x="24" y="148" fill="#e2e8f0" font-family="system-ui,sans-serif" font-size="13">IONOS VPS XL+</text>
+<rect x="324" y="136" width="146.7" height="18" fill="#22d3ee" rx="3"/>
+<text x="478.7" y="149" fill="#94a3b8" font-family="ui-monospace,monospace" font-size="12">0.8750 USD/GB</text>
+<text x="24" y="162" fill="#0f172a" font-family="system-ui,sans-serif" font-size="1">14 USD / 16 GB</text>
+<text x="24" y="182" fill="#e2e8f0" font-family="system-ui,sans-serif" font-size="13">OVHcloud VPS-4</text>
+<rect x="324" y="170" width="163.2" height="18" fill="#38bdf8" rx="3"/>
+<text x="495.2" y="183" fill="#94a3b8" font-family="ui-monospace,monospace" font-size="12">0.9738 USD/GB</text>
+<text x="24" y="196" fill="#0f172a" font-family="system-ui,sans-serif" font-size="1">23.37 USD / 24 GB</text>
+<text x="24" y="216" fill="#e2e8f0" font-family="system-ui,sans-serif" font-size="13">IONOS VPS S+</text>
+<rect x="324" y="204" width="167.6" height="18" fill="#22d3ee" rx="3"/>
+<text x="499.6" y="217" fill="#94a3b8" font-family="ui-monospace,monospace" font-size="12">1.0000 USD/GB</text>
+<text x="24" y="230" fill="#0f172a" font-family="system-ui,sans-serif" font-size="1">2 USD / 2 GB</text>
+<text x="24" y="250" fill="#e2e8f0" font-family="system-ui,sans-serif" font-size="13">IONOS VPS L+</text>
+<rect x="324" y="238" width="167.6" height="18" fill="#38bdf8" rx="3"/>
+<text x="499.6" y="251" fill="#94a3b8" font-family="ui-monospace,monospace" font-size="12">1.0000 USD/GB</text>
+<text x="24" y="264" fill="#0f172a" font-family="system-ui,sans-serif" font-size="1">8 USD / 8 GB</text>
+<text x="24" y="284" fill="#e2e8f0" font-family="system-ui,sans-serif" font-size="13">OVHcloud VPS-3</text>
+<rect x="324" y="272" width="172.1" height="18" fill="#22d3ee" rx="3"/>
+<text x="504.1" y="285" fill="#94a3b8" font-family="ui-monospace,monospace" font-size="12">1.0267 USD/GB</text>
+<text x="24" y="298" fill="#0f172a" font-family="system-ui,sans-serif" font-size="1">12.32 USD / 12 GB</text>
+<text x="24" y="318" fill="#e2e8f0" font-family="system-ui,sans-serif" font-size="13">OVHcloud VPS-2</text>
+<rect x="324" y="306" width="178.1" height="18" fill="#38bdf8" rx="3"/>
+<text x="510.1" y="319" fill="#94a3b8" font-family="ui-monospace,monospace" font-size="12">1.0625 USD/GB</text>
+<text x="24" y="332" fill="#0f172a" font-family="system-ui,sans-serif" font-size="1">8.50 USD / 8 GB</text>
+<text x="24" y="352" fill="#e2e8f0" font-family="system-ui,sans-serif" font-size="13">OVHcloud VPS-1</text>
+<rect x="324" y="340" width="190.2" height="18" fill="#22d3ee" rx="3"/>
+<text x="522.2" y="353" fill="#94a3b8" font-family="ui-monospace,monospace" font-size="12">1.1350 USD/GB</text>
+<text x="24" y="366" fill="#0f172a" font-family="system-ui,sans-serif" font-size="1">4.54 USD / 4 GB</text>
+<text x="24" y="386" fill="#e2e8f0" font-family="system-ui,sans-serif" font-size="13">IONOS VPS M+</text>
+<rect x="324" y="374" width="209.5" height="18" fill="#38bdf8" rx="3"/>
+<text x="541.5" y="387" fill="#94a3b8" font-family="ui-monospace,monospace" font-size="12">1.2500 USD/GB</text>
+<text x="24" y="400" fill="#0f172a" font-family="system-ui,sans-serif" font-size="1">5 USD / 4 GB</text>
+<text x="24" y="438" fill="#94a3b8" font-family="system-ui,sans-serif" font-size="12" font-weight="600">EUR rows</text>
+<text x="24" y="464" fill="#e2e8f0" font-family="system-ui,sans-serif" font-size="13">netcup VPS 8000 G12.5</text>
+<rect x="324" y="452" width="175.8" height="18" fill="#22d3ee" rx="3"/>
+<text x="507.8" y="465" fill="#94a3b8" font-family="ui-monospace,monospace" font-size="12">1.0486 EUR/GB</text>
+<text x="24" y="478" fill="#0f172a" font-family="system-ui,sans-serif" font-size="1">67.11 EUR / 64 GB</text>
+<text x="24" y="498" fill="#e2e8f0" font-family="system-ui,sans-serif" font-size="13">netcup VPS 4000 G12.5</text>
+<rect x="324" y="486" width="237.6" height="18" fill="#38bdf8" rx="3"/>
+<text x="569.6" y="499" fill="#94a3b8" font-family="ui-monospace,monospace" font-size="12">1.4175 EUR/GB</text>
+<text x="24" y="512" fill="#0f172a" font-family="system-ui,sans-serif" font-size="1">45.36 EUR / 32 GB</text>
+<text x="24" y="532" fill="#e2e8f0" font-family="system-ui,sans-serif" font-size="13">netcup VPS 2000 G12.5</text>
+<rect x="324" y="520" width="282.0" height="18" fill="#22d3ee" rx="3"/>
+<text x="614.0" y="533" fill="#94a3b8" font-family="ui-monospace,monospace" font-size="12">1.6825 EUR/GB</text>
+<text x="24" y="546" fill="#0f172a" font-family="system-ui,sans-serif" font-size="1">26.92 EUR / 16 GB</text>
 </svg>
