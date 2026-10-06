@@ -530,5 +530,33 @@
         "url": "https://www.hostwinds.com/vps/unmanaged-linux"
       }
     ]
+  },
+  {
+    "slug": "unitprice-2026-10-06-1",
+    "title": "Cheapest VPS per GB of RAM: OVHcloud - 2026-10-06 ranking from 4 computable plans",
+    "gap": "unitprice",
+    "gap_note": "The benchmarked top pages list headline prices without breaking them down per unit. This entry divides only the numbers the provider itself published.",
+    "answer": "OVHcloud: cheapest RAM per unit is VPS-4 at 0.9738 USD per GB (23.37 USD / 24 GB), computed from the published price only.",
+    "auto": true,
+    "published": "2026-10-06T00:00:42Z",
+    "body_html": "<h2>OVHcloud plans ranked by price per GB</h2><div class=\"table-shell\"><table><thead><tr><th>#</th><th>Plan</th><th>Published price</th><th>RAM (GB)</th><th>Price per GB</th></tr></thead><tbody><tr><td>1</td><td>VPS-4</td><td class=\"price\">23.37 USD</td><td>24</td><td class=\"price\">0.9738 USD/GB</td></tr><tr><td>2</td><td>VPS-3</td><td class=\"price\">12.32 USD</td><td>12</td><td class=\"price\">1.0267 USD/GB</td></tr><tr><td>3</td><td>VPS-2</td><td class=\"price\">8.5 USD</td><td>8</td><td class=\"price\">1.0625 USD/GB</td></tr><tr><td>4</td><td>VPS-1</td><td class=\"price\">4.54 USD</td><td>4</td><td class=\"price\">1.1350 USD/GB</td></tr></tbody></table></div><h2>How to recompute</h2><p>Every per-GB cell equals the published monthly price divided by the RAM figure printed beside it. Plans without a published RAM figure are excluded instead of estimated.</p>",
+    "sources": [
+      {
+        "label": "OVHcloud published price page",
+        "url": "https://www.ovhcloud.com/en/vps/"
+      },
+      {
+        "label": "BuyVM published price page",
+        "url": "https://buyvm.net/kvm-dedicated-server-slices/"
+      },
+      {
+        "label": "IONOS published price page",
+        "url": "https://www.ionos.com/servers/vps"
+      },
+      {
+        "label": "Hostwinds published price page",
+        "url": "https://www.hostwinds.com/vps/unmanaged-linux"
+      }
+    ]
   }
 ]
