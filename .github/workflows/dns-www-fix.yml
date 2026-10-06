@@ -1,0 +1,61 @@
+name: dns-www-fix
+
+# 一次性用途：检查 repo 里的 CLOUDFLARE_API_TOKEN 是否有 DNS 编辑权限，
+# 如果有就把 furadvisor.com 的 www CNAME 建出来。
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      ZONE_ID: 241239b23680c4260acc7a798841a127
+    steps:
+      - name: Probe token ability
+        run: |
+          set -e
+          echo "token_present=$([ -n "$CLOUDFLARE_API_TOKEN" ] && echo yes || echo no)"
+
+          echo "--- can we list DNS records? ---"
+          code=$(curl -s -o /tmp/list.json -w '%{http_code}' \
+            -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+            "https://api.cloudflare.com/client/v4/zones/$ZONE_ID/dns_records?per_page=100")
+          echo "http=$code"
+          head -c 400 /tmp/list.json; echo
+
+          if [ "$code" != "200" ]; then
+            echo "RESULT: token cannot read DNS; stopping"
+            exit 0
+          fi
+
+          echo "--- existing records ---"
+          python3 - <<'PY'
+          import json
+          d = json.load(open('/tmp/list.json'))
+          for r in d.get('result', []):
+              print(f"  {r['type']:6} {r['name']:34} -> {str(r.get('content'))[:50]}  proxied={r.get('proxied')}")
+          PY
+
+          echo "--- does www already exist? ---"
+          if python3 -c "
+          import json,sys
+          d=json.load(open('/tmp/list.json'))
+          sys.exit(0 if any(r['name']=='www.furadvisor.com' for r in d.get('result',[])) else 1)
+          "; then
+            echo "www record already present; nothing to do"
+            exit 0
+          fi
+
+          echo "--- creating CNAME www -> furwell.pages.dev (proxied) ---"
+          code=$(curl -s -o /tmp/create.json -w '%{http_code}' -X POST \
+            -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+            -H "Content-Type: application/json" \
+            --data '{"type":"CNAME","name":"www","content":"furwell.pages.dev","proxied":true,"ttl":1,"comment":"www redirect for furadvisor.com"}' \
+            "https://api.cloudflare.com/client/v4/zones/$ZONE_ID/dns_records")
+          echo "http=$code"
+          head -c 600 /tmp/create.json; echo
