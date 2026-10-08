@@ -33,8 +33,20 @@ jobs:
       - name: Scrape public provider pages
         run: python scraper.py
 
+      # 抓取失败（证书错误、超时、被拒抓）和厂商真的整体下架在数据里长得一样，
+      # 但放着不管就会把半边数据集当成今天的事实发上线，还会删掉整批页面。
+      # 某家 provider 整批归零就停在这里：不 commit、不 deploy，线上保持上一版。
+      # 真确认是厂商下架了，手动重跑时带上 GUARD_FORCE=1 说明原因再放行。
+      - name: Refuse to publish a regressed scrape
+        run: python guard.py
+
       - name: Build static site
         run: python build.py
+
+      # 写稿判据自查：第一屏有答案、独家≥30%、无中文残留/视频痕迹。
+      # 不合格就别发，线上保持上一版。
+      - name: Check the written pages
+        run: python content_check.py
 
       - name: Commit refreshed data and site
         run: |
