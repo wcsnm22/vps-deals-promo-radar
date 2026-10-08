@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-08T05:59:08Z",
+  "generated_at": "2026-10-08T01:00:02Z",
   "brand": "vps-deals",
   "niche": "vps hosting",
   "site_title": "VPS Deals Radar",
@@ -114,7 +114,7 @@
       "vcpu": 2,
       "ram_gb": 4,
       "disk_gb": 40,
-      "fetched_at": "2026-10-08T05:59:08Z"
+      "fetched_at": "2026-10-08T01:00:02Z"
     },
     {
       "provider": "OVHcloud",
@@ -126,7 +126,7 @@
       "vcpu": 4,
       "ram_gb": 8,
       "disk_gb": 75,
-      "fetched_at": "2026-10-08T05:59:08Z"
+      "fetched_at": "2026-10-08T01:00:02Z"
     },
     {
       "provider": "OVHcloud",
@@ -138,7 +138,7 @@
       "vcpu": 6,
       "ram_gb": 12,
       "disk_gb": 100,
-      "fetched_at": "2026-10-08T05:59:08Z"
+      "fetched_at": "2026-10-08T01:00:02Z"
     },
     {
       "provider": "OVHcloud",
@@ -150,7 +150,7 @@
       "vcpu": 8,
       "ram_gb": 24,
       "disk_gb": 200,
-      "fetched_at": "2026-10-08T05:59:08Z"
+      "fetched_at": "2026-10-08T01:00:02Z"
     },
     {
       "provider": "netcup",
@@ -162,7 +162,7 @@
       "vcpu": 2,
       "ram_gb": 4,
       "disk_gb": 64,
-      "fetched_at": "2026-10-08T05:59:08Z"
+      "fetched_at": "2026-10-08T01:00:02Z"
     },
     {
       "provider": "netcup",
@@ -173,7 +173,7 @@
       "source_url": "https://www.netcup.com/en/server/vps",
       "ram_gb": 4,
       "disk_gb": 64,
-      "fetched_at": "2026-10-08T05:59:08Z"
+      "fetched_at": "2026-10-08T01:00:02Z"
     },
     {
       "provider": "netcup",
@@ -185,7 +185,7 @@
       "vcpu": 4,
       "ram_gb": 8,
       "disk_gb": 128,
-      "fetched_at": "2026-10-08T05:59:08Z"
+      "fetched_at": "2026-10-08T01:00:02Z"
     },
     {
       "provider": "netcup",
@@ -196,7 +196,7 @@
       "source_url": "https://www.netcup.com/en/server/vps",
       "ram_gb": 8,
       "disk_gb": 128,
-      "fetched_at": "2026-10-08T05:59:08Z"
+      "fetched_at": "2026-10-08T01:00:02Z"
     },
     {
       "provider": "netcup",
@@ -208,7 +208,7 @@
       "vcpu": 8,
       "ram_gb": 16,
       "disk_gb": 256,
-      "fetched_at": "2026-10-08T05:59:08Z"
+      "fetched_at": "2026-10-08T01:00:02Z"
     },
     {
       "provider": "netcup",
@@ -219,7 +219,7 @@
       "source_url": "https://www.netcup.com/en/server/vps",
       "ram_gb": 16,
       "disk_gb": 256,
-      "fetched_at": "2026-10-08T05:59:08Z"
+      "fetched_at": "2026-10-08T01:00:02Z"
     },
     {
       "provider": "netcup",
@@ -231,7 +231,7 @@
       "vcpu": 12,
       "ram_gb": 32,
       "disk_gb": 512,
-      "fetched_at": "2026-10-08T05:59:08Z"
+      "fetched_at": "2026-10-08T01:00:02Z"
     },
     {
       "provider": "netcup",
@@ -242,7 +242,7 @@
       "source_url": "https://www.netcup.com/en/server/vps",
       "ram_gb": 32,
       "disk_gb": 512,
-      "fetched_at": "2026-10-08T05:59:08Z"
+      "fetched_at": "2026-10-08T01:00:02Z"
     },
     {
       "provider": "netcup",
@@ -254,7 +254,7 @@
       "vcpu": 16,
       "ram_gb": 64,
       "disk_gb": 1024,
-      "fetched_at": "2026-10-08T05:59:08Z"
+      "fetched_at": "2026-10-08T01:00:02Z"
     },
     {
       "provider": "netcup",
@@ -265,7 +265,7 @@
       "source_url": "https://www.netcup.com/en/server/vps",
       "ram_gb": 64,
       "disk_gb": 1024,
-      "fetched_at": "2026-10-08T05:59:08Z"
+      "fetched_at": "2026-10-08T01:00:02Z"
     },
     {
       "provider": "BuyVM",
@@ -277,7 +277,7 @@
       "vcpu": 2,
       "ram_gb": 8,
       "disk_gb": 160,
-      "fetched_at": "2026-10-08T05:59:08Z"
+      "fetched_at": "2026-10-08T01:00:02Z"
     },
     {
       "provider": "IONOS",
@@ -289,7 +289,7 @@
       "vcpu": 1,
       "ram_gb": 2,
       "disk_gb": 60,
-      "fetched_at": "2026-10-08T05:59:08Z"
+      "fetched_at": "2026-10-08T01:00:02Z"
     },
     {
       "provider": "IONOS",
@@ -301,7 +301,7 @@
       "vcpu": 2,
       "ram_gb": 4,
       "disk_gb": 120,
-      "fetched_at": "2026-10-08T05:59:08Z"
+      "fetched_at": "2026-10-08T01:00:02Z"
     },
     {
       "provider": "IONOS",
@@ -313,7 +313,7 @@
       "vcpu": 4,
       "ram_gb": 8,
       "disk_gb": 240,
-      "fetched_at": "2026-10-08T05:59:08Z"
+      "fetched_at": "2026-10-08T01:00:02Z"
     },
     {
       "provider": "IONOS",
@@ -325,7 +325,7 @@
       "vcpu": 8,
       "ram_gb": 16,
       "disk_gb": 480,
-      "fetched_at": "2026-10-08T05:59:08Z"
+      "fetched_at": "2026-10-08T01:00:02Z"
     },
     {
       "provider": "IONOS",
@@ -337,7 +337,7 @@
       "vcpu": 12,
       "ram_gb": 24,
       "disk_gb": 720,
-      "fetched_at": "2026-10-08T05:59:08Z"
+      "fetched_at": "2026-10-08T01:00:02Z"
     },
     {
       "provider": "Hostwinds",
@@ -349,7 +349,7 @@
       "disk_gb": 30,
       "ram_gb": 1,
       "vcpu": 1,
-      "fetched_at": "2026-10-08T05:59:08Z"
+      "fetched_at": "2026-10-08T01:00:02Z"
     },
     {
       "provider": "Hostwinds",
@@ -361,7 +361,7 @@
       "disk_gb": 50,
       "ram_gb": 2,
       "vcpu": 1,
-      "fetched_at": "2026-10-08T05:59:08Z"
+      "fetched_at": "2026-10-08T01:00:02Z"
     },
     {
       "provider": "Hostwinds",
@@ -373,7 +373,7 @@
       "disk_gb": 75,
       "ram_gb": 4,
       "vcpu": 2,
-      "fetched_at": "2026-10-08T05:59:08Z"
+      "fetched_at": "2026-10-08T01:00:02Z"
     },
     {
       "provider": "Hostwinds",
@@ -385,7 +385,7 @@
       "disk_gb": 100,
       "ram_gb": 6,
       "vcpu": 2,
-      "fetched_at": "2026-10-08T05:59:08Z"
+      "fetched_at": "2026-10-08T01:00:02Z"
     },
     {
       "provider": "Hostwinds",
@@ -397,7 +397,7 @@
       "disk_gb": 150,
       "ram_gb": 8,
       "vcpu": 4,
-      "fetched_at": "2026-10-08T05:59:08Z"
+      "fetched_at": "2026-10-08T01:00:02Z"
     },
     {
       "provider": "Hostwinds",
@@ -409,7 +409,7 @@
       "disk_gb": 200,
       "ram_gb": 12,
       "vcpu": 4,
-      "fetched_at": "2026-10-08T05:59:08Z"
+      "fetched_at": "2026-10-08T01:00:02Z"
     },
     {
       "provider": "Hostwinds",
@@ -421,7 +421,7 @@
       "disk_gb": 300,
       "ram_gb": 16,
       "vcpu": 6,
-      "fetched_at": "2026-10-08T05:59:08Z"
+      "fetched_at": "2026-10-08T01:00:02Z"
     },
     {
       "provider": "Hostwinds",
@@ -433,7 +433,7 @@
       "disk_gb": 400,
       "ram_gb": 32,
       "vcpu": 8,
-      "fetched_at": "2026-10-08T05:59:08Z"
+      "fetched_at": "2026-10-08T01:00:02Z"
     },
     {
       "provider": "Hostwinds",
@@ -445,7 +445,7 @@
       "disk_gb": 500,
       "ram_gb": 64,
       "vcpu": 12,
-      "fetched_at": "2026-10-08T05:59:08Z"
+      "fetched_at": "2026-10-08T01:00:02Z"
     },
     {
       "provider": "Hostwinds",
@@ -457,7 +457,7 @@
       "disk_gb": 750,
       "ram_gb": 96,
       "vcpu": 16,
-      "fetched_at": "2026-10-08T05:59:08Z"
+      "fetched_at": "2026-10-08T01:00:02Z"
     }
   ]
 }
