@@ -582,5 +582,37 @@
         "url": "https://www.digitalocean.com/solutions/vps-hosting"
       }
     ]
+  },
+  {
+    "slug": "csv-2026-10-09-1",
+    "title": "Cheap VPS price table to download - Hostwinds plans, 2026-10-09 snapshot",
+    "gap": "csv",
+    "gap_note": "None of the benchmarked top pages for this term serves a downloadable comparison file. This entry hands over the file and shows the rows for one provider at a time.",
+    "answer": "10 tracked Hostwinds plans with a published price, 10 of them carry a per-GB figure; cheapest per GB is Unmanaged Linux VPS Hosting - 12 CPU / 64 GB RAM / 500 GB at 3.3592 USD/GB. The full {{priced_count}}-plan table is downloadable as CSV.",
+    "auto": true,
+    "published": "2026-10-09T01:00:30Z",
+    "body_html": "<h2>The file</h2><p><a class=\"cta\" href=\"/downloads/unit-price.csv\">Download unit-price.csv ({{priced_count}} plans, all providers)</a></p><h2>Hostwinds plans in the table</h2><div class=\"table-shell\"><table><thead><tr><th>Plan</th><th>Published price</th><th>RAM (GB)</th><th>vCPU</th><th>Price per GB</th></tr></thead><tbody><tr><td>Unmanaged Linux VPS Hosting - 1 CPU / 1 GB RAM / 30 GB</td><td class=\"price\">4.99 USD</td><td>1</td><td>1</td><td class=\"price\">4.9900 USD/GB</td></tr><tr><td>Unmanaged Linux VPS Hosting - 1 CPU / 2 GB RAM / 50 GB</td><td class=\"price\">9.99 USD</td><td>2</td><td>1</td><td class=\"price\">4.9950 USD/GB</td></tr><tr><td>Unmanaged Linux VPS Hosting - 2 CPU / 4 GB RAM / 75 GB</td><td class=\"price\">18.99 USD</td><td>4</td><td>2</td><td class=\"price\">4.7475 USD/GB</td></tr><tr><td>Unmanaged Linux VPS Hosting - 2 CPU / 6 GB RAM / 100 GB</td><td class=\"price\">28.99 USD</td><td>6</td><td>2</td><td class=\"price\">4.8317 USD/GB</td></tr><tr><td>Unmanaged Linux VPS Hosting - 4 CPU / 8 GB RAM / 150 GB</td><td class=\"price\">38.99 USD</td><td>8</td><td>4</td><td class=\"price\">4.8738 USD/GB</td></tr><tr><td>Unmanaged Linux VPS Hosting - 4 CPU / 12 GB RAM / 200 GB</td><td class=\"price\">49.99 USD</td><td>12</td><td>4</td><td class=\"price\">4.1658 USD/GB</td></tr><tr><td>Unmanaged Linux VPS Hosting - 6 CPU / 16 GB RAM / 300 GB</td><td class=\"price\">76.99 USD</td><td>16</td><td>6</td><td class=\"price\">4.8119 USD/GB</td></tr><tr><td>Unmanaged Linux VPS Hosting - 8 CPU / 32 GB RAM / 400 GB</td><td class=\"price\">124.99 USD</td><td>32</td><td>8</td><td class=\"price\">3.9059 USD/GB</td></tr><tr><td>Unmanaged Linux VPS Hosting - 12 CPU / 64 GB RAM / 500 GB</td><td class=\"price\">214.99 USD</td><td>64</td><td>12</td><td class=\"price\">3.3592 USD/GB</td></tr><tr><td>Unmanaged Linux VPS Hosting - 16 CPU / 96 GB RAM / 750 GB</td><td class=\"price\">328.99 USD</td><td>96</td><td>16</td><td class=\"price\">3.4270 USD/GB</td></tr></tbody></table></div><h2>Coverage</h2><p>{{with_ram_count}} of {{priced_count}} tracked plans publish both a price and a RAM figure. The rest keep an empty per-GB cell rather than a guess.</p>",
+    "sources": [
+      {
+        "label": "OVHcloud published price page",
+        "url": "https://www.ovhcloud.com/en/vps/"
+      },
+      {
+        "label": "netcup published price page",
+        "url": "https://www.netcup.com/en/server/vps"
+      },
+      {
+        "label": "BuyVM published price page",
+        "url": "https://buyvm.net/kvm-dedicated-server-slices/"
+      },
+      {
+        "label": "IONOS published price page",
+        "url": "https://www.ionos.com/servers/vps"
+      },
+      {
+        "label": "Hostwinds published price page",
+        "url": "https://www.hostwinds.com/vps/unmanaged-linux"
+      }
+    ]
   }
 ]
