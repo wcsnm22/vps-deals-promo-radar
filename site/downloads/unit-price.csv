@@ -1,26 +1,26 @@
 provider,plan,price,currency,ram_gb,vcpu,disk_gb,price_per_gb_ram,price_per_vcpu,unit_price_formula,source_url,fetched_at
-BuyVM,HIGH VOLUME VPS,30.0,USD,8,2,160,3.75,15.0,30.0 USD / 8 GB RAM,https://buyvm.net/kvm-dedicated-server-slices/,2026-10-10T12:27:28Z
-Hostwinds,Unmanaged Linux VPS Hosting - 1 CPU / 1 GB RAM / 30 GB,4.99,USD,1,1,30,4.99,4.99,4.99 USD / 1 GB RAM,https://www.hostwinds.com/vps/unmanaged-linux,2026-10-10T12:27:28Z
-Hostwinds,Unmanaged Linux VPS Hosting - 1 CPU / 2 GB RAM / 50 GB,9.99,USD,2,1,50,4.995,9.99,9.99 USD / 2 GB RAM,https://www.hostwinds.com/vps/unmanaged-linux,2026-10-10T12:27:28Z
-Hostwinds,Unmanaged Linux VPS Hosting - 2 CPU / 4 GB RAM / 75 GB,18.99,USD,4,2,75,4.7475,9.495,18.99 USD / 4 GB RAM,https://www.hostwinds.com/vps/unmanaged-linux,2026-10-10T12:27:28Z
-Hostwinds,Unmanaged Linux VPS Hosting - 2 CPU / 6 GB RAM / 100 GB,28.99,USD,6,2,100,4.8317,14.495,28.99 USD / 6 GB RAM,https://www.hostwinds.com/vps/unmanaged-linux,2026-10-10T12:27:28Z
-Hostwinds,Unmanaged Linux VPS Hosting - 4 CPU / 8 GB RAM / 150 GB,38.99,USD,8,4,150,4.8738,9.7475,38.99 USD / 8 GB RAM,https://www.hostwinds.com/vps/unmanaged-linux,2026-10-10T12:27:28Z
-Hostwinds,Unmanaged Linux VPS Hosting - 4 CPU / 12 GB RAM / 200 GB,49.99,USD,12,4,200,4.1658,12.4975,49.99 USD / 12 GB RAM,https://www.hostwinds.com/vps/unmanaged-linux,2026-10-10T12:27:28Z
-Hostwinds,Unmanaged Linux VPS Hosting - 6 CPU / 16 GB RAM / 300 GB,76.99,USD,16,6,300,4.8119,12.8317,76.99 USD / 16 GB RAM,https://www.hostwinds.com/vps/unmanaged-linux,2026-10-10T12:27:28Z
-Hostwinds,Unmanaged Linux VPS Hosting - 8 CPU / 32 GB RAM / 400 GB,124.99,USD,32,8,400,3.9059,15.6237,124.99 USD / 32 GB RAM,https://www.hostwinds.com/vps/unmanaged-linux,2026-10-10T12:27:28Z
-Hostwinds,Unmanaged Linux VPS Hosting - 12 CPU / 64 GB RAM / 500 GB,214.99,USD,64,12,500,3.3592,17.9158,214.99 USD / 64 GB RAM,https://www.hostwinds.com/vps/unmanaged-linux,2026-10-10T12:27:28Z
-Hostwinds,Unmanaged Linux VPS Hosting - 16 CPU / 96 GB RAM / 750 GB,328.99,USD,96,16,750,3.427,20.5619,328.99 USD / 96 GB RAM,https://www.hostwinds.com/vps/unmanaged-linux,2026-10-10T12:27:28Z
-IONOS,VPS S+,2.0,USD,2,1,60,1.0,2.0,2.0 USD / 2 GB RAM,https://www.ionos.com/servers/vps,2026-10-10T12:27:28Z
-IONOS,VPS M+,5.0,USD,4,2,120,1.25,2.5,5.0 USD / 4 GB RAM,https://www.ionos.com/servers/vps,2026-10-10T12:27:28Z
-IONOS,VPS L+,8.0,USD,8,4,240,1.0,2.0,8.0 USD / 8 GB RAM,https://www.ionos.com/servers/vps,2026-10-10T12:27:28Z
-IONOS,VPS XL+,14.0,USD,16,8,480,0.875,1.75,14.0 USD / 16 GB RAM,https://www.ionos.com/servers/vps,2026-10-10T12:27:28Z
-IONOS,VPS XXL+,20.0,USD,24,12,720,0.8333,1.6667,20.0 USD / 24 GB RAM,https://www.ionos.com/servers/vps,2026-10-10T12:27:28Z
-OVHcloud,VPS-1,4.54,USD,4,2,40,1.135,2.27,4.54 USD / 4 GB RAM,https://www.ovhcloud.com/en/vps/,2026-10-10T12:27:28Z
-OVHcloud,VPS-2,8.5,USD,8,4,75,1.0625,2.125,8.5 USD / 8 GB RAM,https://www.ovhcloud.com/en/vps/,2026-10-10T12:27:28Z
-OVHcloud,VPS-3,12.32,USD,12,6,100,1.0267,2.0533,12.32 USD / 12 GB RAM,https://www.ovhcloud.com/en/vps/,2026-10-10T12:27:28Z
-OVHcloud,VPS-4,23.37,USD,24,8,200,0.9738,2.9213,23.37 USD / 24 GB RAM,https://www.ovhcloud.com/en/vps/,2026-10-10T12:27:28Z
-netcup,VPS 500 G12.5,8.26,EUR,4,2,64,2.065,4.13,8.26 EUR / 4 GB RAM,https://www.netcup.com/en/server/vps,2026-10-10T12:27:28Z
-netcup,VPS 1000 G12.5,14.5,EUR,8,4,128,1.8125,3.625,14.5 EUR / 8 GB RAM,https://www.netcup.com/en/server/vps,2026-10-10T12:27:28Z
-netcup,VPS 2000 G12.5,26.92,EUR,16,8,256,1.6825,3.365,26.92 EUR / 16 GB RAM,https://www.netcup.com/en/server/vps,2026-10-10T12:27:28Z
-netcup,VPS 4000 G12.5,45.36,EUR,32,12,512,1.4175,3.78,45.36 EUR / 32 GB RAM,https://www.netcup.com/en/server/vps,2026-10-10T12:27:28Z
-netcup,VPS 8000 G12.5,67.11,EUR,64,16,1024,1.0486,4.1944,67.11 EUR / 64 GB RAM,https://www.netcup.com/en/server/vps,2026-10-10T12:27:28Z
+BuyVM,HIGH VOLUME VPS,30.0,USD,8,2,160,3.75,15.0,30.0 USD / 8 GB RAM,https://buyvm.net/kvm-dedicated-server-slices/,2026-10-10T21:40:35Z
+Hostwinds,Unmanaged Linux VPS Hosting - 1 CPU / 1 GB RAM / 30 GB,4.99,USD,1,1,30,4.99,4.99,4.99 USD / 1 GB RAM,https://www.hostwinds.com/vps/unmanaged-linux,2026-10-10T21:40:35Z
+Hostwinds,Unmanaged Linux VPS Hosting - 1 CPU / 2 GB RAM / 50 GB,9.99,USD,2,1,50,4.995,9.99,9.99 USD / 2 GB RAM,https://www.hostwinds.com/vps/unmanaged-linux,2026-10-10T21:40:35Z
+Hostwinds,Unmanaged Linux VPS Hosting - 2 CPU / 4 GB RAM / 75 GB,18.99,USD,4,2,75,4.7475,9.495,18.99 USD / 4 GB RAM,https://www.hostwinds.com/vps/unmanaged-linux,2026-10-10T21:40:35Z
+Hostwinds,Unmanaged Linux VPS Hosting - 2 CPU / 6 GB RAM / 100 GB,28.99,USD,6,2,100,4.8317,14.495,28.99 USD / 6 GB RAM,https://www.hostwinds.com/vps/unmanaged-linux,2026-10-10T21:40:35Z
+Hostwinds,Unmanaged Linux VPS Hosting - 4 CPU / 8 GB RAM / 150 GB,38.99,USD,8,4,150,4.8738,9.7475,38.99 USD / 8 GB RAM,https://www.hostwinds.com/vps/unmanaged-linux,2026-10-10T21:40:35Z
+Hostwinds,Unmanaged Linux VPS Hosting - 4 CPU / 12 GB RAM / 200 GB,49.99,USD,12,4,200,4.1658,12.4975,49.99 USD / 12 GB RAM,https://www.hostwinds.com/vps/unmanaged-linux,2026-10-10T21:40:35Z
+Hostwinds,Unmanaged Linux VPS Hosting - 6 CPU / 16 GB RAM / 300 GB,76.99,USD,16,6,300,4.8119,12.8317,76.99 USD / 16 GB RAM,https://www.hostwinds.com/vps/unmanaged-linux,2026-10-10T21:40:35Z
+Hostwinds,Unmanaged Linux VPS Hosting - 8 CPU / 32 GB RAM / 400 GB,124.99,USD,32,8,400,3.9059,15.6237,124.99 USD / 32 GB RAM,https://www.hostwinds.com/vps/unmanaged-linux,2026-10-10T21:40:35Z
+Hostwinds,Unmanaged Linux VPS Hosting - 12 CPU / 64 GB RAM / 500 GB,214.99,USD,64,12,500,3.3592,17.9158,214.99 USD / 64 GB RAM,https://www.hostwinds.com/vps/unmanaged-linux,2026-10-10T21:40:35Z
+Hostwinds,Unmanaged Linux VPS Hosting - 16 CPU / 96 GB RAM / 750 GB,328.99,USD,96,16,750,3.427,20.5619,328.99 USD / 96 GB RAM,https://www.hostwinds.com/vps/unmanaged-linux,2026-10-10T21:40:35Z
+IONOS,VPS S+,2.0,USD,2,1,60,1.0,2.0,2.0 USD / 2 GB RAM,https://www.ionos.com/servers/vps,2026-10-10T21:40:35Z
+IONOS,VPS M+,5.0,USD,4,2,120,1.25,2.5,5.0 USD / 4 GB RAM,https://www.ionos.com/servers/vps,2026-10-10T21:40:35Z
+IONOS,VPS L+,8.0,USD,8,4,240,1.0,2.0,8.0 USD / 8 GB RAM,https://www.ionos.com/servers/vps,2026-10-10T21:40:35Z
+IONOS,VPS XL+,14.0,USD,16,8,480,0.875,1.75,14.0 USD / 16 GB RAM,https://www.ionos.com/servers/vps,2026-10-10T21:40:35Z
+IONOS,VPS XXL+,20.0,USD,24,12,720,0.8333,1.6667,20.0 USD / 24 GB RAM,https://www.ionos.com/servers/vps,2026-10-10T21:40:35Z
+OVHcloud,VPS-1,4.54,USD,4,2,40,1.135,2.27,4.54 USD / 4 GB RAM,https://www.ovhcloud.com/en/vps/,2026-10-10T21:40:35Z
+OVHcloud,VPS-2,8.5,USD,8,4,75,1.0625,2.125,8.5 USD / 8 GB RAM,https://www.ovhcloud.com/en/vps/,2026-10-10T21:40:35Z
+OVHcloud,VPS-3,12.32,USD,12,6,100,1.0267,2.0533,12.32 USD / 12 GB RAM,https://www.ovhcloud.com/en/vps/,2026-10-10T21:40:35Z
+OVHcloud,VPS-4,23.37,USD,24,8,200,0.9738,2.9213,23.37 USD / 24 GB RAM,https://www.ovhcloud.com/en/vps/,2026-10-10T21:40:35Z
+netcup,VPS 500 G12.5,8.26,EUR,4,2,64,2.065,4.13,8.26 EUR / 4 GB RAM,https://www.netcup.com/en/server/vps,2026-10-10T21:40:35Z
+netcup,VPS 1000 G12.5,14.5,EUR,8,4,128,1.8125,3.625,14.5 EUR / 8 GB RAM,https://www.netcup.com/en/server/vps,2026-10-10T21:40:35Z
+netcup,VPS 2000 G12.5,26.92,EUR,16,8,256,1.6825,3.365,26.92 EUR / 16 GB RAM,https://www.netcup.com/en/server/vps,2026-10-10T21:40:35Z
+netcup,VPS 4000 G12.5,45.36,EUR,32,12,512,1.4175,3.78,45.36 EUR / 32 GB RAM,https://www.netcup.com/en/server/vps,2026-10-10T21:40:35Z
+netcup,VPS 8000 G12.5,67.11,EUR,64,16,1024,1.0486,4.1944,67.11 EUR / 64 GB RAM,https://www.netcup.com/en/server/vps,2026-10-10T21:40:35Z
