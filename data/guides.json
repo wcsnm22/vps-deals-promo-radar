@@ -670,5 +670,37 @@
         "url": "https://www.digitalocean.com/solutions/vps-hosting"
       }
     ]
+  },
+  {
+    "slug": "csv-2026-10-12-1",
+    "title": "Cheap VPS price table to download - IONOS plans, 2026-10-12 snapshot",
+    "gap": "csv",
+    "gap_note": "None of the benchmarked top pages for this term serves a downloadable comparison file. This entry hands over the file and shows the rows for one provider at a time.",
+    "answer": "5 tracked IONOS plans with a published price, 5 of them carry a per-GB figure; cheapest per GB is VPS XXL+ at 0.8333 USD/GB. The full {{priced_count}}-plan table is downloadable as CSV.",
+    "auto": true,
+    "published": "2026-10-12T01:00:24Z",
+    "body_html": "<h2>The file</h2><p><a class=\"cta\" href=\"/downloads/unit-price.csv\">Download unit-price.csv ({{priced_count}} plans, all providers)</a></p><h2>IONOS plans in the table</h2><div class=\"table-shell\"><table><thead><tr><th>Plan</th><th>Published price</th><th>RAM (GB)</th><th>vCPU</th><th>Price per GB</th></tr></thead><tbody><tr><td>VPS S+</td><td class=\"price\">2.0 USD</td><td>2</td><td>1</td><td class=\"price\">1.0000 USD/GB</td></tr><tr><td>VPS M+</td><td class=\"price\">5.0 USD</td><td>4</td><td>2</td><td class=\"price\">1.2500 USD/GB</td></tr><tr><td>VPS L+</td><td class=\"price\">8.0 USD</td><td>8</td><td>4</td><td class=\"price\">1.0000 USD/GB</td></tr><tr><td>VPS XL+</td><td class=\"price\">14.0 USD</td><td>16</td><td>8</td><td class=\"price\">0.8750 USD/GB</td></tr><tr><td>VPS XXL+</td><td class=\"price\">20.0 USD</td><td>24</td><td>12</td><td class=\"price\">0.8333 USD/GB</td></tr></tbody></table></div><h2>Coverage</h2><p>{{with_ram_count}} of {{priced_count}} tracked plans publish both a price and a RAM figure. The rest keep an empty per-GB cell rather than a guess.</p>",
+    "sources": [
+      {
+        "label": "OVHcloud published price page",
+        "url": "https://www.ovhcloud.com/en/vps/"
+      },
+      {
+        "label": "netcup published price page",
+        "url": "https://www.netcup.com/en/server/vps"
+      },
+      {
+        "label": "BuyVM published price page",
+        "url": "https://buyvm.net/kvm-dedicated-server-slices/"
+      },
+      {
+        "label": "IONOS published price page",
+        "url": "https://www.ionos.com/servers/vps"
+      },
+      {
+        "label": "Hostwinds published price page",
+        "url": "https://www.hostwinds.com/vps/unmanaged-linux"
+      }
+    ]
   }
 ]
