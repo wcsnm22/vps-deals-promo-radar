@@ -702,5 +702,37 @@
         "url": "https://www.hostwinds.com/vps/unmanaged-linux"
       }
     ]
+  },
+  {
+    "slug": "unitprice-2026-10-13-1",
+    "title": "Cheapest VPS per GB of RAM: netcup - 2026-10-13 ranking from 5 computable plans",
+    "gap": "unitprice",
+    "gap_note": "The benchmarked top pages list headline prices without breaking them down per unit. This entry divides only the numbers the provider itself published.",
+    "answer": "netcup: cheapest RAM per unit is VPS 8000 G12.5 at 1.0486 EUR per GB (67.11 EUR / 64 GB), computed from the published price only.",
+    "auto": true,
+    "published": "2026-10-13T01:00:23Z",
+    "body_html": "<h2>netcup plans ranked by price per GB</h2><div class=\"table-shell\"><table><thead><tr><th>#</th><th>Plan</th><th>Published price</th><th>RAM (GB)</th><th>Price per GB</th></tr></thead><tbody><tr><td>1</td><td>VPS 8000 G12.5</td><td class=\"price\">67.11 EUR</td><td>64</td><td class=\"price\">1.0486 EUR/GB</td></tr><tr><td>2</td><td>VPS 4000 G12.5</td><td class=\"price\">45.36 EUR</td><td>32</td><td class=\"price\">1.4175 EUR/GB</td></tr><tr><td>3</td><td>VPS 2000 G12.5</td><td class=\"price\">26.92 EUR</td><td>16</td><td class=\"price\">1.6825 EUR/GB</td></tr><tr><td>4</td><td>VPS 1000 G12.5</td><td class=\"price\">14.5 EUR</td><td>8</td><td class=\"price\">1.8125 EUR/GB</td></tr><tr><td>5</td><td>VPS 500 G12.5</td><td class=\"price\">8.26 EUR</td><td>4</td><td class=\"price\">2.0650 EUR/GB</td></tr></tbody></table></div><h2>How to recompute</h2><p>Every per-GB cell equals the published monthly price divided by the RAM figure printed beside it. Plans without a published RAM figure are excluded instead of estimated.</p>",
+    "sources": [
+      {
+        "label": "OVHcloud published price page",
+        "url": "https://www.ovhcloud.com/en/vps/"
+      },
+      {
+        "label": "netcup published price page",
+        "url": "https://www.netcup.com/en/server/vps"
+      },
+      {
+        "label": "BuyVM published price page",
+        "url": "https://buyvm.net/kvm-dedicated-server-slices/"
+      },
+      {
+        "label": "IONOS published price page",
+        "url": "https://www.ionos.com/servers/vps"
+      },
+      {
+        "label": "Hostwinds published price page",
+        "url": "https://www.hostwinds.com/vps/unmanaged-linux"
+      }
+    ]
   }
 ]
