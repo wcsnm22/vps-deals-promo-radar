@@ -1,4 +1,0 @@
-User-agent: *
-Allow: /
-
-Sitemap: https://vpsdealsradar.com/sitemap.xml

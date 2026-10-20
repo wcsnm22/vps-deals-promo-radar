@@ -171,6 +171,27 @@ def fetch(url: str) -> tuple[int, str, str]:
         return 0, "", f"{type(exc).__name__}: {exc}"[:120]
 
 
+def fetch_retry(url: str, attempts: int = 3) -> tuple[int, str, str]:
+    """带重试的抓取：一次网络抖动不该让一家厂商整批归零。
+
+    ::RULE{只重试"没拿到内容"⇒连接错误 / 5xx / 空响应}，
+    4xx 不重试——那是对方明确不给（robots 之外的原因也算），重试等于骚扰。
+    2026-10-20 的事故：一次 netcup 抓取失败让当天 30 档变成 20 档，
+    guard 判定"整批下架"直接拦住发布，当天一篇没发。
+    """
+    status, body, error = 0, "", ""
+    for attempt in range(1, attempts + 1):
+        status, body, error = fetch(url)
+        if body:
+            return status, body, error
+        if 400 <= status < 500:
+            return status, body, error
+        if attempt < attempts:
+            print(f"[retry] attempt {attempt}/{attempts} for {url}: {error or f'HTTP {status}'}")
+            time.sleep(4)
+    return status, body, error
+
+
 # ------------------------------------------------------------------ 解析层
 
 BLOCK_TAGS = (
@@ -854,6 +875,17 @@ def main() -> int:
     offers: list[dict] = []
     report: list[dict] = []
 
+    # 上一轮抓到的数据：只在一家厂商这次连内容都没拿到时兜底。
+    # 每档都带 stale=True 与原来的 fetched_at，页面上仍然是那次真实读取的时间，
+    # 不会被写成"今天刚读过"。
+    previous: dict[str, list[dict]] = {}
+    if OUT_PATH.exists():
+        try:
+            for record in json.loads(OUT_PATH.read_text(encoding="utf-8")).get("offers", []):
+                previous.setdefault(record.get("provider", ""), []).append(record)
+        except (json.JSONDecodeError, OSError):
+            previous = {}
+
     for provider in config["providers"]:
         url = provider["deals_url"]
         allowed, why = robots_allows(url)
@@ -875,10 +907,29 @@ def main() -> int:
             print(f"[skip] {provider['name']}: {why}")
             continue
 
-        status, body, error = fetch(url)
+        status, body, error = fetch_retry(url)
         row["http"] = status
         if error or not body:
             row["note"] = error or "empty response"
+            carried = previous.get(provider["name"], [])
+            if carried:
+                read_at = carried[0].get("fetched_at", "")
+                for record in carried:
+                    keep = dict(record)
+                    keep["stale"] = True
+                    keep["stale_reason"] = row["note"]
+                    offers.append(keep)
+                row["offers"] = len(carried)
+                row["priced"] = sum(1 for record in carried if "price" in record)
+                row["stale_carry"] = len(carried)
+                row["note"] = (
+                    f"Every attempt to re-read this page failed ({row['note']}). The {len(carried)} plan(s) "
+                    f"below are the ones read at {read_at}: kept and marked stale rather than dropped, "
+                    f"and nothing here is estimated."
+                )
+                report.append(row)
+                print(f"[warn] {provider['name']}: {row['note']}")
+                continue
             report.append(row)
             print(f"[fail] {provider['name']}: {row['note']}")
             continue

@@ -48,11 +48,13 @@ jobs:
       - name: Check the written pages
         run: python content_check.py
 
-      - name: Commit refreshed data and site
+      # site/ 是构建产物，已移出版本库：两边各自重建、只提交数据，
+      # 这样本机与 Actions 的提交不会在生成的 HTML 上反复冲突。
+      - name: Commit refreshed data
         run: |
           git config user.name "vps-deals-radar"
           git config user.email "vps-deals-radar@users.noreply.github.com"
-          git add data/offers.json site
+          git add data/offers.json
           if git diff --staged --quiet; then
             echo "no data change this run"
           else
@@ -60,6 +62,13 @@ jobs:
             git push
           fi
 
-      - name: Deploy to Cloudflare Pages
-        if: ${{ env.CLOUDFLARE_API_TOKEN != '' }}
+      # 2026-10-20 的事故：这一行以前是 production 部署，每 6 小时用 origin/main 的旧内容
+      # 把本机刚发的页面盖回去（线上指南一度只剩 24 篇）。根因是本机 git push 凭据失效，
+      # origin 落后了 5 个提交，Actions 却照样发 production。
+      # 现在项目里的生产分支是 `production`，只由本机的日更任务发；这里 main 分支的部署
+      # 落在预览地址上，留作"这套内容在干净环境里也能构建出来"的冒烟测试。
+      # 另外必须带 success()：以前只有 token 判断，前面的 push 失败也会照发，等于发布一份
+      # 没进仓库的构建。
+      - name: Deploy to Cloudflare Pages (preview)
+        if: ${{ success() && env.CLOUDFLARE_API_TOKEN != '' }}
         run: npx --yes wrangler@4 pages deploy site --project-name=vps-deals-promo-radar --branch=main --commit-dirty=true

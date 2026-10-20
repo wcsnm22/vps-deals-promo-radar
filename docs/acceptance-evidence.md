@@ -169,3 +169,67 @@ Search Console 里那条旧的富媒体结果条目在重新抓取后会消失�
 其余 23 条"我们没有写过"的词里，能自动撑住的还有 `best cheap vps` / `best vps`（price 类），
 其余留在队列里。
 
+## 8. 事故记录：文章看起来"不更新了"（2026-10-20）
+
+用户的原话是"文章为什么不自动更新了，更新啊"。查下来**日更任务每一天都跑成功了、页面也的确发出去了**，
+是另一个每 6 小时跑一次的任务把它们盖回了旧版。
+
+### 8.1 现象
+
+| 看的地方 | 当时的事实 |
+| --- | --- |
+| 计划任务 `vps-deals-daily` | 09:00 正常触发，`LastTaskResult=1`，NextRun 次日 09:00 |
+| `data/daily-log.jsonl` | 从 2026-10-18 起每天 `status: "failed"`，但 `deploy_exit=0`、`verify_exit=0`，只有 `git_exit=1` |
+| 失败原文 | `git push: fatal: could not read Username for 'https://github.com': No such file or directory` |
+| 2026-10-14 ~ 10-17 | 完全没有日志行（那四天没跑） |
+| 本地 | `data/guides.json` 30 篇、`site/guide/*.html` 30 个，本地 `main` 领先 origin 5 个提交 |
+| 线上 `/guide` | 只有 24 条链接；最新三篇 `/guide/steps-2026-10-20-1`、`/guide/unitprice-2026-10-19-1`、`/guide/csv-2026-10-18-1` 全部 404 |
+
+也就是说"本机发了、线上没有"，而且线上还变**少**了 6 篇。
+
+### 8.2 根因
+
+1. 本机 `git push` 从 10-18 起失效：`credential.helper=manager` 在无 TTY 的计划任务里弹不出登录窗口，
+   `gh auth status` 报 `The token in default is invalid`，也没有 SSH 密钥。于是 origin/main 停在 10-17 的版本。
+2. `.github/workflows/update.yml` 的 cron 是 `17 */6 * * *`，它 checkout 的是 **origin/main（旧）**，
+   抓数据、构建、提交 `data: refresh …`，然后 `wrangler pages deploy site --branch=main`。
+   `main` 当时就是生产分支，于是每 6 小时用旧内容覆盖一次 production。
+   `wrangler pages deployment list` 里 12:45 那次 Production 部署的 source commit `68c6aec`
+   在本地根本不存在——那是 Actions 自己造的刷新提交，本地不知道。
+3. 还有一个放大问题：deploy 步骤的条件写成 `if: ${{ env.CLOUDFLARE_API_TOKEN != '' }}`，
+   这覆盖了隐式的 `success()`，于是前面 push 失败它也照发——发布了一份没进仓库的构建。
+
+### 8.3 修法
+
+| 改动 | 位置 | 为什么这样做 |
+| --- | --- | --- |
+| 生产分支从 `main` 改成 `production` | Cloudflare Pages 项目设置（API `PATCH /accounts/<id>/pages/projects/vps-deals-promo-radar`，`{"production_branch":"production"}` → 200） | 让 Actions 在 `main` 上的部署落到**预览地址**，production 只由本机日更发。域名 `vpsdealsradar.com` 不变 |
+| 部署带 `--branch=production` | `daily.py::deploy()`（可用 `PAGES_BRANCH` 覆盖） | 本机发的就是生产 |
+| deploy 条件加 `success()`，改名 preview | `.github/workflows/update.yml` | 前面失败就不发布；preview 只当"干净环境也能构建"的冒烟测试 |
+| `site/` 移出版本库 | `.gitignore` + `git rm -r --cached site` + `daily.py` 只 `git add data` | 生成物不该被两边各提交一次，那是冲突与覆盖的来源 |
+| 抓取失败不拖停发布 | `scraper.py::fetch_retry()` + `main()` 的沿用上次结果 | 见 8.5 |
+
+修完立刻恢复：`python daily.py`（`2026-10-20T05:45:56Z`）全绿，
+`offers 30 / priced 30 / guides 30 / guard_exit 0 / deploy_exit 0 / verify_exit 0`，
+只有 `git_exit 1`（凭据待处理）。线上复核：`线上 404 的指南页: 0`，`/guide` 重新是 30 篇。
+首页与本地 diff 只差 Cloudflare 自动注入的 `beacon.min.js` 一行——之前以为"线上是旧版"，一半是这条脚本的噪声。
+
+### 8.4 还没解决的
+
+- **push 凭据**：需要一次 `gh auth login -h github.com`（或者给一个 PAT）。在此之前本机提交只累积在本地。
+  站点内容不受影响，但 `data/daily-log.jsonl` 会一直记 `status: "failed"`——这是**诚实的失败**，不是站点坏了。
+
+### 8.5 顺带修的第二件事：一次抓取失败不该让当天没页
+
+修的过程中复现了一次：netcup 那一页抓取超时 → `guard.py` 报
+`[fail] scrape regressed, provider(s) lost every offer: netcup (10 -> 0)` → 当天不发页。
+netcup 页面本身是好的，重试就恢复，但这说明"一次网络抖动 = 断更一天"。
+
+- `fetch_retry(url, attempts=3)`：只对"没拿到内容"（连接错误 / 5xx / 空响应）重试，`4xx` 立即返回，
+  不反复打扰对方站点，间隔 4 秒。
+- 彻底失败时**沿用上一次成功读到的数据**，每档标 `stale`，`fetched_at` 保持原值，
+  并在厂商页写明：`Every attempt to re-read this page failed (<错误>). The N plan(s) below are the ones read at <时间>: kept and marked stale rather than dropped, and nothing here is estimated.`
+- 有意的边界：`guard.py` 只比"某家从有到无"，兜底后计数不变就放行；**真·整批下架**（页面读到了但抽不出任何套餐）
+  仍然会被拦。兜底不等于放水——旧数据标了 stale，没有变成估算。
+- 验证（monkeypatch 让 netcup 必失败）：`总档数: 30 / netcup 档数: 10 | stale 标记: 10`，
+  `netcup 保留的 fetched_at: ['2026-10-20T04:45:15Z']`，脚本用完即删。

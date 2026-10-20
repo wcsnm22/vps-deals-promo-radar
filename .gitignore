@@ -3,3 +3,4 @@ __pycache__/
 .venv/
 .wrangler/
 data/daily-run.log
+site/

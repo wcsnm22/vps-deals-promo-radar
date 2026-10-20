@@ -49,6 +49,11 @@ def deploy() -> tuple[int, str]:
 
     发布用的 wrangler 走 node 入口：wrangler.ps1 会被 PowerShell 执行策略拦住。
     想只重建不发线上，设 PAGES_DEPLOY=0 再跑。
+
+    ::RULE{本机是唯一的生产发布者⇒必须带 --branch=production}
+    2026-10-20 的事故：GitHub Actions 每 6 小时用 origin/main 的旧内容发一次
+    production，把本机刚发的页面盖回旧版（线上指南只剩 24 篇）。所以项目里的
+    生产分支改名成 production，Actions 那个 main 分支的部署只落在预览地址上。
     """
     import os
 
@@ -58,9 +63,10 @@ def deploy() -> tuple[int, str]:
     if not wrangler.exists():
         return 1, f"[fail] wrangler not found at {wrangler}"
     node = "node.exe"
+    branch = os.environ.get("PAGES_BRANCH", "production")
     proc = subprocess.run(
         [node, str(wrangler), "pages", "deploy", "site",
-         "--project-name=vps-deals-promo-radar", "--commit-dirty=true"],
+         "--project-name=vps-deals-promo-radar", f"--branch={branch}", "--commit-dirty=true"],
         cwd=str(ROOT),
         capture_output=True,
         text=True,
@@ -95,7 +101,10 @@ def git_sync(ran_tag: str) -> tuple[int, str]:
         )
         return proc.returncode, (proc.stdout or "") + (proc.stderr or "")
 
-    add_code, add_out = git("add", "data", "site")
+    # site/ 是构建产物、已移出版本库（.gitignore 里有）：两边各自重建，
+    # 只提交数据，提交历史里就不会再出现"本机与 Actions 改同一个 HTML"的冲突。
+    # 2026-10-20 之前 site/ 是被跟踪的，那次 Actions 拿旧 commit 覆盖线上就跟这个有关。
+    add_code, add_out = git("add", "data")
     if add_code != 0:
         return 1, "[fail] git add: " + " ".join(add_out.strip().splitlines()[-1:])
     staged_code, _ = git("diff", "--staged", "--quiet")  # 0=无改动 1=有改动
