@@ -878,5 +878,37 @@
         "url": "https://www.hostwinds.com/vps/unmanaged-linux"
       }
     ]
+  },
+  {
+    "slug": "unitprice-2026-10-22-1",
+    "title": "Cheapest VPS per GB of RAM: IONOS - 2026-10-22 ranking from 5 computable plans",
+    "gap": "unitprice",
+    "gap_note": "The benchmarked top pages list headline prices without breaking them down per unit. This entry divides only the numbers the provider itself published.",
+    "answer": "IONOS: cheapest RAM per unit is VPS XXL+ at 0.8333 USD per GB (20.0 USD / 24 GB), computed from the published price only.",
+    "auto": true,
+    "published": "2026-10-22T01:03:22Z",
+    "body_html": "<h2>IONOS plans ranked by price per GB</h2><div class=\"table-shell\"><table><thead><tr><th>#</th><th>Plan</th><th>Published price</th><th>RAM (GB)</th><th>Price per GB</th></tr></thead><tbody><tr><td>1</td><td>VPS XXL+</td><td class=\"price\">20.0 USD</td><td>24</td><td class=\"price\">0.8333 USD/GB</td></tr><tr><td>2</td><td>VPS XL+</td><td class=\"price\">14.0 USD</td><td>16</td><td class=\"price\">0.8750 USD/GB</td></tr><tr><td>3</td><td>VPS S+</td><td class=\"price\">2.0 USD</td><td>2</td><td class=\"price\">1.0000 USD/GB</td></tr><tr><td>4</td><td>VPS L+</td><td class=\"price\">8.0 USD</td><td>8</td><td class=\"price\">1.0000 USD/GB</td></tr><tr><td>5</td><td>VPS M+</td><td class=\"price\">5.0 USD</td><td>4</td><td class=\"price\">1.2500 USD/GB</td></tr></tbody></table></div><h2>How to recompute</h2><p>Every per-GB cell equals the published monthly price divided by the RAM figure printed beside it. Plans without a published RAM figure are excluded instead of estimated.</p>",
+    "sources": [
+      {
+        "label": "OVHcloud published price page",
+        "url": "https://www.ovhcloud.com/en/vps/"
+      },
+      {
+        "label": "netcup published price page",
+        "url": "https://www.netcup.com/en/server/vps"
+      },
+      {
+        "label": "BuyVM published price page",
+        "url": "https://buyvm.net/kvm-dedicated-server-slices/"
+      },
+      {
+        "label": "IONOS published price page",
+        "url": "https://www.ionos.com/servers/vps"
+      },
+      {
+        "label": "Hostwinds published price page",
+        "url": "https://www.hostwinds.com/vps/unmanaged-linux"
+      }
+    ]
   }
 ]
