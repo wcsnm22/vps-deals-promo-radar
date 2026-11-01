@@ -4,6 +4,8 @@
 # ::RULE{每次都要写一行日志⇒日期 篇数 缺口 结果 地址}
 # ::RULE{通过自查就提交并推回 origin⇒本地和 Actions 永远构建同一棵树 不许只留在本地}
 # ::RULE{某家 provider 整批抓挂⇒本轮判 failed 不提交不发布 留待下次重抓 不许把缩小一半的数据集当成当天的事实}
+# ::RULE{发布前确认 site/ 产物完整⇒缺首页或 sitemap 就不发 线上留上一版}
+# ::RULE{git 动作不许改 site/⇒合并前后内容一致 构建产物不归版本库管}
 # ::RULE{日志的 status⇒覆盖抓取 建模 自查 退化守卫 提交 发布 核对每一步 任一步非零就记 failed 不许只报前半段}
 # ::BOUNDARY{never:编价格 编索引数|scope:file}
 """每天的自动任务：抓公开页 -> 重建站点 -> 更新指南栏 -> 写日志。
@@ -12,9 +14,13 @@
 """
 from __future__ import annotations
 
+import contextlib
 import os
+import re
+import shutil
 import subprocess
 import sys
+import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -30,6 +36,18 @@ os.environ["PYTHONIOENCODING"] = "utf-8"
 ROOT = Path(__file__).resolve().parent
 LOG_DIR = ROOT / "data"
 LOG_PATH = LOG_DIR / "daily-log.jsonl"
+# 构建产物目录。它是 .gitignore 排除的、却又躺在工作区里，凡是动 git 的地方
+# 都要先把它挪开——理由见 git_sync()。
+SITE_DIR = ROOT / "site"
+
+# push 失败的两种原因长得不一样，处理方式也相反：远端抢先（可合并重试）与
+# 凭据失效（合并无用，只会白搅工作区）。靠 git 的输出把后者认出来。
+AUTH_FAILURE_RE = re.compile(
+    r"could not read Username|Authentication failed|Permission denied \(publickey\)"
+    r"|terminal prompts disabled|failed to execute prompt script|invalid credentials"
+    r"|Support for password authentication was removed",
+    re.I,
+)
 
 
 def run(script: str) -> tuple[int, str]:
@@ -88,6 +106,16 @@ def git_sync(ran_tag: str) -> tuple[int, str]:
 
     推不上去（远端刚被 Actions 刷新过等竞态）就先合一下再推；还不行就照实返回
     非零记进日志，内容留在本地，下一次运行重试——不为了同步去改写远端历史。
+
+    ::RULE{git 的合并与回退不许碰 site/⇒动手前把它挪开 收工后再挪回来}
+    site/ 已被 .gitignore 排除，但仍躺在工作区里，而 origin/main 上还留着历史
+    提交过的同名文件（site/ 是 2026-10-20 之后才移出版本库的）。于是
+    `git merge origin/main` 会把这些文件判成 "deleted in HEAD / modified in
+    origin/main" 的 modify-delete 冲突并写回工作区；紧接着的 `git merge --abort`
+    按索引恢复，就把**整个 site/ 删掉**——2026-11-01 的事故正是如此：本轮构建的
+    首页、sitemap、compare、provider 页全没了，只剩 robots.txt 和 assets/，
+    发布出去就是一个空站（线上首页 404）。挪开 site/ 再动 git，冲突不再产生，
+    构建产物也绝不会被版本库操作牵连。
     """
 
     def git(*args: str) -> tuple[int, str]:
@@ -115,21 +143,116 @@ def git_sync(ran_tag: str) -> tuple[int, str]:
         return 1, "[fail] git commit: " + " ".join(commit_out.strip().splitlines()[-1:])
     push_code, push_out = git("push", "origin", "main")
     if push_code != 0:
+        # 先分清"推不上去"是哪一种。凭据失效时合并毫无意义——合完再推还是失败，
+        # 却白白把远端那棵树合进本地、把工作区搅一遍。2026-10 那阵子本机凭据就
+        # 一直是坏的（gh 的 token 失效），于是每天都白走一遍合并，最后把 site/
+        # 删没了。凭据问题照实记进日志、原地返回，一个字都不改本地。
+        if AUTH_FAILURE_RE.search(push_out):
+            return 1, "[fail] git push: credentials unavailable; not merging (fix git auth): " + \
+                " ".join(push_out.strip().splitlines()[-1:])
         # 远端被 Actions 抢先刷新：先把远端合进来再推一次。
         # 冲突一律取远端版本（-X theirs）——远端那棵是同一套流水线刚发过的树，
         # 而"抢先"本身就说明它比本地新。反过来用 -X ours 会拿本地这份去覆盖，
         # 上一次就是这么把一整家 provider 从 30 条压成 20 条的。
-        git("fetch", "origin")
-        merge_code, merge_out = git("merge", "origin/main", "-X", "theirs", "--no-edit")
-        if merge_code != 0:
-            # 合不下去就把仓库退回合并前，别留一个停在半路的 MERGE_HEAD：
-            # 那个状态会让下一次运行的 git add/commit 全部失败。
-            git("merge", "--abort")
-            return 1, "[fail] merge after push race: " + " ".join(merge_out.strip().splitlines()[-1:])
-        push_code, push_out = git("push", "origin", "main")
-        if push_code != 0:
-            return 1, "[fail] git push: " + " ".join(push_out.strip().splitlines()[-1:])
+        #
+        # 合并前把 site/ 挪到工作区外：否则 origin/main 上的旧 site/ 文件会以
+        # modify-delete 冲突的形式写回工作区，随后的 --abort 会连整个 site/ 一起删掉。
+        with shelved_site():
+            git("fetch", "origin")
+            merge_code, merge_out = git("merge", "origin/main", "-X", "theirs", "--no-edit")
+            if merge_code != 0:
+                # -X theirs 只解决"两边都改了同一段内容"，解决不了 modify-delete：
+                # HEAD 已把 site/ 移出版本库，origin/main 上还留着历史提交过的同名
+                # 文件，于是每一个都判成冲突。这些路径是构建产物，正确的解法就是
+                # "删掉"——保留远端那份等于把已移出版本库的目录又塞回去，下一轮
+                # 又要再冲突一次。只自动处理 site/ 下的；别的路径一律不猜。
+                _, unmerged = git("diff", "--name-only", "--diff-filter=U")
+                site_conflicts = [
+                    line.strip() for line in unmerged.splitlines()
+                    if line.strip().startswith("site/")
+                ]
+                if site_conflicts:
+                    git("rm", "-f", "--quiet", "--", *site_conflicts)
+                    commit_code, commit_out = git("commit", "--no-edit")
+                    if commit_code != 0:
+                        git("merge", "--abort")
+                        return 1, "[fail] merge commit after push race: " + " ".join(
+                            commit_out.strip().splitlines()[-1:])
+                    merge_out = ""
+                # 还有别处没合上就退回合并前：别留一个停在半路的 MERGE_HEAD，
+                # 那个状态会让下一次运行的 git add/commit 全部失败。
+                _, still = git("diff", "--name-only", "--diff-filter=U")
+                if still.strip():
+                    git("merge", "--abort")
+                    return 1, "[fail] merge after push race: " + " ".join(
+                        (merge_out or still).strip().splitlines()[-1:])
+            push_code, push_out = git("push", "origin", "main")
+            if push_code != 0:
+                return 1, "[fail] git push: " + " ".join(push_out.strip().splitlines()[-1:])
     return 0, "[ok] committed and pushed to origin/main"
+
+
+@contextlib.contextmanager
+def shelved_site():
+    """把 site/ 临时挪出工作区，退出时原样搬回。
+
+    用"移动"而不是"复制+删除"：site/ 里都是本次刚构建好的页面，挪回来必须是
+    逐字节相同的那一份，不能依赖任何重建。万一挪动失败，宁可让整个 git 同步
+    失败，也不能在 site/ 状态不明的情况下继续——那正是要防的事故。
+    """
+    tmp_root = Path(tempfile.mkdtemp(prefix="vps-deals-site-"))
+    stash = tmp_root / "site"
+    moved = False
+    try:
+        if SITE_DIR.exists():
+            shutil.move(str(SITE_DIR), str(stash))
+            moved = True
+        yield stash
+    finally:
+        # 无论正常返回、抛异常还是提前 return，都要把 site/ 放回原位。
+        if moved:
+            if SITE_DIR.exists():
+                # 理论上不会发生；真发生了说明 git 又写回了文件，以挪走的那份为准。
+                shutil.rmtree(SITE_DIR)
+            shutil.move(str(stash), str(SITE_DIR))
+        shutil.rmtree(tmp_root, ignore_errors=True)
+
+
+def site_complete() -> tuple[int, str]:
+    """发布前确认 site/ 里本轮该有的页面真的都在磁盘上。
+
+    只看 build.py 的退出码是不够的：2026-11-01 那次 build.py 返回 0，site/ 却
+    在之后被 git 操作删空，残骸照样发了出去。这里按"这次构建必须产出的文件"逐个
+    核对——首页、sitemap、robots、每个 provider 页、每个 deal 页、指南页、CSV。
+    少任何一个都不发：线上留上一版，总好过发一个打不开的站。
+
+    返回 0/1 而不是 True/False：Python 里 False == 0 是 True，拿布尔值当退出码
+    去和 0 比，判据恒真，守卫会静悄悄地失效。
+    """
+    import json
+
+    missing: list[str] = []
+    for name in ("index.html", "sitemap.xml", "robots.txt", "compare.html",
+                 "about.html", "methodology.html", "privacy.html", "contact.html",
+                 "404.html", "guide.html", "_worker.js", "downloads/unit-price.csv"):
+        if not (SITE_DIR / name).exists():
+            missing.append(name)
+
+    data_path = ROOT / "data" / "offers.json"
+    if data_path.exists():
+        payload = json.loads(data_path.read_text(encoding="utf-8"))
+        for provider in payload.get("providers", []):
+            slug = re.sub(r"[^a-z0-9]+", "-", provider["name"].lower()).strip("-")
+            if not (SITE_DIR / "provider" / f"{slug}.html").exists():
+                missing.append(f"provider/{slug}.html")
+        deal_count = len(list((SITE_DIR / "deal").glob("*.html")))
+        if deal_count == 0 and payload.get("offers"):
+            missing.append("deal/*.html (all deal pages missing)")
+
+    if missing:
+        preview = ", ".join(missing[:5]) + ("..." if len(missing) > 5 else "")
+        return 1, f"[fail] site/ is incomplete ({len(missing)} missing): {preview}"
+    return 0, f"[ok] site/ complete ({len(list(SITE_DIR.rglob('*.html')))} html pages on disk)"
 
 
 def main() -> int:
@@ -151,17 +274,31 @@ def main() -> int:
 
         current_snapshot = json.loads(data_path.read_text(encoding="utf-8"))
         guard_code, guard_out = dataset_guard(current_snapshot, previous_offers())
-    # 通过自查、且本轮数据没退化，才推回远端：Actions 由此永远构建同一棵树
+    # 发布前确认本次构建的产物是完整的：2026-11-01 那次事故里 build.py 明明成功，
+    # 但 site/ 被随后的 git merge --abort 删空，deploy() 照样把残骸发了出去，
+    # 线上首页变成 404。所以不能只看 build.py 的退出码，要真的确认页面在磁盘上。
+    site_code, site_out = site_complete()
+    # 通过自查、本轮数据没退化、且产物完整，才推回远端：Actions 由此永远构建同一棵树
     # （分叉就是这一步从前缺失）。任一条不过就不推——和"不发布"同一个口径，
     # 内容只留本地等次日修正。
-    publishable = check_code == 0 and guard_code == 0
+    publishable = check_code == 0 and guard_code == 0 and site_code == 0
     if publishable:
         git_code, git_out = git_sync(started.strftime("%Y-%m-%d"))
+    elif site_code != 0:
+        git_code, git_out = 1, "[skip] site/ incomplete; not syncing to git"
     elif guard_code != 0:
         git_code, git_out = 1, "[skip] dataset regressed; not syncing to git"
     else:
         git_code, git_out = 1, "[skip] content_check failed; not syncing to git"
-    # 发布：两条都过才发；否则线上保持上一版
+    # git_sync() 是上一次真正删掉 site/ 的那一步，所以产物完整性必须在它之后再核一遍。
+    # 只在前头核等于把"git 没动过构建产物"当成前提——那正是出事时被推翻的假设。
+    # 这一遍不过就绝不发布：线上留上一版，好过发一个打不开的站。
+    if publishable:
+        site_after_code, site_after_out = site_complete()
+        if site_after_code != 0:
+            site_code, site_out = site_after_code, "[after git] " + site_after_out
+            publishable = False
+    # 发布：都过才发；否则线上保持上一版
     if publishable:
         deploy_code, deploy_out = deploy()
         # 发布成功后再核一遍线上内容是不是本次构建：自定义域名有传播窗口，
@@ -170,6 +307,9 @@ def main() -> int:
             verify_code, verify_out = run("verify_deploy.py")
         else:
             verify_code, verify_out = 1, "[skip] deploy failed; nothing to verify"
+    elif site_code != 0:
+        deploy_code, deploy_out = 1, f"[skip] site/ incomplete; not publishing this build: {site_out}"
+        verify_code, verify_out = 1, "[skip] nothing published"
     elif guard_code != 0:
         deploy_code, deploy_out = 1, "[skip] dataset regressed; not publishing this build"
         verify_code, verify_out = 1, "[skip] nothing published"
@@ -198,6 +338,7 @@ def main() -> int:
         and build_code == 0
         and check_code == 0
         and guard_code == 0
+        and site_code == 0
         and git_code == 0
         and deploy_code == 0
         and verify_code == 0
@@ -209,6 +350,7 @@ def main() -> int:
         "build_exit": build_code,
         "content_check_exit": check_code,
         "guard_exit": guard_code,
+        "site_exit": site_code,
         "git_exit": git_code,
         "deploy_exit": deploy_code,
         "verify_exit": verify_code,
@@ -218,6 +360,8 @@ def main() -> int:
         "status": "ok" if steps_ok else "failed",
         # 数据退化守卫的结果原样留证：拦下的是哪一家、从几条掉到几条
         "guard_tail": guard_out.strip().splitlines()[-2:],
+        # 产物完整性核对的结果原样留证：少了哪几个文件
+        "site_tail": site_out.strip().splitlines()[-2:],
         # 失败原因原样记 不美化
         "scraper_tail": scrape_out.strip().splitlines()[-3:] if scrape_code else [],
         "guides_tail": guides_out.strip().splitlines()[-2:] if guides_out else [],
