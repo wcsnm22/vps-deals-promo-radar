@@ -77,14 +77,23 @@ def deploy() -> tuple[int, str]:
 
     if os.environ.get("PAGES_DEPLOY", "1") != "1":
         return 0, "[skip] PAGES_DEPLOY=0, built but not published"
-    wrangler = Path(os.environ.get("APPDATA", "")) / "npm" / "node_modules" / "wrangler" / "bin" / "wrangler.js"
-    if not wrangler.exists():
-        return 1, f"[fail] wrangler not found at {wrangler}"
-    node = "node.exe"
+    import shutil
+    if os.name == "nt":
+        wrangler = Path(os.environ.get("APPDATA", "")) / "npm" / "node_modules" / "wrangler" / "bin" / "wrangler.js"
+        node = "node.exe"
+        if not wrangler.exists():
+            return 1, f"[fail] wrangler not found at {wrangler}"
+        cmd = [node, str(wrangler)]
+    else:
+        # Linux / VPS: npm -g 装的 wrangler 本身可执行, 直接走 PATH
+        wrangler = shutil.which("wrangler")
+        if not wrangler:
+            return 1, "[fail] wrangler not found in PATH"
+        cmd = [wrangler]
     branch = os.environ.get("PAGES_BRANCH", "production")
     proc = subprocess.run(
-        [node, str(wrangler), "pages", "deploy", "site",
-         "--project-name=vps-deals-promo-radar", f"--branch={branch}", "--commit-dirty=true"],
+        cmd + ["pages", "deploy", "site",
+               "--project-name=vps-deals-promo-radar", f"--branch={branch}", "--commit-dirty=true"],
         cwd=str(ROOT),
         capture_output=True,
         text=True,
