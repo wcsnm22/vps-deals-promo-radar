@@ -3,8 +3,8 @@ name: update
 # 每 6 小时抓一次 + 重新生成 + 提交 + 部署到 Cloudflare Pages
 # 优惠站卖的是及时度，所以别只跑一次；公开仓库的 Actions 分钟数不限。
 on:
-  schedule:
-    - cron: "17 */6 * * *"
+# schedule: disabled 2026-11-04 -- VPS systemd timer is the single runner
+#   - cron: "17 */6 * * *"
   workflow_dispatch:
 
 permissions:
